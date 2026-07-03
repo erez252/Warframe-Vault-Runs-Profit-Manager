@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vault Runs Profit Manager</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons for premium-looking icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0b0e14;
+            color: #e2e8f0;
+        }
+
+        .wf-title {
+            font-family: sans-serif;
+        }
+
+        .gold-border {
+            border-color: #cda250;
+        }
+        .gold-text {
+            color: #e5c158;
+        }
+        .gold-bg {
+            background-color: #cda250;
+        }
+        
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f131a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #cda250;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <svg class="w-8 h-8 gold-text animate-pulse" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <polygon points="50,5 90,30 90,70 50,95 10,70 10,30" stroke="currentColor" stroke-width="4" fill="currentColor" fill-opacity="0.1" />
+                    <polygon points="50,20 75,37 75,63 50,80 25,63 25,37" stroke="currentColor" stroke-width="2" fill="none" />
+                    <circle cx="50" cy="50" r="10" fill="currentColor" />
+                </svg>
+                <div>
+                    <h1 class="text-lg md:text-xl font-bold tracking-wider wf-title gold-text">Vault Runs Profit Manager</h1>
+                    <p class="text-xs text-slate-400">My Niche Vault Runs Profit Manager</p>
+                </div>
+            </div>
+            
+            <a href="https://warframe.market/" target="_blank" rel="noopener noreferrer" class="hidden sm:flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg">
+                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                Warframe.Market
+            </a>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- User Search Card (Simplified & Beautiful, Zero Overlap lines) -->
+        <div class="bg-gradient-to-r from-slate-950 to-slate-900 border border-slate-800 rounded-2xl p-6 mb-6 shadow-xl relative overflow-hidden">
+            <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div class="max-w-xl">
+                    <h2 class="text-xl font-semibold text-white mb-2 flex items-center gap-2">
+                        <i data-lucide="search" class="w-5 h-5 gold-text"></i> User Search
+                    </h2>
+                    <p class="text-sm text-slate-400 leading-relaxed">
+                        I made this for a super niche, very specific purpose: at the end of like a week, I want to know exactly how much of my corrupted mods profit I should reinvest back into other items instead of just keeping it all. Enter any username below to load past transactions closed sales.
+                    </p>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto shrink-0">
+                    <div class="relative flex-grow sm:w-64">
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+                            <i data-lucide="user" class="w-5 h-5"></i>
+                        </span>
+                        <input 
+                            type="text" 
+                            id="usernameInput" 
+                            placeholder="Enter Username (e.g., TheKengineer)"
+                            value=""
+                            class="w-full pl-10 pr-4 py-2.5 bg-slate-900/90 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition"
+                            onkeypress="if(event.key === 'Enter') handleSearch()"
+                        />
+                    </div>
+                    <button 
+                        onclick="handleSearch()"
+                        class="px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-amber-500/10 hover:shadow-amber-500/20 active:scale-[0.98]"
+                    >
+                        <span>Analyze Trade</span>
+                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- New Dedicated Filter & Checkpoint Box (Corrects all alignment bugs) -->
+        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 mb-8 shadow-xl">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-900 mb-5">
+                <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+                    <h3 class="text-xs uppercase tracking-wider text-slate-400 font-semibold flex items-center gap-1.5">
+                        <i data-lucide="calendar" class="w-4 h-4 text-amber-500"></i>
+                        Custom Window Controls
+                    </h3>
+                    <span class="text-[10px] text-slate-500 font-medium bg-slate-900 px-2 py-0.5 rounded border border-slate-800">
+                        90 Days Max Historical Limit
+                    </span>
+                </div>
+                <!-- Perfectly level dynamic status capsule -->
+                <div id="checkpointStatus" class="self-start lg:self-auto"></div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
+                <!-- Left half: Date Picker Inputs -->
+                <div class="lg:col-span-8 flex flex-wrap items-center gap-4">
+                    <div class="flex items-center gap-2">
+                        <span class="text-[11px] text-slate-500 uppercase font-semibold">Start:</span>
+                        <input 
+                            type="date" 
+                            id="startDatePicker"
+                            class="bg-slate-900 border border-slate-750 hover:border-slate-650 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500 transition"
+                        />
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[11px] text-slate-500 uppercase font-semibold">End:</span>
+                        <input 
+                            type="date" 
+                            id="endDatePicker"
+                            placeholder="Today"
+                            class="bg-slate-900 border border-slate-750 hover:border-slate-650 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500 transition"
+                        />
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button 
+                            onclick="applyCustomDateRange()"
+                            class="px-3.5 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-semibold rounded-lg transition"
+                        >
+                            Apply Range
+                        </button>
+                        <button 
+                            id="clearRangeBtn"
+                            onclick="clearCustomDateRange()"
+                            class="hidden px-2.5 py-1.5 bg-slate-900 hover:bg-slate-850 text-slate-400 text-xs font-medium border border-slate-800 rounded-lg transition flex items-center gap-1"
+                            title="Return to default 7-day window"
+                        >
+                            <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                            Reset Range
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Vertical separation line for widescreen monitors -->
+                <div class="hidden lg:block lg:col-span-1 justify-self-center">
+                    <div class="w-px h-8 bg-slate-800/80"></div>
+                </div>
+
+                <!-- Right half: Checkpoint Actions -->
+                <div class="lg:col-span-3 flex justify-end gap-2 w-full lg:w-auto">
+                    <button 
+                        onclick="setCheckpoint()" 
+                        class="flex-grow lg:flex-none px-3.5 py-1.5 bg-blue-600/15 hover:bg-blue-600/25 text-blue-400 border border-blue-500/30 text-xs font-semibold rounded-lg transition flex items-center justify-center gap-1.5"
+                        title="Ignore old history: only display transactions closed after this moment"
+                    >
+                        <i data-lucide="flag" class="w-3.5 h-3.5"></i>
+                        Set Checkpoint
+                    </button>
+                    <button 
+                        onclick="clearCheckpoint()" 
+                        id="clearCheckpointBtn"
+                        class="hidden flex-grow lg:flex-none px-2.5 py-1.5 bg-slate-900 hover:bg-red-950/40 hover:text-red-400 text-slate-400 border border-slate-850 rounded-lg text-xs font-medium transition flex items-center justify-center gap-1"
+                        title="Clear checkpoint filter and return to default view"
+                    >
+                        <i data-lucide="x-circle" class="w-3.5 h-3.5"></i>
+                        Reset Checkpoint
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="welcomeState" class="flex flex-col items-center justify-center py-20 text-center">
+            <div class="w-16 h-16 bg-slate-900/50 rounded-full flex items-center justify-center border border-slate-800 mb-4 text-amber-500">
+                <i data-lucide="shield" class="w-8 h-8"></i>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">Welcome to My Website</h3>
+            <p class="text-slate-400 text-sm max-w-md mx-auto">
+                Enter your (or any) Warframe Market username above to load the transaction history (sales only), calculate how much corrupted mod sales profit you should reinvest, and manage your budget balances.
+            </p>
+        </div>
+
+        <div id="userProfileHeader" class="mb-8 hidden">
+            <div class="flex items-center gap-4 border-l-4 border-amber-500 pl-4 py-1">
+                <div>
+                    <div class="text-xs uppercase tracking-widest text-slate-500">Currently Analyzing</div>
+                    <h3 id="currentProfileName" class="text-2xl font-bold text-white flex items-center gap-2">
+                        Username
+                    </h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="hidden flex-col items-center justify-center py-20">
+            <div class="relative w-16 h-16">
+                <div class="absolute inset-0 border-4 border-slate-800 rounded-full"></div>
+                <div class="absolute inset-0 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+            <p class="mt-4 text-slate-400 text-sm animate-pulse">Consulting the Warframe Market Ledger...</p>
+        </div>
+
+        <!-- Error State -->
+        <div id="errorState" class="hidden bg-red-950/20 border border-red-900/50 rounded-2xl p-6 my-6 text-center">
+            <div class="w-12 h-12 bg-red-950/50 rounded-full flex items-center justify-center mx-auto mb-3">
+                <i data-lucide="alert-triangle" class="text-red-500 w-6 h-6"></i>
+            </div>
+            <h4 class="text-red-400 font-semibold text-lg mb-1">Failed to Fetch Profile</h4>
+            <p class="text-slate-400 text-sm max-w-md mx-auto mb-4" id="errorMessage">
+                We couldn't reach the stats for this user. Please verify the spelling or try again later.
+            </p>
+            <button onclick="handleSearch()" class="text-xs px-3 py-1.5 bg-red-900/30 text-red-300 hover:bg-red-900/50 border border-red-800 rounded-lg transition">
+                Retry Connection
+            </button>
+        </div>
+
+        <div id="resultsDashboard" class="hidden space-y-8">
+            
+            <!-- Statistics Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 shadow-xl relative overflow-hidden group hover:border-amber-500/40 transition-all duration-300">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-500">
+                            <i data-lucide="trending-up" class="w-5 h-5"></i>
+                        </div>
+                        <span class="text-slate-400 text-sm font-medium">Total Revenue</span>
+                    </div>
+                    <div class="flex items-baseline gap-2">
+                        <span id="totalRevenue" class="text-4xl font-extrabold text-white wf-title tracking-tight">0</span>
+                        <span class="text-amber-500 font-bold text-sm tracking-wider">PLATINUM</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 shadow-xl relative overflow-hidden group hover:border-amber-500/40 transition-all duration-300">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-400">
+                            <i data-lucide="shield-alert" class="w-5 h-5"></i>
+                        </div>
+                        <span class="text-slate-400 text-sm font-medium">Corrupted Mods</span>
+                    </div>
+                    <div class="flex items-baseline gap-2">
+                        <span id="corruptedRevenue" class="text-4xl font-extrabold text-white wf-title tracking-tight">0</span>
+                        <span class="text-amber-500/80 font-bold text-sm">PLAT</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 shadow-xl relative overflow-hidden group hover:border-amber-500/40 transition-all duration-300">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center text-slate-400">
+                            <i data-lucide="archive" class="w-5 h-5"></i>
+                        </div>
+                        <span class="text-slate-400 text-sm font-medium">Other Goods</span>
+                    </div>
+                    <div class="flex items-baseline gap-2">
+                        <span id="othersRevenue" class="text-4xl font-extrabold text-white wf-title tracking-tight">0</span>
+                        <span class="text-slate-400 font-bold text-sm">PLAT</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Investment Planner Panel (Clean Single-Row layout) -->
+            <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 shadow-xl">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-4 border-b border-slate-850 mb-6">
+                    <div class="max-w-md">
+                        <h3 class="text-lg font-bold text-white tracking-wide flex items-center gap-2">
+                            <i data-lucide="pie-chart" class="text-amber-400 w-5 h-5"></i>
+                            <span id="plannerPercentLabel">20</span>% Custom Investment Planner
+                        </h3>
+                        <p class="text-xs text-slate-400 mt-1">
+                            Reinvest a custom percentage of your weekly Corrupted Mod sales back into other merchandise.
+                        </p>
+                    </div>
+                    
+                    <!-- One level, completely aligned single control row -->
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
+                        
+                        <!-- Percentage Selector Input -->
+                        <div class="flex items-center justify-between sm:justify-start gap-2 bg-slate-900/50 px-3 py-2 rounded-xl border border-slate-800 h-12 shrink-0">
+                            <label for="percentInput" class="text-xs font-semibold text-slate-400">Reinvest:</label>
+                            <div class="flex items-center gap-1">
+                                <input 
+                                    type="number" 
+                                    id="percentInput" 
+                                    min="1" 
+                                    max="100" 
+                                    value="20"
+                                    onchange="handlePercentageChange(this.value)"
+                                    class="w-12 bg-slate-950 border border-slate-800 rounded px-1 py-0.5 text-xs text-center text-amber-400 font-bold focus:outline-none focus:border-amber-500"
+                                />
+                                <span class="text-xs font-bold text-amber-500">%</span>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons Group -->
+                        <div class="flex items-center gap-2 bg-slate-900/50 p-1.5 rounded-xl border border-slate-800/80 h-12 shrink-0">
+                            <button 
+                                onclick="initializeInvestment()" 
+                                class="h-full px-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold rounded-lg transition flex items-center justify-center gap-1.5"
+                                title="Set budget to your custom % of current Corrupted Mods sales"
+                            >
+                                <i data-lucide="calculator" class="w-3.5 h-3.5"></i>
+                                Calculate & Load
+                            </button>
+                            <button 
+                                onclick="clearInvestment()" 
+                                class="h-full px-3 bg-slate-950 hover:bg-red-950/50 hover:text-red-400 text-slate-400 border border-slate-800/60 rounded-lg text-xs font-medium transition flex items-center justify-center gap-1.5"
+                                title="Reset investment budget to 0"
+                            >
+                                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                                Reset Balance
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                    <!-- Current Fund Display -->
+                    <div class="bg-slate-900/40 border border-slate-800/80 rounded-xl p-4 flex flex-col justify-center">
+                        <span class="text-xs text-slate-500 font-medium">Current Investment Budget</span>
+                        <div class="flex items-baseline gap-1.5 mt-1">
+                            <span id="investmentDisplay" class="text-3xl font-bold text-amber-400">0</span>
+                            <span class="text-xs text-slate-400 font-semibold uppercase">Plat</span>
+                        </div>
+                    </div>
+
+                    <!-- Add / Subtract Controls -->
+                    <div class="md:col-span-2 bg-slate-900/20 border border-slate-800/60 rounded-xl p-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+                        <div class="flex-grow">
+                            <label for="adjustmentAmount" class="block text-[11px] font-medium text-slate-500 mb-1">Transaction Adjustments</label>
+                            <input 
+                                type="number" 
+                                id="adjustmentAmount" 
+                                min="1" 
+                                placeholder="Enter Plat amount" 
+                                class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-white placeholder-slate-600 focus:outline-none focus:border-amber-500 transition"
+                            />
+                        </div>
+                        <div class="flex gap-2 shrink-0 pt-0 sm:pt-5">
+                            <button 
+                                onclick="adjustInvestment('subtract')" 
+                                class="flex-1 sm:flex-initial px-4 py-2 bg-red-950/40 hover:bg-red-900/40 text-red-300 border border-red-900/40 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5"
+                            >
+                                <i data-lucide="minus-circle" class="w-4 h-4"></i>
+                                Spend / Subtract
+                            </button>
+                            <button 
+                                onclick="adjustInvestment('add')" 
+                                class="flex-1 sm:flex-initial px-4 py-2 bg-emerald-950/40 hover:bg-emerald-900/40 text-emerald-300 border border-emerald-900/40 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5"
+                            >
+                                <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                                Add Profit
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Double Column Tables -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 flex flex-col h-[520px]">
+                    <div class="flex items-center justify-between pb-4 border-b border-slate-850 mb-4">
+                        <h3 class="text-lg font-bold text-white tracking-wide">Corrupted Mods</h3>
+                        <span id="cmListBadge" class="text-xs px-2.5 py-1 bg-amber-500/10 text-amber-400 rounded-full">0 Sold</span>
+                    </div>
+                    <div class="overflow-y-auto flex-grow space-y-3" id="corruptedModsContainer"></div>
+                </div>
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 flex flex-col h-[520px]">
+                    <div class="flex items-center justify-between pb-4 border-b border-slate-850 mb-4">
+                        <h3 class="text-lg font-bold text-white tracking-wide">Standard Merchandise</h3>
+                        <span id="othersListBadge" class="text-xs px-2.5 py-1 bg-slate-800 text-slate-400 rounded-full">0 Sold</span>
+                    </div>
+                    <div class="overflow-y-auto flex-grow space-y-3" id="othersContainer"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-auto border-t border-slate-900 bg-slate-950 py-6 text-center text-xs text-slate-600">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p>© 2026 Vault Runs Profit Manager. Data sourced via Warframe.Market api but have no affiliation with Digital Extremes or the warframe.market website</p>
+            <p class="text-slate-500 italic">May Void-luck guide your trading pursuits.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Your pristine list of Corrupted Mods
+        const corruptedMods = [
+            "Anemic Agility", "Blind Rage", "Burdened Magazine", "Catalyzing Shields", "Corrupt Charge",
+            "Creeping Bullseye", "Critical Deceleration", "Critical Delay", "Depleted Reload", "Fleeting Expertise",
+            "Frail Momentum", "Heavy Caliber", "Hollow Point", "Magnum Force", "Narrow Minded",
+            "Overextended", "Spoiled Strike", "Tainted Clip", "Tainted Mag", "Tainted Shell",
+            "Transient Fortitude", "Vicious Spread", "Vile Acceleration", "Vile Precision"
+        ];
+
+        // State Management Variables
+        let investmentBudget = 0;
+        let reinvestPercentage = 20; // Customizable percentage
+        let lastCalculatedCMRevenue = 0;
+        let salesCheckpoint = null; // Saves a timestamp representing the checkpoint filter line
+        let customStartDate = null; // Saves start calendar filter
+        let customEndDate = null; // Saves end calendar filter
+        let rawClosedOrders = []; // Copy of orders so we can re-filter live without refetching
+
+        async function getDataFromApi(userName){
+            showWelcomeState(false);
+            showLoading(true);
+            showError(false);
+            showResults(false);
+            document.getElementById('currentProfileName').textContent = userName;
+            document.getElementById('userProfileHeader').classList.remove('hidden');
+
+            try {
+                const response = await fetch(`https://corsproxy.io/?url=https://api.warframe.market/v1/profile/${userName}/statistics`);
+                const json = await response.json();
+                
+                if (!json.payload || !json.payload.closed_orders) {
+                    throw new Error("Invalid response structure from API");
+                }
+                
+                rawClosedOrders = json.payload.closed_orders;
+                sumUserData(rawClosedOrders);
+            } catch (error) {
+                console.error("Failed to fetch or process data:", error);
+                document.getElementById('errorMessage').textContent = "Failed to load player stats. Check the user spelling or try again.";
+                showLoading(false);
+                showError(true);
+            }
+        }
+
+        function sumUserData(UserData){
+            // reorganize the object (your pristine code)
+            UserData = UserData.map(order => ({
+                icon: order.item.icon,
+                thumb: order.item.thumb,
+                item_name: order.item.en.item_name,
+                platinum: order.platinum,
+                order_type: order.order_type,
+                quantity: order.quantity,
+                closed_date: order.closed_date,
+            }));
+
+            let startTimestamp;
+            let endTimestamp = null;
+            const statusEl = document.getElementById('checkpointStatus');
+            const clearBtn = document.getElementById('clearCheckpointBtn');
+            const clearRangeBtn = document.getElementById('clearRangeBtn');
+
+            // Conditional filtering priority logic:
+            if (customStartDate && customEndDate) {
+                // Parse standard ISO strings using system timezone bounds
+                const sDate = new Date(customStartDate + "T00:00:00");
+                const eDate = new Date(customEndDate + "T23:59:59");
+                startTimestamp = sDate.getTime();
+                endTimestamp = eDate.getTime();
+
+                const displayStart = sDate.toLocaleDateString(undefined, { day: '2-digit', month: '2-digit', year: '2-digit' });
+                const displayEnd = eDate.toLocaleDateString(undefined, { day: '2-digit', month: '2-digit', year: '2-digit' });
+
+                if (statusEl) {
+                    statusEl.innerHTML = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20"><i data-lucide="calendar" class="w-3.5 h-3.5"></i> Custom Range (${displayStart} - ${displayEnd})</span>`;
+                }
+                if (clearRangeBtn) {
+                    clearRangeBtn.classList.remove('hidden');
+                }
+                if (clearBtn) {
+                    clearBtn.classList.add('hidden'); // Clear checkpoint display to keep clean layout
+                }
+            } else if (salesCheckpoint) {
+                startTimestamp = salesCheckpoint;
+                const checkpointDate = new Date(salesCheckpoint);
+                const dStr = checkpointDate.toLocaleDateString(undefined, { day: '2-digit', month: '2-digit', year: '2-digit' });
+                const tStr = checkpointDate.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', hour12: false });
+                const displayTime = `${dStr} ${tStr}`;
+                if (statusEl) {
+                    statusEl.innerHTML = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20"><i data-lucide="flag" class="w-3.5 h-3.5"></i> Checkpoint since ${displayTime}</span>`;
+                }
+                if (clearBtn) {
+                    clearBtn.classList.remove('hidden');
+                }
+                if (clearRangeBtn) {
+                    clearRangeBtn.classList.add('hidden');
+                }
+            } else {
+                // 1. Establish your "Tomorrow at Midnight" baseline using UTC (Your pristine code)
+                const tomorrow = new Date();
+                tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
+                tomorrow.setUTCHours(0, 0, 0, 0); // 👈 Forces UTC Midnight!
+
+                // 2. Look back exactly 7 days to get a fixed starting line (Your pristine code)
+                const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
+                startTimestamp = tomorrow.getTime() - sevenDaysInMs;
+                if (statusEl) {
+                    statusEl.innerHTML = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold bg-slate-900 text-slate-400 border border-slate-800"><i data-lucide="clock" class="w-3.5 h-3.5"></i> Default 7-day period</span>`;
+                }
+                if (clearBtn) {
+                    clearBtn.classList.add('hidden');
+                }
+                if (clearRangeBtn) {
+                    clearRangeBtn.classList.add('hidden');
+                }
+            }
+
+            // 3. Filter out any orders older than that start line (Your pristine code)
+            let recentOrders = UserData.filter(order => {
+                const orderTime = new Date(order.closed_date).getTime(); 
+                if (endTimestamp !== null) {
+                    return orderTime >= startTimestamp && orderTime <= endTimestamp;
+                }
+                return orderTime >= startTimestamp;
+            });
+            console.log(recentOrders);
+            let sellOrders = recentOrders.filter(order => order.order_type == "sell");
+
+            sellOrders = ({
+                corrupted_mods: sellOrders.filter(order => corruptedMods.includes(order.item_name)),
+                others: sellOrders.filter(order => !corruptedMods.includes(order.item_name))
+            });
+            console.log(sellOrders);
+            
+            const ordersCMRevenue = sellOrders.corrupted_mods.reduce((sum, order) => sum + (order.platinum * order.quantity) ,0);
+            const ordersOthersRevenue = sellOrders.others.reduce((sum, order) => sum + (order.platinum * order.quantity) ,0);
+            const ordersRevenue = ordersOthersRevenue + ordersCMRevenue;
+            console.log(ordersCMRevenue);
+            console.log(ordersOthersRevenue);
+            console.log(ordersRevenue);
+
+            // Track Corrupted Mods revenue for our planner calculation
+            lastCalculatedCMRevenue = ordersCMRevenue;
+
+            renderUI(ordersRevenue, ordersCMRevenue, ordersOthersRevenue, sellOrders);
+        }
+
+        // --- LOCAL STORAGE PERSISTENCE ENGINE ---
+        
+        function loadInvestmentFromVault() {
+            try {
+                const savedAmount = localStorage.getItem('wf_investment_budget');
+                const savedCheckpoint = localStorage.getItem('wf_sales_checkpoint');
+                const savedCustomStart = localStorage.getItem('wf_custom_start_date');
+                const savedCustomEnd = localStorage.getItem('wf_custom_end_date');
+                const savedPercent = localStorage.getItem('wf_reinvest_percent');
+                
+                if (savedAmount !== null) {
+                    investmentBudget = parseFloat(savedAmount) || 0;
+                }
+                if (savedPercent !== null) {
+                    reinvestPercentage = parseInt(savedPercent, 10) || 20;
+                }
+                document.getElementById('percentInput').value = reinvestPercentage;
+                document.getElementById('plannerPercentLabel').textContent = reinvestPercentage;
+
+                if (savedCheckpoint !== null && savedCheckpoint !== "") {
+                    salesCheckpoint = parseInt(savedCheckpoint, 10) || null;
+                }
+                if (savedCustomStart !== null && savedCustomStart !== "") {
+                    customStartDate = savedCustomStart;
+                    document.getElementById('startDatePicker').value = customStartDate;
+                }
+                if (savedCustomEnd !== null && savedCustomEnd !== "") {
+                    customEndDate = savedCustomEnd;
+                    document.getElementById('endDatePicker').value = customEndDate;
+                }
+                updateInvestmentDisplay();
+            } catch (err) {
+                console.error("Local storage read error:", err);
+            }
+        }
+
+        function saveInvestmentToVault() {
+            updateInvestmentDisplay();
+            try {
+                localStorage.setItem('wf_investment_budget', investmentBudget);
+                localStorage.setItem('wf_sales_checkpoint', salesCheckpoint || "");
+                localStorage.setItem('wf_custom_start_date', customStartDate || "");
+                localStorage.setItem('wf_custom_end_date', customEndDate || "");
+                localStorage.setItem('wf_reinvest_percent', reinvestPercentage);
+            } catch (err) {
+                console.error("Local storage write error:", err);
+            }
+        }
+
+        function updateInvestmentDisplay() {
+            const displayEl = document.getElementById('investmentDisplay');
+            if (displayEl) {
+                displayEl.textContent = Math.round(investmentBudget).toLocaleString();
+            }
+        }
+
+        // Handler for dynamic percentage changes
+        window.handlePercentageChange = function(value) {
+            const parsedVal = parseInt(value, 10);
+            if (!isNaN(parsedVal) && parsedVal >= 1 && parsedVal <= 100) {
+                reinvestPercentage = parsedVal;
+                document.getElementById('plannerPercentLabel').textContent = reinvestPercentage;
+                saveInvestmentToVault();
+            }
+        };
+
+        // Investment planner button controllers
+        window.initializeInvestment = function() {
+            // Calculate dynamic percentage of Corrupted Mods revenue
+            investmentBudget = lastCalculatedCMRevenue * (reinvestPercentage / 100);
+            saveInvestmentToVault();
+        };
+
+        window.adjustInvestment = function(type) {
+            const amountInput = document.getElementById('adjustmentAmount');
+            const amount = parseInt(amountInput.value, 10);
+            
+            if (isNaN(amount) || amount <= 0) {
+                return; // Guard against empty or invalid input
+            }
+
+            if (type === 'add') {
+                investmentBudget += amount;
+            } else if (type === 'subtract') {
+                investmentBudget = Math.max(0, investmentBudget - amount); // Prevent going below 0
+            }
+
+            amountInput.value = ''; // Reset input field
+            saveInvestmentToVault();
+        };
+
+        window.clearInvestment = function() {
+            investmentBudget = 0;
+            saveInvestmentToVault();
+        };
+
+        // Checkpoint button controllers
+        window.setCheckpoint = function() {
+            salesCheckpoint = Date.now();
+            customStartDate = null; // Clear custom range when checkpointing to prevent logical conflict
+            customEndDate = null;
+            document.getElementById('startDatePicker').value = "";
+            document.getElementById('endDatePicker').value = "";
+            
+            saveInvestmentToVault();
+            if (rawClosedOrders && rawClosedOrders.length > 0) {
+                sumUserData(rawClosedOrders);
+            }
+        };
+
+        window.clearCheckpoint = function() {
+            salesCheckpoint = null;
+            saveInvestmentToVault();
+            if (rawClosedOrders && rawClosedOrders.length > 0) {
+                sumUserData(rawClosedOrders);
+            }
+        };
+
+        // Custom Date Picker Actions with flexible End Date logic
+        window.applyCustomDateRange = function() {
+            const startVal = document.getElementById('startDatePicker').value;
+            let endVal = document.getElementById('endDatePicker').value;
+
+            if (!startVal) {
+                return; // Require at least the start date
+            }
+
+            // If no end date is selected, automatically default it to today's date
+            if (!endVal) {
+                const today = new Date();
+                endVal = today.toISOString().split('T')[0];
+                document.getElementById('endDatePicker').value = endVal; // Display it visually
+            }
+
+            if (new Date(startVal) > new Date(endVal)) {
+                return; // Start date must be before or equal to end date
+            }
+
+            customStartDate = startVal;
+            customEndDate = endVal;
+            salesCheckpoint = null; // Clear checkpoint when applying a custom range to avoid logical conflicts
+
+            saveInvestmentToVault();
+            if (rawClosedOrders && rawClosedOrders.length > 0) {
+                sumUserData(rawClosedOrders);
+            }
+        };
+
+        window.clearCustomDateRange = function() {
+            customStartDate = null;
+            customEndDate = null;
+            document.getElementById('startDatePicker').value = "";
+            document.getElementById('endDatePicker').value = "";
+
+            saveInvestmentToVault();
+            if (rawClosedOrders && rawClosedOrders.length > 0) {
+                sumUserData(rawClosedOrders);
+            }
+        };
+
+        // Configures min and max bounds dynamically to keep users within standard api 90-day lookup ranges
+        function setupDatePickerLimits() {
+            const today = new Date();
+            const ninetyDaysAgo = new Date();
+            ninetyDaysAgo.setDate(today.getDate() - 90);
+
+            const todayStr = today.toISOString().split('T')[0];
+            const ninetyDaysAgoStr = ninetyDaysAgo.toISOString().split('T')[0];
+
+            const startPicker = document.getElementById('startDatePicker');
+            const endPicker = document.getElementById('endDatePicker');
+
+            if (startPicker && endPicker) {
+                startPicker.min = ninetyDaysAgoStr;
+                startPicker.max = todayStr;
+                endPicker.min = ninetyDaysAgoStr;
+                endPicker.max = todayStr;
+            }
+        }
+
+        // --- END PERSISTENCE ENGINE ---
+
+        window.handleSearch = function() {
+            const targetUser = document.getElementById('usernameInput').value.trim();
+            if (targetUser) {
+                localStorage.setItem('wf_saved_username', targetUser);
+                getDataFromApi(targetUser);
+            }
+        };
+
+        function showWelcomeState(show) { document.getElementById('welcomeState').classList.toggle('hidden', !show); }
+        function showLoading(show) { document.getElementById('loadingState').classList.toggle('hidden', !show); }
+        function showError(show) { document.getElementById('errorState').classList.toggle('hidden', !show); }
+        function showResults(show) { document.getElementById('resultsDashboard').classList.toggle('hidden', !show); }
+
+        function renderUI(total, cmRevenue, othersRevenue, sellOrders) {
+            document.getElementById('totalRevenue').textContent = total.toLocaleString();
+            document.getElementById('corruptedRevenue').textContent = cmRevenue.toLocaleString();
+            document.getElementById('othersRevenue').textContent = othersRevenue.toLocaleString();
+            
+            document.getElementById('cmListBadge').textContent = `${sellOrders.corrupted_mods.length} Sold`;
+            document.getElementById('othersListBadge').textContent = `${sellOrders.others.length} Sold`;
+
+            const cmContainer = document.getElementById('corruptedModsContainer');
+            const othersContainer = document.getElementById('othersContainer');
+            cmContainer.innerHTML = '';
+            othersContainer.innerHTML = '';
+
+            sellOrders.corrupted_mods.forEach(o => cmContainer.appendChild(createOrderCard(o)));
+            sellOrders.others.forEach(o => othersContainer.appendChild(createOrderCard(o)));
+
+            lucide.createIcons();
+            showLoading(false);
+            showResults(true);
+        }
+
+        function createOrderCard(order) {
+            const card = document.createElement('div');
+            card.className = "bg-slate-900/60 border border-slate-800/80 rounded-xl p-3 flex items-center justify-between";
+            card.innerHTML = `
+                <div class="text-sm font-medium text-white flex items-center gap-3"> 
+                    <img src="https://warframe.market/static/assets/${order.icon}" width="30px" class="object-contain shrink-0" alt=""> 
+                    <span>${order.item_name}</span>
+                </div>
+                <div class="text-sm font-bold text-amber-400">
+                    ${order.platinum.toLocaleString()}p${order.quantity <= 1 ? "" : ` * ${order.quantity.toLocaleString()}`} 
+                </div>`;
+            return card;
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            setupDatePickerLimits();
+            loadInvestmentFromVault(); // Load saved planner state, checkpoint, and custom dates
+
+            // Read the saved user from local storage
+            const savedUser = localStorage.getItem('wf_saved_username');
+            if (savedUser) {
+                document.getElementById('usernameInput').value = savedUser;
+                getDataFromApi(savedUser);
+            } else {
+                // If there is no saved user, render a clean welcome/empty state
+                showWelcomeState(true);
+            }
+        });
+    </script>
+</body>
+</html>
