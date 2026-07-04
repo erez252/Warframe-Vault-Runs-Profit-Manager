@@ -72,6 +72,7 @@
 
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
+        <!-- User Search Card (Simplified & Beautiful, Zero Overlap lines) -->
         <div class="bg-gradient-to-r from-slate-950 to-slate-900 border border-slate-800 rounded-2xl p-6 mb-6 shadow-xl relative overflow-hidden">
             <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div class="max-w-xl">
@@ -108,6 +109,7 @@
             </div>
         </div>
 
+        <!-- Dedicated Filter & Checkpoint Box (Corrects alignment bugs highlighted in image_9106a5.png) -->
         <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 mb-8 shadow-xl">
             <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-900 mb-5">
                 <div class="flex flex-col sm:flex-row sm:items-center gap-3">
@@ -137,9 +139,10 @@
                 <div id="checkpointStatus" class="self-start lg:self-auto"></div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
+            <!-- Highly adaptive flex row layout that guarantees NO wrap-stacking of checkpoint buttons on wide viewports -->
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
                 <!-- Left half: Date Picker Inputs (Whole Box Clickable) -->
-                <div class="lg:col-span-7 flex flex-wrap items-center gap-4">
+                <div class="flex flex-wrap items-center gap-4">
                     <div class="flex items-center gap-2">
                         <span class="text-[11px] text-slate-500 uppercase font-bold">Start:</span>
                         <input 
@@ -179,56 +182,52 @@
                 </div>
 
                 <!-- Vertical separation line for widescreen monitors -->
-                <div class="hidden lg:block lg:col-span-1 justify-self-center">
-                    <div class="w-px h-8 bg-slate-800/80"></div>
-                </div>
+                <div class="hidden lg:block w-px h-8 bg-slate-800/80"></div>
 
-                <!-- Right half: Checkpoint Actions -->
-                <div class="lg:col-span-4 flex flex-col items-end gap-2 w-full lg:w-auto">
-                    <div class="flex flex-wrap items-center justify-end gap-2 w-full lg:w-auto">
-                        <button 
-                            onclick="setCheckpoint()" 
-                            class="flex-grow lg:flex-none px-3 py-1.5 bg-blue-600/15 hover:bg-blue-600/25 text-blue-400 border border-blue-500/30 text-xs font-bold rounded-lg transition flex items-center justify-center gap-1.5"
-                            title="Ignore old history: only display transactions closed after this moment"
-                        >
-                            <i data-lucide="flag" class="w-3.5 h-3.5"></i>
-                            Set Checkpoint
-                        </button>
-                        <button 
-                            onclick="toggleCustomCheckpointDrawer()" 
-                            class="flex-grow lg:flex-none px-3 py-1.5 bg-indigo-600/15 hover:bg-indigo-600/25 text-indigo-400 border border-indigo-500/30 text-xs font-bold rounded-lg transition flex items-center justify-center gap-1.5"
-                            title="Pick a custom date and time as a checkpoint"
-                        >
-                            <i data-lucide="calendar-days" class="w-3.5 h-3.5"></i>
-                            Set Custom Checkpoint
-                        </button>
-                        <button 
-                            onclick="clearCheckpoint()" 
-                            id="clearCheckpointBtn"
-                            class="hidden flex-grow lg:flex-none px-2.5 py-1.5 bg-slate-900 hover:bg-red-950/40 hover:text-red-400 text-slate-400 border border-slate-850 rounded-lg text-xs font-semibold transition flex items-center justify-center gap-1"
-                            title="Clear checkpoint filter and return to default view"
-                        >
-                            <i data-lucide="x-circle" class="w-3.5 h-3.5"></i>
-                            Reset Checkpoint
-                        </button>
-                    </div>
-                    
-                    <!-- Collapsible Custom Checkpoint Drawer -->
-                    <div id="customCheckpointDrawer" class="hidden w-full mt-1 bg-slate-900/40 border border-slate-800/80 p-2 rounded-xl flex items-center gap-2">
-                        <input 
-                            type="datetime-local" 
-                            id="customCheckpointInput"
-                            onclick="this.showPicker()"
-                            class="flex-grow bg-slate-950 border border-slate-800 hover:border-slate-750 rounded-lg px-2 py-1 text-xs text-white focus:outline-none focus:border-amber-500 transition cursor-pointer font-medium"
-                        />
-                        <button 
-                            onclick="saveCustomCheckpoint()"
-                            class="px-3 py-1 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold rounded-lg transition shrink-0"
-                        >
-                            Apply
-                        </button>
-                    </div>
+                <!-- Right half: Checkpoint Actions (Uses flex-nowrap to guarantee all buttons sit beautifully in one single row) -->
+                <div class="flex flex-wrap sm:flex-nowrap items-center justify-end gap-2 shrink-0">
+                    <button 
+                        onclick="setCheckpoint()" 
+                        class="px-3 py-1.5 bg-blue-600/15 hover:bg-blue-600/25 text-blue-400 border border-blue-500/30 text-xs font-bold rounded-lg transition flex items-center justify-center gap-1.5 whitespace-nowrap"
+                        title="Ignore old history: only display transactions closed after this moment"
+                    >
+                        <i data-lucide="flag" class="w-3.5 h-3.5"></i>
+                        Set Checkpoint
+                    </button>
+                    <button 
+                        onclick="toggleCustomCheckpointDrawer()" 
+                        class="px-3 py-1.5 bg-indigo-600/15 hover:bg-indigo-600/25 text-indigo-400 border border-indigo-500/30 text-xs font-bold rounded-lg transition flex items-center justify-center gap-1.5 whitespace-nowrap"
+                        title="Pick a custom date and time as a checkpoint"
+                    >
+                        <i data-lucide="calendar-days" class="w-3.5 h-3.5"></i>
+                        Set Custom Checkpoint
+                    </button>
+                    <button 
+                        onclick="clearCheckpoint()" 
+                        id="clearCheckpointBtn"
+                        class="hidden px-2.5 py-1.5 bg-slate-900 hover:bg-red-950/40 hover:text-red-400 text-slate-400 border border-slate-850 rounded-lg text-xs font-semibold transition flex items-center justify-center gap-1 whitespace-nowrap"
+                        title="Clear checkpoint filter and return to default view"
+                    >
+                        <i data-lucide="x-circle" class="w-3.5 h-3.5"></i>
+                        Reset Checkpoint
+                    </button>
                 </div>
+            </div>
+
+            <!-- Collapsible Custom Checkpoint Drawer (Slides open elegantly right below the buttons) -->
+            <div id="customCheckpointDrawer" class="hidden w-full mt-4 bg-slate-900/40 border border-slate-800/80 p-2 rounded-xl flex items-center gap-2">
+                <input 
+                    type="datetime-local" 
+                    id="customCheckpointInput"
+                    onclick="this.showPicker()"
+                    class="flex-grow bg-slate-950 border border-slate-800 hover:border-slate-750 rounded-lg px-2 py-1 text-xs text-white focus:outline-none focus:border-amber-500 transition cursor-pointer font-medium"
+                />
+                <button 
+                    onclick="saveCustomCheckpoint()"
+                    class="px-3 py-1 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold rounded-lg transition shrink-0"
+                >
+                    Apply
+                </button>
             </div>
         </div>
 
@@ -236,7 +235,7 @@
             <div class="w-16 h-16 bg-slate-900/50 rounded-full flex items-center justify-center border border-slate-800 mb-4 text-amber-500">
                 <i data-lucide="shield" class="w-8 h-8"></i>
             </div>
-            <h3 class="text-xl font-bold text-white mb-2">Welcome to My Ledger</h3>
+            <h3 class="text-xl font-bold text-white mb-2">Welcome to My Website</h3>
             <p class="text-slate-400 text-sm max-w-md mx-auto font-medium">
                 Enter your Warframe Market username above to load your transaction ledger, calculate how much corrupted mod sales profit you should reinvest, and manage your budget balances.
             </p>
@@ -507,18 +506,150 @@
                     <div class="overflow-y-auto flex-grow space-y-3 pr-1" id="othersContainer"></div>
                 </div>
             </div>
+
+            <!-- Working Session Control Center -->
+            <div id="sessionDashboard" class="bg-slate-950 border border-slate-800 rounded-2xl p-6 shadow-xl mt-8">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-4 border-b border-slate-850 mb-6">
+                    <div class="max-w-md">
+                        <h3 class="text-lg font-bold text-white tracking-wide flex items-center gap-2">
+                            <i data-lucide="timer" class="text-emerald-400 w-5 h-5"></i>
+                            Active Working Hours Tracker
+                        </h3>
+                        <p class="text-xs text-slate-400 mt-1 font-semibold">
+                            Measure and review real-time productivity stats. Sales are filtered specifically during active intervals.
+                        </p>
+                    </div>
+
+                    <!-- Stopwatch Pill Display and Actions -->
+                    <div class="flex items-center flex-wrap gap-3">
+                        <div class="flex items-center gap-2 bg-slate-900 border border-slate-800 px-4 py-2 rounded-xl">
+                            <span class="w-2.5 h-2.5 rounded-full bg-slate-600 animate-pulse" id="stopwatchPulse"></span>
+                            <span id="stopwatchTimer" class="font-mono text-lg font-bold text-slate-300">00:00:00</span>
+                        </div>
+
+                        <div class="flex items-center gap-1.5 bg-slate-900 p-1.5 rounded-xl border border-slate-800">
+                            <button id="sessionStartBtn" onclick="startSession()" class="px-3.5 py-1.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold rounded-lg transition flex items-center gap-1">
+                                <i data-lucide="play" class="w-3.5 h-3.5"></i> Start
+                            </button>
+                            <button id="sessionPauseBtn" onclick="pauseSession()" class="hidden px-3.5 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold rounded-lg transition flex items-center gap-1">
+                                <i data-lucide="pause" class="w-3.5 h-3.5"></i> Pause
+                            </button>
+                            <button id="sessionResetBtn" onclick="confirmResetSession()" class="px-3.5 py-1.5 bg-slate-950 hover:bg-red-950/40 hover:text-red-400 border border-slate-800/60 text-slate-400 text-xs font-semibold rounded-lg transition flex items-center gap-1">
+                                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom Inline Confirmation Warning Box instead of alert/confirm window functions -->
+                <div id="resetConfirmationBox" class="hidden bg-red-950/20 border border-red-900/40 rounded-xl p-4 mb-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h4 class="text-red-400 font-bold text-sm">Archiving Session data?</h4>
+                            <p class="text-xs text-slate-400 font-medium">Resetting closes the session and logs the accumulated sales history for the business day.</p>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <button onclick="executeResetSession(true)" class="px-3 py-1.5 bg-red-800 hover:bg-red-700 text-white text-xs font-bold rounded-lg transition">Archive & Reset</button>
+                            <button onclick="executeResetSession(false)" class="px-3 py-1.5 bg-slate-900 text-slate-300 border border-slate-800 text-xs font-bold rounded-lg transition">Clear All</button>
+                            <button onclick="cancelResetSession()" class="px-3 py-1.5 bg-slate-950 text-slate-400 text-xs font-bold rounded-lg transition">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Real-time metrics computed strictly during tracked intervals -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+                    <div class="bg-slate-900/40 border border-slate-800/80 p-4 rounded-xl">
+                        <span class="text-xs text-slate-500 font-semibold uppercase">Session Duration</span>
+                        <div class="text-2xl font-bold text-white mt-1" id="sessionActiveTime">0.00h</div>
+                    </div>
+                    <div class="bg-slate-900/40 border border-slate-800/80 p-4 rounded-xl">
+                        <span class="text-xs text-slate-500 font-semibold uppercase">Corrupted Mods Plat</span>
+                        <div class="text-2xl font-bold text-amber-500 mt-1" id="sessionCorruptedTotal">0p</div>
+                    </div>
+                    <div class="bg-slate-900/40 border border-slate-800/80 p-4 rounded-xl">
+                        <span class="text-xs text-slate-500 font-semibold uppercase">Other Goods Plat</span>
+                        <div class="text-2xl font-bold text-slate-300 mt-1" id="sessionOthersTotal">0p</div>
+                    </div>
+                    <div class="bg-slate-900/40 border border-slate-800/80 p-4 rounded-xl">
+                        <span class="text-xs text-slate-500 font-semibold uppercase">Corrupted Plat Rate</span>
+                        <div class="text-2xl font-bold text-amber-400 mt-1" id="sessionCorruptedPlatPerHour">0p / hr</div>
+                    </div>
+                    <div class="bg-slate-900/40 border border-slate-800/80 p-4 rounded-xl">
+                        <span class="text-xs text-slate-500 font-semibold uppercase">Other Goods Rate</span>
+                        <div class="text-2xl font-bold text-emerald-400 mt-1" id="sessionOthersPlatPerHour">0p / hr</div>
+                    </div>
+                </div>
+
+                <!-- Dynamic Itemised Session Sales Record -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+                    <div class="bg-slate-900/20 border border-slate-800/60 p-4 rounded-xl">
+                        <h4 class="text-xs uppercase text-slate-500 tracking-wider font-bold mb-3 flex items-center justify-between">
+                            <span>Corrupted Mods (Active Session)</span>
+                            <span class="text-amber-500" id="sessionCMCount">0 items</span>
+                        </h4>
+                        <div class="space-y-2 max-h-48 overflow-y-auto" id="sessionCMList">
+                            <p class="text-xs text-slate-600 italic">No corrupted mods sold in active intervals.</p>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900/20 border border-slate-800/60 p-4 rounded-xl">
+                        <h4 class="text-xs uppercase text-slate-500 tracking-wider font-bold mb-3 flex items-center justify-between">
+                            <span>Standard Merchandise (Active Session)</span>
+                            <span class="text-slate-400" id="sessionOthersCount">0 items</span>
+                        </h4>
+                        <div class="space-y-2 max-h-48 overflow-y-auto" id="sessionOthersList">
+                            <p class="text-xs text-slate-600 italic">No merchandise sold in active intervals.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Collapsible Historical Business Log section -->
+                <div class="border-t border-slate-900 pt-5">
+                    <button onclick="toggleBusinessHistory()" class="flex items-center justify-between w-full text-slate-400 hover:text-white transition focus:outline-none">
+                        <span class="text-xs uppercase tracking-widest font-bold flex items-center gap-1.5">
+                            <i data-lucide="archive" class="w-4 h-4 text-slate-500"></i>
+                            Business Day Log & Weekly Summary (4 AM Rollover)
+                        </span>
+                        <i data-lucide="chevron-down" class="w-4 h-4 transition duration-300" id="historyChevron"></i>
+                    </button>
+
+                    <div id="businessHistoryPanel" class="hidden mt-4 space-y-4">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs text-slate-400 border-collapse">
+                                <thead>
+                                    <tr class="border-b border-slate-800 text-slate-500 font-bold">
+                                        <th class="py-2.5">Business Day</th>
+                                        <th class="py-2.5">Active Hours</th>
+                                        <th class="py-2.5">Total Revenue</th>
+                                        <th class="py-2.5">Average Plat / hr</th>
+                                        <th class="py-2.5">Corrupted Revenue</th>
+                                        <th class="py-2.5">Others Revenue</th>
+                                        <th class="py-2.5 text-right">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="historyTableBody">
+                                    <tr>
+                                        <td colspan="7" class="py-4 text-center text-slate-600 italic">No historical working days logged yet.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </main>
 
     <!-- Footer -->
     <footer class="mt-auto border-t border-slate-900 bg-slate-950 py-6 text-center text-xs text-slate-600">
-        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4 font-medium">
-            <p>Vault Runs Profit Manager. Data sourced via Warframe.Market api but have no affiliation with Digital Extremes or the warframe.market website</p>
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p>© 2026 Vault Runs Profit Manager. Data sourced via CORS Proxy from Warframe.Market</p>
             <p class="text-slate-500 italic">May Void-luck guide your trading pursuits.</p>
         </div>
     </footer>
 
     <script>
+        // Your pristine list of Corrupted Mods
         const corruptedMods = [
             "Anemic Agility", "Blind Rage", "Burdened Magazine", "Catalyzing Shields", "Corrupt Charge",
             "Creeping Bullseye", "Critical Deceleration", "Critical Delay", "Depleted Reload", "Fleeting Expertise",
@@ -530,18 +661,20 @@
         // State Management Variables
         let investmentBudget = 0;
         let reinvestPercentage = 20; // Customizable percentage
-        let defaultDays = 7; // Customizable default period days count
-        let calcSource = "corrupted"; // Settings option: corrupted, total, others
-        let calcMode = "override"; // Settings option: override, add
-        
         let lastCalculatedCMRevenue = 0;
-        let lastCalculatedOthersRevenue = 0;
-        let lastCalculatedTotalRevenue = 0;
-        
         let salesCheckpoint = null; // Saves a timestamp representing the checkpoint filter line
         let customStartDate = null; // Saves start calendar filter
         let customEndDate = null; // Saves end calendar filter
+        let defaultLookbackDays = 7; // Configurable timeline fallback lookback limit
         let rawClosedOrders = []; // Copy of orders so we can re-filter live without refetching
+        let calculationSource = 'corrupted'; // corrupted | total | others
+        let calculationMode = 'override'; // override | add
+
+        // Dynamic Stopwatch session configuration variables
+        let sessionIntervals = []; // Array of [{start: timestamp, end: timestamp | null}]
+        let sessionStatus = 'stopped'; // running | paused | stopped
+        let stopwatchTimerId = null;
+        let businessDayHistory = {}; // Mapping of YYYY-MM-DD -> business summary log objects
 
         async function getDataFromApi(userName){
             showWelcomeState(false);
@@ -552,7 +685,9 @@
             document.getElementById('userProfileHeader').classList.remove('hidden');
 
             try {
-                const response = await fetch(`https://corsproxy.io/?url=https://api.warframe.market/v1/profile/${userName}/statistics`);
+                // Incorporate dynamic cache busting token parameters to resolve proxy / browser caching
+                const cacheBuster = Date.now();
+                const response = await fetch(`https://corsproxy.io/?url=https://api.warframe.market/v1/profile/${userName}/statistics?_cb=${cacheBuster}`);
                 const json = await response.json();
                 
                 if (!json.payload || !json.payload.closed_orders) {
@@ -561,6 +696,7 @@
                 
                 rawClosedOrders = json.payload.closed_orders;
                 sumUserData(rawClosedOrders);
+                recomputeSessionMetrics(); // Recalculate session intervals statistics using fresh raw orders
             } catch (error) {
                 console.error("Failed to fetch or process data:", error);
                 document.getElementById('errorMessage').textContent = "Failed to load player stats. Check the user spelling or try again.";
@@ -568,21 +704,19 @@
                 showError(true);
             }
         }
-        
+
         function sumUserData(UserData){
-            console.log(UserData);
-            
-            // reorganize the object
+            // reorganize the object (your pristine code)
             UserData = UserData.map(order => ({
                 icon: order.item.icon,
                 thumb: order.item.thumb,
                 item_name: order.item.en.item_name,
+                url_name: order.item.url_name,
                 platinum: order.platinum,
                 order_type: order.order_type,
                 quantity: order.quantity,
-                closed_date: order.closed_date,                
-                url_name: order.item.url_name,
-                mod_rank: order.mod_rank ?? "",
+                closed_date: order.closed_date,
+                mod_rank: order.mod_rank !== undefined ? order.mod_rank : null
             }));
 
             let startTimestamp;
@@ -599,6 +733,7 @@
                 startTimestamp = sDate.getTime();
                 endTimestamp = eDate.getTime();
 
+                // Format cleanly using strict numeric options (guarantees Hebrew numeric layout alignment)
                 const displayStart = sDate.toLocaleDateString(undefined, { day: '2-digit', month: '2-digit', year: '2-digit' });
                 const displayEnd = eDate.toLocaleDateString(undefined, { day: '2-digit', month: '2-digit', year: '2-digit' });
 
@@ -608,10 +743,10 @@
                 if (clearRangeBtn) {
                     clearRangeBtn.classList.remove('hidden');
                 }
-                // Show checkpoint reset button if a checkpoint is saved in the background
                 if (clearBtn) {
+                    // Check if a background checkpoint exists
                     if (salesCheckpoint) {
-                        clearBtn.classList.remove('hidden');
+                        clearBtn.classList.remove('hidden'); // Keep Reset visible but secondary
                     } else {
                         clearBtn.classList.add('hidden');
                     }
@@ -619,13 +754,10 @@
             } else if (salesCheckpoint) {
                 startTimestamp = salesCheckpoint;
                 const checkpointDate = new Date(salesCheckpoint);
-                
-                // Format strictly LTR numeric format: DD/MM/YY HH:MM
-                const pad = (n) => String(n).padStart(2, '0');
-                const dStr = `${pad(checkpointDate.getDate())}/${pad(checkpointDate.getMonth() + 1)}/${String(checkpointDate.getFullYear()).slice(-2)}`;
-                const tStr = `${pad(checkpointDate.getHours())}:${pad(checkpointDate.getMinutes())}`;
+                // Strict numerical formats with no language letters (averts Arabic / Hebrew textual conflicts)
+                const dStr = checkpointDate.toLocaleDateString(undefined, { day: '2-digit', month: '2-digit', year: '2-digit' });
+                const tStr = checkpointDate.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', hour12: false });
                 const displayTime = `${dStr} ${tStr}`;
-                
                 if (statusEl) {
                     statusEl.innerHTML = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20"><i data-lucide="flag" class="w-3.5 h-3.5"></i> Checkpoint since ${displayTime}</span>`;
                 }
@@ -636,16 +768,15 @@
                     clearRangeBtn.classList.add('hidden');
                 }
             } else {
-                // 1. Establish your "Tomorrow at Midnight" baseline using UTC
+                // Establish fallback lookback timeline baseline
                 const tomorrow = new Date();
                 tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
-                tomorrow.setUTCHours(0, 0, 0, 0); // Forces UTC Midnight!
+                tomorrow.setUTCHours(0, 0, 0, 0); 
 
-                // 2. Look back exactly defaultDays (adjustable default) to get a fixed starting line
-                const defaultDaysInMs = defaultDays * 24 * 60 * 60 * 1000;
-                startTimestamp = tomorrow.getTime() - defaultDaysInMs;
+                const daysInMs = defaultLookbackDays * 24 * 60 * 60 * 1000;
+                startTimestamp = tomorrow.getTime() - daysInMs;
                 if (statusEl) {
-                    statusEl.innerHTML = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold bg-slate-900 text-slate-400 border border-slate-800"><i data-lucide="clock" class="w-3.5 h-3.5"></i> Default ${defaultDays}-day period</span>`;
+                    statusEl.innerHTML = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold bg-slate-900 text-slate-400 border border-slate-800"><i data-lucide="clock" class="w-3.5 h-3.5"></i> Default ${defaultLookbackDays}-day period</span>`;
                 }
                 if (clearBtn) {
                     clearBtn.classList.add('hidden');
@@ -655,7 +786,7 @@
                 }
             }
 
-            // 3. Filter out any orders older than that start line
+            // Filter out any orders older than that start line
             let recentOrders = UserData.filter(order => {
                 const orderTime = new Date(order.closed_date).getTime(); 
                 if (endTimestamp !== null) {
@@ -663,23 +794,21 @@
                 }
                 return orderTime >= startTimestamp;
             });
-            console.log(recentOrders);
             let sellOrders = recentOrders.filter(order => order.order_type == "sell");
 
             sellOrders = ({
                 corrupted_mods: sellOrders.filter(order => corruptedMods.includes(order.item_name)),
                 others: sellOrders.filter(order => !corruptedMods.includes(order.item_name))
             });
-            console.log(sellOrders);
             
             const ordersCMRevenue = sellOrders.corrupted_mods.reduce((sum, order) => sum + (order.platinum * order.quantity) ,0);
             const ordersOthersRevenue = sellOrders.others.reduce((sum, order) => sum + (order.platinum * order.quantity) ,0);
             const ordersRevenue = ordersOthersRevenue + ordersCMRevenue;
 
-            // Track Corrupted Mods, Others, and Total revenue for our custom planner calculation
+            // Track revenues for our planner calculation bases
             lastCalculatedCMRevenue = ordersCMRevenue;
-            lastCalculatedOthersRevenue = ordersOthersRevenue;
             lastCalculatedTotalRevenue = ordersRevenue;
+            lastCalculatedOthersRevenue = ordersOthersRevenue;
 
             renderUI(ordersRevenue, ordersCMRevenue, ordersOthersRevenue, sellOrders);
         }
@@ -691,34 +820,47 @@
                 const savedCustomStart = localStorage.getItem('wf_custom_start_date');
                 const savedCustomEnd = localStorage.getItem('wf_custom_end_date');
                 const savedPercent = localStorage.getItem('wf_reinvest_percent');
-                const savedDefaultDays = localStorage.getItem('wf_default_days');
-                const savedCalcSource = localStorage.getItem('wf_calc_source');
-                const savedCalcMode = localStorage.getItem('wf_calc_mode');
-                const savedSettingsOpen = localStorage.getItem('wf_settings_open');
-                
+                const savedDefaultDays = localStorage.getItem('wf_default_lookback_days');
+                const savedSource = localStorage.getItem('wf_calculation_source');
+                const savedMode = localStorage.getItem('wf_calculation_mode');
+
+                // Load stopwatch session components
+                const savedSessionIntervals = localStorage.getItem('wf_session_intervals');
+                const savedSessionStatus = localStorage.getItem('wf_session_status');
+                const savedBusinessHistory = localStorage.getItem('wf_business_day_history');
+
                 if (savedAmount !== null) {
                     investmentBudget = parseFloat(savedAmount) || 0;
                 }
                 if (savedPercent !== null) {
                     reinvestPercentage = parseInt(savedPercent, 10) || 20;
                 }
+                if (savedDefaultDays !== null) {
+                    defaultLookbackDays = parseInt(savedDefaultDays, 10) || 7;
+                }
+                if (savedSource !== null) {
+                    calculationSource = savedSource;
+                }
+                if (savedMode !== null) {
+                    calculationMode = savedMode;
+                }
+
+                // Restore session stopwatch structures
+                if (savedSessionIntervals !== null) {
+                    sessionIntervals = JSON.parse(savedSessionIntervals);
+                }
+                if (savedSessionStatus !== null) {
+                    sessionStatus = savedSessionStatus;
+                }
+                if (savedBusinessHistory !== null) {
+                    businessDayHistory = JSON.parse(savedBusinessHistory);
+                }
+
                 document.getElementById('percentInput').value = reinvestPercentage;
                 document.getElementById('plannerPercentLabel').textContent = reinvestPercentage;
-
-                if (savedDefaultDays !== null) {
-                    defaultDays = parseInt(savedDefaultDays, 10) || 7;
-                }
-                document.getElementById('defaultDaysInput').value = defaultDays;
-
-                if (savedCalcSource !== null) {
-                    calcSource = savedCalcSource;
-                }
-                document.getElementById('calcSourceSelect').value = calcSource;
-
-                if (savedCalcMode !== null) {
-                    calcMode = savedCalcMode;
-                }
-                document.getElementById('calcModeSelect').value = calcMode;
+                document.getElementById('defaultDaysInput').value = defaultLookbackDays;
+                document.getElementById('calcSourceSelect').value = calculationSource;
+                document.getElementById('calcModeSelect').value = calculationMode;
 
                 if (savedCheckpoint !== null && savedCheckpoint !== "") {
                     salesCheckpoint = parseInt(savedCheckpoint, 10) || null;
@@ -731,18 +873,9 @@
                     customEndDate = savedCustomEnd;
                     document.getElementById('endDatePicker').value = customEndDate;
                 }
-
-                // Restore whether settings panel drawer was open
-                if (savedSettingsOpen === 'true') {
-                    const panel = document.getElementById('plannerSettingsPanel');
-                    const btn = document.getElementById('toggleSettingsBtn');
-                    if (panel && btn) {
-                        panel.classList.remove('hidden');
-                        btn.classList.add('text-amber-500', 'border-amber-500/30', 'bg-amber-500/10');
-                    }
-                }
-
                 updateInvestmentDisplay();
+                setupStopwatchEngine(); // Launch stopwatch loop if active session was interrupted
+                renderBusinessDayHistoryTable();
             } catch (err) {
                 console.error("Local storage read error:", err);
             }
@@ -756,13 +889,14 @@
                 localStorage.setItem('wf_custom_start_date', customStartDate || "");
                 localStorage.setItem('wf_custom_end_date', customEndDate || "");
                 localStorage.setItem('wf_reinvest_percent', reinvestPercentage);
-                localStorage.setItem('wf_default_days', defaultDays);
-                localStorage.setItem('wf_calc_source', calcSource);
-                localStorage.setItem('wf_calc_mode', calcMode);
-                
-                const panel = document.getElementById('plannerSettingsPanel');
-                const isSettingsOpen = panel ? !panel.classList.contains('hidden') : false;
-                localStorage.setItem('wf_settings_open', isSettingsOpen);
+                localStorage.setItem('wf_default_lookback_days', defaultLookbackDays);
+                localStorage.setItem('wf_calculation_source', calculationSource);
+                localStorage.setItem('wf_calculation_mode', calculationMode);
+
+                // Persist session properties
+                localStorage.setItem('wf_session_intervals', JSON.stringify(sessionIntervals));
+                localStorage.setItem('wf_session_status', sessionStatus);
+                localStorage.setItem('wf_business_day_history', JSON.stringify(businessDayHistory));
             } catch (err) {
                 console.error("Local storage write error:", err);
             }
@@ -774,22 +908,6 @@
                 displayEl.textContent = Math.round(investmentBudget).toLocaleString();
             }
         }
-
-        window.togglePlannerSettings = function() {
-            const panel = document.getElementById('plannerSettingsPanel');
-            const btn = document.getElementById('toggleSettingsBtn');
-            if (panel && btn) {
-                const isHidden = panel.classList.contains('hidden');
-                if (isHidden) {
-                    panel.classList.remove('hidden');
-                    btn.classList.add('text-amber-500', 'border-amber-500/30', 'bg-amber-500/10');
-                } else {
-                    panel.classList.add('hidden');
-                    btn.classList.remove('text-amber-500', 'border-amber-500/30', 'bg-amber-500/10');
-                }
-                saveInvestmentToVault();
-            }
-        };
 
         window.handlePercentageChange = function(value) {
             const parsedVal = parseInt(value, 10);
@@ -803,7 +921,7 @@
         window.handleDefaultDaysChange = function(value) {
             const parsedVal = parseInt(value, 10);
             if (!isNaN(parsedVal) && parsedVal >= 1 && parsedVal <= 90) {
-                defaultDays = parsedVal;
+                defaultLookbackDays = parsedVal;
                 saveInvestmentToVault();
                 if (rawClosedOrders && rawClosedOrders.length > 0) {
                     sumUserData(rawClosedOrders);
@@ -812,34 +930,47 @@
         };
 
         window.handleCalcSourceChange = function(value) {
-            calcSource = value;
+            calculationSource = value;
             saveInvestmentToVault();
         };
 
         window.handleCalcModeChange = function(value) {
-            calcMode = value;
+            calculationMode = value;
             saveInvestmentToVault();
         };
 
+        window.togglePlannerSettings = function() {
+            const panel = document.getElementById('plannerSettingsPanel');
+            const btn = document.getElementById('toggleSettingsBtn');
+            const isHidden = panel.classList.contains('hidden');
+            
+            if (isHidden) {
+                panel.classList.remove('hidden');
+                btn.classList.add('bg-slate-900', 'text-white');
+            } else {
+                panel.classList.add('hidden');
+                btn.classList.remove('bg-slate-900', 'text-white');
+            }
+        };
+
         window.initializeInvestment = function() {
-            // Determine our selected calculation base
+            // Pick appropriate calculation reference based on current source setting
             let baseRevenue = 0;
-            if (calcSource === 'corrupted') {
+            if (calculationSource === 'corrupted') {
                 baseRevenue = lastCalculatedCMRevenue;
-            } else if (calcSource === 'total') {
+            } else if (calculationSource === 'total') {
                 baseRevenue = lastCalculatedTotalRevenue;
-            } else if (calcSource === 'others') {
+            } else if (calculationSource === 'others') {
                 baseRevenue = lastCalculatedOthersRevenue;
             }
 
-            // Calculate percentage portion
-            const calculatedPortion = baseRevenue * (reinvestPercentage / 100);
+            const computedAmount = baseRevenue * (reinvestPercentage / 100);
 
-            // Apply Mode behavior (override existing budget or accumulate/add to it)
-            if (calcMode === 'override') {
-                investmentBudget = calculatedPortion;
+            // Determine whether we overwrite budget or aggregate it cumulatively
+            if (calculationMode === 'override') {
+                investmentBudget = computedAmount;
             } else {
-                investmentBudget += calculatedPortion;
+                investmentBudget += computedAmount;
             }
 
             saveInvestmentToVault();
@@ -850,16 +981,16 @@
             const amount = parseInt(amountInput.value, 10);
             
             if (isNaN(amount) || amount <= 0) {
-                return; // Guard against empty or invalid input
+                return; 
             }
 
             if (type === 'add') {
                 investmentBudget += amount;
             } else if (type === 'subtract') {
-                investmentBudget = Math.max(0, investmentBudget - amount); // Prevent going below 0
+                investmentBudget = Math.max(0, investmentBudget - amount); 
             }
 
-            amountInput.value = ''; // Reset input field
+            amountInput.value = ''; 
             saveInvestmentToVault();
         };
 
@@ -868,33 +999,44 @@
             saveInvestmentToVault();
         };
 
-        window.toggleCustomCheckpointDrawer = function() {
-            const drawer = document.getElementById('customCheckpointDrawer');
-            if (drawer) {
-                drawer.classList.toggle('hidden');
-            }
-        };
-
-        window.saveCustomCheckpoint = function() {
-            const input = document.getElementById('customCheckpointInput');
-            if (input && input.value) {
-                const selectedTime = new Date(input.value).getTime();
-                if (!isNaN(selectedTime)) {
-                    salesCheckpoint = selectedTime;
-                    saveInvestmentToVault();
-                    
-                    // Close drawer
-                    document.getElementById('customCheckpointDrawer').classList.add('hidden');
-                    
-                    if (rawClosedOrders && rawClosedOrders.length > 0) {
-                        sumUserData(rawClosedOrders);
-                    }
-                }
-            }
-        };
-
         window.setCheckpoint = function() {
             salesCheckpoint = Date.now();
+            saveInvestmentToVault();
+            if (rawClosedOrders && rawClosedOrders.length > 0) {
+                sumUserData(rawClosedOrders);
+            }
+        };
+
+        // Collapsible Custom Checkpoint Drawer toggler
+        window.toggleCustomCheckpointDrawer = function() {
+            const drawer = document.getElementById('customCheckpointDrawer');
+            drawer.classList.toggle('hidden');
+            
+            // Set input max constraint dynamically to current local time bounds
+            const customInput = document.getElementById('customCheckpointInput');
+            if (customInput) {
+                const nowLocal = new Date();
+                // Format: YYYY-MM-DDTHH:MM
+                const year = nowLocal.getFullYear();
+                const month = String(nowLocal.getMonth() + 1).padStart(2, '0');
+                const day = String(nowLocal.getDate()).padStart(2, '0');
+                const hours = String(nowLocal.getHours()).padStart(2, '0');
+                const minutes = String(nowLocal.getMinutes()).padStart(2, '0');
+                customInput.max = `${year}-${month}-${day}T${hours}:${minutes}`;
+            }
+        };
+
+        // Saves selected custom datetime value as active sales checkpoint
+        window.saveCustomCheckpoint = function() {
+            const val = document.getElementById('customCheckpointInput').value;
+            if (!val) return;
+
+            const selectedDate = new Date(val);
+            salesCheckpoint = selectedDate.getTime();
+            
+            // Hide the drawer
+            document.getElementById('customCheckpointDrawer').classList.add('hidden');
+            
             saveInvestmentToVault();
             if (rawClosedOrders && rawClosedOrders.length > 0) {
                 sumUserData(rawClosedOrders);
@@ -914,17 +1056,17 @@
             let endVal = document.getElementById('endDatePicker').value;
 
             if (!startVal) {
-                return; // Require at least the start date
+                return; 
             }
 
             if (!endVal) {
                 const today = new Date();
                 endVal = today.toISOString().split('T')[0];
-                document.getElementById('endDatePicker').value = endVal; // Display it visually
+                document.getElementById('endDatePicker').value = endVal; 
             }
 
             if (new Date(startVal) > new Date(endVal)) {
-                return; // Start date must be before or equal to end date
+                return; 
             }
 
             customStartDate = startVal;
@@ -956,24 +1098,14 @@
             const todayStr = today.toISOString().split('T')[0];
             const ninetyDaysAgoStr = ninetyDaysAgo.toISOString().split('T')[0];
 
-            // Format for datetime-local (requires YYYY-MM-DDTHH:MM)
-            const pad = (n) => String(n).padStart(2, '0');
-            const todayDateTimeStr = `${today.getFullYear()}-${pad(today.getMonth()+1)}-${pad(today.getDate())}T${pad(today.getHours())}:${pad(today.getMinutes())}`;
-            const ninetyDaysAgoDateTimeStr = `${ninetyDaysAgo.getFullYear()}-${pad(ninetyDaysAgo.getMonth()+1)}-${pad(ninetyDaysAgo.getDate())}T${pad(ninetyDaysAgo.getHours())}:${pad(ninetyDaysAgo.getMinutes())}`;
-
             const startPicker = document.getElementById('startDatePicker');
             const endPicker = document.getElementById('endDatePicker');
-            const customCheckpointInput = document.getElementById('customCheckpointInput');
 
             if (startPicker && endPicker) {
                 startPicker.min = ninetyDaysAgoStr;
                 startPicker.max = todayStr;
                 endPicker.min = ninetyDaysAgoStr;
                 endPicker.max = todayStr;
-            }
-            if (customCheckpointInput) {
-                customCheckpointInput.min = ninetyDaysAgoDateTimeStr;
-                customCheckpointInput.max = todayDateTimeStr;
             }
         }
 
@@ -990,136 +1122,460 @@
         function showError(show) { document.getElementById('errorState').classList.toggle('hidden', !show); }
         function showResults(show) { document.getElementById('resultsDashboard').classList.toggle('hidden', !show); }
 
+        let cachedSellOrders = null; // Store currently rendered lists for fast filter searches
+
         function renderUI(total, cmRevenue, othersRevenue, sellOrders) {
+            cachedSellOrders = sellOrders; // cache current results references
+
             document.getElementById('totalRevenue').textContent = total.toLocaleString();
             document.getElementById('corruptedRevenue').textContent = cmRevenue.toLocaleString();
             document.getElementById('othersRevenue').textContent = othersRevenue.toLocaleString();
+            
+            filterLedgers(); // Render filtered lists directly on initial compile
+            
+            showLoading(false);
+            showResults(true);
+        }
+
+        // Dynamic Filtering algorithm that runs without API requests
+        window.filterLedgers = function() {
+            if (!cachedSellOrders) return;
+
+            const cmQuery = document.getElementById('cmSearchInput').value.toLowerCase().trim();
+            const othersQuery = document.getElementById('othersSearchInput').value.toLowerCase().trim();
+
+            const filteredCM = cachedSellOrders.corrupted_mods.filter(o => o.item_name.toLowerCase().includes(cmQuery));
+            const filteredOthers = cachedSellOrders.others.filter(o => o.item_name.toLowerCase().includes(othersQuery));
 
             const cmContainer = document.getElementById('corruptedModsContainer');
             const othersContainer = document.getElementById('othersContainer');
             cmContainer.innerHTML = '';
             othersContainer.innerHTML = '';
 
-            sellOrders.corrupted_mods.forEach(o => cmContainer.appendChild(createOrderCard(o)));
-            sellOrders.others.forEach(o => othersContainer.appendChild(createOrderCard(o)));
+            filteredCM.forEach(o => cmContainer.appendChild(createOrderCard(o)));
+            filteredOthers.forEach(o => othersContainer.appendChild(createOrderCard(o)));
 
-            // Reset current visual searches and apply standard list filter balances
-            document.getElementById('cmSearchInput').value = '';
-            document.getElementById('othersSearchInput').value = '';
-            filterLedgers();
+            // Update badge text values dynamically
+            const cmBadge = document.getElementById('cmListBadge');
+            const othersBadge = document.getElementById('othersListBadge');
+
+            if (cmQuery) {
+                cmBadge.textContent = `${filteredCM.length} of ${cachedSellOrders.corrupted_mods.length} Match`;
+            } else {
+                cmBadge.textContent = `${cachedSellOrders.corrupted_mods.length} Sold`;
+            }
+
+            if (othersQuery) {
+                othersBadge.textContent = `${filteredOthers.length} of ${cachedSellOrders.others.length} Match`;
+            } else {
+                othersBadge.textContent = `${cachedSellOrders.others.length} Sold`;
+            }
 
             lucide.createIcons();
-            showLoading(false);
-            showResults(true);
-        }
+        };
 
         function createOrderCard(order) {
             const card = document.createElement('a');
-            // Connect to warframe.market item page securely in a new tab
             card.href = `https://warframe.market/items/${order.url_name}`;
             card.target = "_blank";
             card.rel = "noopener noreferrer";
-            card.setAttribute('data-item-name', order.item_name);
-            
-            // Adding hover, cursor, scale, and border highlight animations with prominent paddings
-            card.className = "ledger-card bg-slate-900/60 border border-slate-800/80 hover:bg-slate-900 hover:border-amber-500/30 hover:scale-[1.01] rounded-xl p-4 flex items-center justify-between gap-3 transition-all duration-150 cursor-pointer block";
-            
-            const totalSum = order.platinum * order.quantity;
-            const hasMultiple = order.quantity > 1;
+            card.className = "bg-slate-900/60 border border-slate-800/80 rounded-xl p-4 flex items-center justify-between hover:border-amber-500/40 hover:bg-slate-900 transition-all duration-300 cursor-pointer block";
 
-            // Formatted date and time
+            // Process dynamic Rank Indicators (mod_rank)
+            let rankBadge = "";
+            if (order.mod_rank !== null) {
+                rankBadge = `<span class="px-1.5 py-0.5 rounded bg-slate-950 text-amber-500 font-bold text-[10px] tracking-wider border border-slate-800 shrink-0">R${order.mod_rank}</span>`;
+            }
+
+            // Parse Date and Time to standard numerical forms
             const orderDate = new Date(order.closed_date);
-            const dStr = orderDate.toLocaleDateString(undefined, { day: '2-digit', month: '2-digit', year: '2-digit' });
-            const tStr = orderDate.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', hour12: false });
-            const formattedDateTime = `${dStr} ${tStr}`;
+            const displayDate = orderDate.toLocaleDateString(undefined, { day: '2-digit', month: '2-digit', year: '2-digit' });
+            const displayTime = orderDate.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', hour12: false });
 
-            // Check if item contains a mod rank and render a clean badge
-            const hasRank = order.mod_rank !== undefined && order.mod_rank !== null && order.mod_rank !== "";
-            const rankBadge = hasRank ? `<span class="px-2 py-0.5 text-xs font-bold bg-slate-950 text-amber-400 border border-slate-800 rounded" title="Mod Rank">R${order.mod_rank}</span>` : '';
+            // Redesign cells to handle quantities cleanly with Gold Pill Badges
+            let qtyDisplay = "";
+            let costBreakdown = "";
+            if (order.quantity > 1) {
+                qtyDisplay = `<span class="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 text-xs font-bold border border-amber-500/20 whitespace-nowrap">x${order.quantity}</span>`;
+                costBreakdown = `<div class="text-[10px] text-slate-500 text-right mt-0.5">(${order.platinum.toLocaleString()}p each)</div>`;
+            }
+
+            const totalSum = order.platinum * order.quantity;
 
             card.innerHTML = `
-                <div class="text-sm font-medium text-white flex items-center gap-3 min-w-0"> 
-                    <div class="relative shrink-0">
-                        <img src="https://warframe.market/static/assets/${order.icon}" width="36px" class="object-contain" alt="">
-                        ${hasMultiple ? `<span class="absolute -top-1.5 -right-1.5 bg-amber-500 text-slate-950 text-[10px] font-extrabold px-1.5 py-0.5 rounded-full shadow-md">x${order.quantity}</span>` : ''}
-                    </div>
-                    <div class="min-w-0 flex flex-col gap-1">
-                        <div class="flex items-center gap-2 flex-wrap">
-                            <span class="truncate text-sm sm:text-base font-semibold text-slate-100">${order.item_name}</span>
+                <div class="flex items-center gap-3.5 min-w-0 flex-grow pr-2"> 
+                    <img src="https://warframe.market/static/assets/${order.icon}" width="38px" class="object-contain shrink-0" alt="" onerror="this.src='https://placehold.co/38x38/1e293b/cda250?text=Item'"> 
+                    <div class="min-w-0">
+                        <div class="flex items-center gap-1.5 flex-wrap">
+                            <span class="text-sm sm:text-base font-semibold text-white tracking-wide truncate">${order.item_name}</span>
                             ${rankBadge}
+                            ${qtyDisplay}
                         </div>
-                        <span class="text-xs text-slate-400 font-medium tracking-tight flex items-center gap-1">
-                            <i data-lucide="clock" class="w-3 h-3 text-slate-500"></i> ${formattedDateTime}
-                        </span>
+                        <div class="text-xs text-slate-500 flex items-center gap-1 mt-1 font-medium">
+                            <i data-lucide="clock" class="w-3 h-3 text-slate-600"></i>
+                            <span>${displayDate}</span>
+                            <span>•</span>
+                            <span>${displayTime}</span>
+                        </div>
                     </div>
                 </div>
-                <div class="text-right shrink-0 flex flex-col items-end">
-                    <div class="text-sm sm:text-base font-bold text-amber-400 flex items-center gap-0.5">
+                <div class="shrink-0 text-right">
+                    <div class="text-sm sm:text-base font-bold text-amber-400 tracking-tight flex items-center gap-1 justify-end">
                         <span>${totalSum.toLocaleString()}</span>
-                        <span class="text-xs text-amber-500 font-bold">p</span>
+                        <span class="text-xs text-amber-500/80 font-bold uppercase">p</span>
                     </div>
-                    ${hasMultiple ? `
-                        <div class="text-xs text-slate-400 font-medium tracking-tight mt-0.5">
-                            ${order.platinum.toLocaleString()}p each
-                        </div>
-                    ` : ''}
+                    ${costBreakdown}
                 </div>`;
             return card;
         }
 
-        window.filterLedgers = function() {
-            const cmQuery = document.getElementById('cmSearchInput').value.toLowerCase().trim();
-            const othersQuery = document.getElementById('othersSearchInput').value.toLowerCase().trim();
+        // Helper function translating local hours to 4 AM Business Day offsets
+        function toBusinessDayString(timestamp) {
+            const date = new Date(timestamp);
+            const hours = date.getHours();
+            if (hours < 4) {
+                // Adjust back by one calendar day if before 4:00 AM local time
+                date.setDate(date.getDate() - 1);
+            }
+            return date.toISOString().split('T')[0]; // Yields YYYY-MM-DD
+        }
 
-            // Filter Corrupted Mods List
-            const cmContainer = document.getElementById('corruptedModsContainer');
-            const cmCards = cmContainer.getElementsByClassName('ledger-card');
-            let visibleCMCount = 0;
-            const totalCMCount = cmCards.length;
-            for (let card of cmCards) {
-                const itemName = card.getAttribute('data-item-name').toLowerCase();
-                if (itemName.includes(cmQuery)) {
-                    card.classList.remove('hidden');
-                    visibleCMCount++;
+        // Returns all orders falling inside session interval spans
+        function getOrdersInSessionIntervals(orders, intervalsList) {
+            if (!intervalsList || intervalsList.length === 0) return [];
+            return orders.filter(order => {
+                const orderTime = new Date(order.closed_date).getTime();
+                return intervalsList.some(inv => {
+                    const start = inv.start;
+                    const end = inv.end ? inv.end : Date.now();
+                    return orderTime >= start && orderTime <= end;
+                });
+            });
+        }
+
+        // Computes active millisecond elapsed duration across all recorded sessions
+        function getActiveSessionMs() {
+            let total = 0;
+            const now = Date.now();
+            sessionIntervals.forEach(inv => {
+                if (inv.end) {
+                    total += (inv.end - inv.start);
                 } else {
-                    card.classList.add('hidden');
+                    total += (now - inv.start);
+                }
+            });
+            return total;
+        }
+
+        function recomputeSessionMetrics() {
+            const activeMs = getActiveSessionMs();
+            const hours = activeMs / 1000 / 60 / 60;
+            
+            // Format duration
+            document.getElementById('sessionActiveTime').textContent = `${hours.toFixed(2)}h`;
+
+            // Process sales lists specifically compiled inside working stopwatch hours
+            // Ensure we map standard ledger profiles structure variables
+            let cleanedOrders = rawClosedOrders.map(order => ({
+                icon: order.item.icon,
+                thumb: order.item.thumb,
+                item_name: order.item.en.item_name,
+                url_name: order.item.url_name,
+                platinum: order.platinum,
+                order_type: order.order_type,
+                quantity: order.quantity,
+                closed_date: order.closed_date,
+                mod_rank: order.mod_rank !== undefined ? order.mod_rank : null
+            }));
+
+            // Filter for SELL transactions
+            let sSellOrders = cleanedOrders.filter(o => o.order_type === 'sell');
+            let sessionSales = getOrdersInSessionIntervals(sSellOrders, sessionIntervals);
+
+            const sessionCM = sessionSales.filter(o => corruptedMods.includes(o.item_name));
+            const sessionOthers = sessionSales.filter(o => !corruptedMods.includes(o.item_name));
+
+            const revCM = sessionCM.reduce((sum, o) => sum + (o.platinum * o.quantity), 0);
+            const revOthers = sessionOthers.reduce((sum, o) => sum + (o.platinum * o.quantity), 0);
+
+            document.getElementById('sessionCorruptedTotal').textContent = `${revCM.toLocaleString()}p`;
+            document.getElementById('sessionOthersTotal').textContent = `${revOthers.toLocaleString()}p`;
+
+            const hourlyRateCM = hours > 0 ? (revCM / hours) : 0;
+            const hourlyRateOthers = hours > 0 ? (revOthers / hours) : 0;
+            
+            document.getElementById('sessionCorruptedPlatPerHour').textContent = `${Math.round(hourlyRateCM).toLocaleString()}p / hr`;
+            document.getElementById('sessionOthersPlatPerHour').textContent = `${Math.round(hourlyRateOthers).toLocaleString()}p / hr`;
+
+            // Display quantitative sold indicators
+            const cmQty = sessionCM.reduce((sum, o) => sum + o.quantity, 0);
+            const othersQty = sessionOthers.reduce((sum, o) => sum + o.quantity, 0);
+            document.getElementById('sessionCMCount').textContent = `${cmQty} items`;
+            document.getElementById('sessionOthersCount').textContent = `${othersQty} items`;
+
+            // Compile item lists cards on UI
+            const cmListContainer = document.getElementById('sessionCMList');
+            const othersListContainer = document.getElementById('sessionOthersList');
+            cmListContainer.innerHTML = '';
+            othersListContainer.innerHTML = '';
+
+            if (sessionCM.length === 0) {
+                cmListContainer.innerHTML = `<p class="text-xs text-slate-600 italic">No corrupted mods sold in active intervals.</p>`;
+            } else {
+                sessionCM.forEach(o => cmListContainer.appendChild(createCompactSessionCard(o)));
+            }
+
+            if (sessionOthers.length === 0) {
+                othersListContainer.innerHTML = `<p class="text-xs text-slate-600 italic">No merchandise sold in active intervals.</p>`;
+            } else {
+                sessionOthers.forEach(o => othersListContainer.appendChild(createCompactSessionCard(o)));
+            }
+
+            lucide.createIcons();
+        }
+
+        function createCompactSessionCard(order) {
+            const cell = document.createElement('div');
+            cell.className = "flex items-center justify-between text-xs bg-slate-900/40 border border-slate-800/80 px-3 py-2 rounded-lg";
+            
+            let rankText = order.mod_rank !== null ? ` (R${order.mod_rank})` : '';
+            let qtyText = order.quantity > 1 ? ` x${order.quantity}` : '';
+            let total = order.platinum * order.quantity;
+
+            cell.innerHTML = `
+                <span class="text-slate-300 font-medium truncate max-w-xs">${order.item_name}${rankText}${qtyText}</span>
+                <span class="text-amber-400 font-bold">${total.toLocaleString()}p</span>
+            `;
+            return cell;
+        }
+
+        window.startSession = function() {
+            sessionStatus = 'running';
+            sessionIntervals.push({ start: Date.now(), end: null });
+            
+            document.getElementById('sessionStartBtn').classList.add('hidden');
+            document.getElementById('sessionPauseBtn').classList.remove('hidden');
+            
+            saveInvestmentToVault();
+            setupStopwatchEngine();
+        };
+
+        window.pauseSession = function() {
+            sessionStatus = 'paused';
+            
+            // Close active open interval
+            if (sessionIntervals.length > 0) {
+                const active = sessionIntervals[sessionIntervals.length - 1];
+                if (active.end === null) {
+                    active.end = Date.now();
                 }
             }
-            
-            const cmBadge = document.getElementById('cmListBadge');
-            if (cmQuery) {
-                cmBadge.textContent = `${visibleCMCount} of ${totalCMCount} Sold`;
-            } else {
-                cmBadge.textContent = `${totalCMCount} Sold`;
+
+            document.getElementById('sessionStartBtn').classList.remove('hidden');
+            document.getElementById('sessionPauseBtn').classList.add('hidden');
+
+            saveInvestmentToVault();
+            setupStopwatchEngine();
+            recomputeSessionMetrics();
+        };
+
+        // Custom Confirmation box controllers (prevents standard window blocks)
+        window.confirmResetSession = function() {
+            document.getElementById('resetConfirmationBox').classList.remove('hidden');
+        };
+
+        window.cancelResetSession = function() {
+            document.getElementById('resetConfirmationBox').classList.add('hidden');
+        };
+
+        // Closes session and logs stats, or performs a complete wipe out
+        window.executeResetSession = function(shouldArchive) {
+            document.getElementById('resetConfirmationBox').classList.add('hidden');
+
+            if (shouldArchive) {
+                archiveSessionToBusinessLog();
             }
 
-            // Filter Standard Merchandise List
-            const othersContainer = document.getElementById('othersContainer');
-            const othersCards = othersContainer.getElementsByClassName('ledger-card');
-            let visibleOthersCount = 0;
-            const totalOthersCount = othersCards.length;
-            for (let card of othersCards) {
-                const itemName = card.getAttribute('data-item-name').toLowerCase();
-                if (itemName.includes(othersQuery)) {
-                    card.classList.remove('hidden');
-                    visibleOthersCount++;
-                } else {
-                    card.classList.add('hidden');
-                }
+            // Wipe out stopwatch structures
+            sessionIntervals = [];
+            sessionStatus = 'stopped';
+
+            document.getElementById('sessionStartBtn').classList.remove('hidden');
+            document.getElementById('sessionPauseBtn').classList.add('hidden');
+
+            saveInvestmentToVault();
+            setupStopwatchEngine();
+            recomputeSessionMetrics();
+        };
+
+        // Compiles current interval stats into the Business Day logs (using 4 AM rollover day keys)
+        function archiveSessionToBusinessLog() {
+            if (sessionIntervals.length === 0) return;
+
+            const activeMs = getActiveSessionMs();
+            const hours = activeMs / 1000 / 60 / 60;
+            if (hours <= 0.01) return; // Prevent logging fractional seconds
+
+            // Deduce rollover day target YYYY-MM-DD
+            const bDayKey = toBusinessDayString(Date.now());
+
+            // Compile orders
+            let cleanedOrders = rawClosedOrders.map(order => ({
+                item_name: order.item.en.item_name,
+                platinum: order.platinum,
+                order_type: order.order_type,
+                quantity: order.quantity,
+                closed_date: order.closed_date
+            }));
+
+            let sSellOrders = cleanedOrders.filter(o => o.order_type === 'sell');
+            let sessionSales = getOrdersInSessionIntervals(sSellOrders, sessionIntervals);
+
+            const sessionCM = sessionSales.filter(o => corruptedMods.includes(o.item_name));
+            const sessionOthers = sessionSales.filter(o => !corruptedMods.includes(o.item_name));
+
+            const revCM = sessionCM.reduce((sum, o) => sum + (o.platinum * o.quantity), 0);
+            const revOthers = sessionOthers.reduce((sum, o) => sum + (o.platinum * o.quantity), 0);
+            const revTotal = revCM + revOthers;
+
+            // Initialize or aggregate on key match (supports multiple sessions per business day)
+            if (!businessDayHistory[bDayKey]) {
+                businessDayHistory[bDayKey] = {
+                    day: bDayKey,
+                    activeHours: 0,
+                    totalRevenue: 0,
+                    revenueCM: 0,
+                    revenueOthers: 0
+                };
             }
-            
-            const othersBadge = document.getElementById('othersListBadge');
-            if (othersQuery) {
-                othersBadge.textContent = `${visibleOthersCount} of ${totalOthersCount} Sold`;
+
+            const record = businessDayHistory[bDayKey];
+            record.activeHours += hours;
+            record.totalRevenue += revTotal;
+            record.revenueCM += revCM;
+            record.revenueOthers += revOthers;
+
+            renderBusinessDayHistoryTable();
+        }
+
+        function setupStopwatchEngine() {
+            // Clean up old active timeouts
+            if (stopwatchTimerId) {
+                clearInterval(stopwatchTimerId);
+                stopwatchTimerId = null;
+            }
+
+            const pulseEl = document.getElementById('stopwatchPulse');
+
+            if (sessionStatus === 'running') {
+                pulseEl.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse";
+                document.getElementById('sessionStartBtn').classList.add('hidden');
+                document.getElementById('sessionPauseBtn').classList.remove('hidden');
+
+                // Launch live stopwatch updates
+                stopwatchTimerId = setInterval(() => {
+                    const elapsedMs = getActiveSessionMs();
+                    
+                    // Format timer as HH:MM:SS
+                    const totalSecs = Math.floor(elapsedMs / 1000);
+                    const secs = totalSecs % 60;
+                    const mins = Math.floor(totalSecs / 60) % 60;
+                    const hrs = Math.floor(totalSecs / 3600);
+
+                    const pad = (n) => String(n).padStart(2, '0');
+                    document.getElementById('stopwatchTimer').textContent = `${pad(hrs)}:${pad(mins)}:${pad(secs)}`;
+                    
+                    recomputeSessionMetrics(); // Recalculate metrics on the fly
+                }, 1000);
+            } else if (sessionStatus === 'paused') {
+                pulseEl.className = "w-2.5 h-2.5 rounded-full bg-amber-500";
+                document.getElementById('sessionStartBtn').classList.remove('hidden');
+                document.getElementById('sessionPauseBtn').classList.add('hidden');
+                
+                const elapsedMs = getActiveSessionMs();
+                const totalSecs = Math.floor(elapsedMs / 1000);
+                const secs = totalSecs % 60;
+                const mins = Math.floor(totalSecs / 60) % 60;
+                const hrs = Math.floor(totalSecs / 3600);
+                const pad = (n) => String(n).padStart(2, '0');
+                
+                document.getElementById('stopwatchTimer').textContent = `${pad(hrs)}:${pad(mins)}:${pad(secs)}`;
             } else {
-                othersBadge.textContent = `${totalOthersCount} Sold`;
+                pulseEl.className = "w-2.5 h-2.5 rounded-full bg-slate-600";
+                document.getElementById('sessionStartBtn').classList.remove('hidden');
+                document.getElementById('sessionPauseBtn').classList.add('hidden');
+                document.getElementById('stopwatchTimer').textContent = "00:00:00";
             }
+        }
+
+        window.toggleBusinessHistory = function() {
+            const panel = document.getElementById('businessHistoryPanel');
+            const chevron = document.getElementById('historyChevron');
+            const isHidden = panel.classList.contains('hidden');
+
+            if (isHidden) {
+                panel.classList.remove('hidden');
+                chevron.classList.add('rotate-180');
+            } else {
+                panel.classList.add('hidden');
+                chevron.classList.remove('rotate-180');
+            }
+        };
+
+        function renderBusinessDayHistoryTable() {
+            const tbody = document.getElementById('historyTableBody');
+            tbody.innerHTML = '';
+
+            const keys = Object.keys(businessDayHistory).sort((a,b) => b.localeCompare(a)); // Sort desc (recent days first)
+
+            if (keys.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="py-4 text-center text-slate-600 italic">No historical working days logged yet.</td>
+                    </tr>`;
+                return;
+            }
+
+            keys.forEach(key => {
+                const item = businessDayHistory[key];
+                const tr = document.createElement('tr');
+                tr.className = "border-b border-slate-900/60 hover:bg-slate-900/30 font-medium";
+
+                // Format business day date into standard clean numerical patterns
+                const dateParts = item.day.split('-');
+                const formattedDay = `${dateParts[2]}/${dateParts[1]}/${dateParts[0].substring(2)}`; // Yields DD/MM/YY
+
+                const avgRate = item.activeHours > 0 ? (item.totalRevenue / item.activeHours) : 0;
+
+                tr.innerHTML = `
+                    <td class="py-3 text-slate-300 font-bold">${formattedDay}</td>
+                    <td class="py-3">${item.activeHours.toFixed(2)}h</td>
+                    <td class="py-3 text-amber-400 font-bold">${item.totalRevenue.toLocaleString()}p</td>
+                    <td class="py-3 text-emerald-400 font-bold">${Math.round(avgRate).toLocaleString()}p / hr</td>
+                    <td class="py-3 text-amber-500/80">${item.revenueCM.toLocaleString()}p</td>
+                    <td class="py-3 text-slate-400">${item.revenueOthers.toLocaleString()}p</td>
+                    <td class="py-3 text-right">
+                        <button onclick="deleteBusinessDayLog('${item.day}')" class="text-xs text-red-500/80 hover:text-red-400 font-bold transition flex items-center gap-1 ml-auto">
+                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Clear
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            lucide.createIcons();
+        }
+
+        window.deleteBusinessDayLog = function(dayKey) {
+            delete businessDayHistory[dayKey];
+            saveInvestmentToVault();
+            renderBusinessDayHistoryTable();
         };
 
         window.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
             setupDatePickerLimits();
-            loadInvestmentFromVault(); // Load saved planner state, checkpoint, default days, and custom dates
+            loadInvestmentFromVault(); // Load saved planner state, checkpoint, and custom dates
 
             // Read the saved user from local storage
             const savedUser = localStorage.getItem('wf_saved_username');
@@ -1127,6 +1583,7 @@
                 document.getElementById('usernameInput').value = savedUser;
                 getDataFromApi(savedUser);
             } else {
+                // If there is no saved user, render a clean welcome/empty state
                 showWelcomeState(true);
             }
         });
