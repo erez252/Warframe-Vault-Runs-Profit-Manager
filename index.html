@@ -9,7 +9,7 @@
     <!-- Lucide Icons for premium-looking icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Inter:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght=500;700&family=Inter:wght=300;400;500;600;700&display=swap');
         
         body {
             font-family: 'Inter', sans-serif;
@@ -59,7 +59,7 @@
                 </svg>
                 <div>
                     <h1 class="text-lg md:text-xl font-bold tracking-wider wf-title gold-text">Vault Runs Profit Manager</h1>
-                    <p class="text-xs text-slate-400">My Niche Vault Runs Profit Manager</p>
+                    <p class="text-xs text-slate-400 font-medium">My Niche Vault Runs Profit Manager</p>
                 </div>
             </div>
             
@@ -72,14 +72,13 @@
 
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
-        <!-- User Search Card (Simplified & Beautiful, Zero Overlap lines) -->
         <div class="bg-gradient-to-r from-slate-950 to-slate-900 border border-slate-800 rounded-2xl p-6 mb-6 shadow-xl relative overflow-hidden">
             <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div class="max-w-xl">
                     <h2 class="text-xl font-semibold text-white mb-2 flex items-center gap-2">
                         <i data-lucide="search" class="w-5 h-5 gold-text"></i> User Search
                     </h2>
-                    <p class="text-sm text-slate-400 leading-relaxed">
+                    <p class="text-sm text-slate-400 leading-relaxed font-medium">
                         I made this for a super niche, very specific purpose: at the end of like a week, I want to know exactly how much of my corrupted mods profit I should reinvest back into other items instead of just keeping it all. Enter any username below to load past transactions closed sales.
                     </p>
                 </div>
@@ -94,22 +93,21 @@
                             id="usernameInput" 
                             placeholder="Enter Username (e.g., TheKengineer)"
                             value=""
-                            class="w-full pl-10 pr-4 py-2.5 bg-slate-900/90 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition"
+                            class="w-full pl-10 pr-4 py-2.5 bg-slate-900/90 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition font-medium"
                             onkeypress="if(event.key === 'Enter') handleSearch()"
                         />
                     </div>
                     <button 
                         onclick="handleSearch()"
-                        class="px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-amber-500/10 hover:shadow-amber-500/20 active:scale-[0.98]"
+                        class="px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-amber-500/10 hover:shadow-amber-500/20 active:scale-[0.98]"
                     >
                         <span>Analyze Trade</span>
-                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                        <i data-lucide="chevron-right" class="w-4 h-4 font-bold"></i>
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- New Dedicated Filter & Checkpoint Box (Corrects all alignment bugs) -->
         <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 mb-8 shadow-xl">
             <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-900 mb-5">
                 <div class="flex flex-col sm:flex-row sm:items-center gap-3">
@@ -117,46 +115,62 @@
                         <i data-lucide="calendar" class="w-4 h-4 text-amber-500"></i>
                         Custom Window Controls
                     </h3>
-                    <span class="text-[10px] text-slate-500 font-medium bg-slate-900 px-2 py-0.5 rounded border border-slate-800">
+                    <span class="text-[10px] text-slate-500 font-bold bg-slate-900 px-2 py-0.5 rounded border border-slate-800">
                         90 Days Max Historical Limit
                     </span>
+                    <!-- Adjustable Default Days Period -->
+                    <div class="flex items-center gap-1.5 bg-slate-900/60 px-2 py-1 rounded border border-slate-800 text-[10px] text-slate-400 font-bold">
+                        <span>Default Period:</span>
+                        <input 
+                            type="number" 
+                            id="defaultDaysInput" 
+                            min="1" 
+                            max="90" 
+                            value="7"
+                            onchange="handleDefaultDaysChange(this.value)"
+                            class="w-10 bg-slate-950 text-amber-400 font-bold border border-slate-800 rounded px-1.5 py-0.5 text-center focus:outline-none focus:border-amber-500"
+                        />
+                        <span>Days</span>
+                    </div>
                 </div>
                 <!-- Perfectly level dynamic status capsule -->
                 <div id="checkpointStatus" class="self-start lg:self-auto"></div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
-                <!-- Left half: Date Picker Inputs -->
-                <div class="lg:col-span-8 flex flex-wrap items-center gap-4">
+                <!-- Left half: Date Picker Inputs (Whole Box Clickable) -->
+                <div class="lg:col-span-7 flex flex-wrap items-center gap-4">
                     <div class="flex items-center gap-2">
-                        <span class="text-[11px] text-slate-500 uppercase font-semibold">Start:</span>
+                        <span class="text-[11px] text-slate-500 uppercase font-bold">Start:</span>
                         <input 
                             type="date" 
                             id="startDatePicker"
-                            class="bg-slate-900 border border-slate-750 hover:border-slate-650 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500 transition"
+                            onclick="this.showPicker()"
+                            class="bg-slate-900 border border-slate-750 hover:border-slate-650 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500 transition cursor-pointer font-semibold"
                         />
                     </div>
                     <div class="flex items-center gap-2">
-                        <span class="text-[11px] text-slate-500 uppercase font-semibold">End:</span>
+                        <span class="text-[11px] text-slate-500 uppercase font-bold">End:</span>
                         <input 
                             type="date" 
                             id="endDatePicker"
                             placeholder="Today"
-                            class="bg-slate-900 border border-slate-750 hover:border-slate-650 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500 transition"
+                            onclick="this.showPicker()"
+                            class="bg-slate-900 border border-slate-750 hover:border-slate-650 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500 transition cursor-pointer font-semibold"
                         />
                     </div>
                     <div class="flex items-center gap-2">
                         <button 
                             onclick="applyCustomDateRange()"
-                            class="px-3.5 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-semibold rounded-lg transition"
+                            class="px-3.5 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-bold rounded-lg transition"
                         >
                             Apply Range
                         </button>
                         <button 
                             id="clearRangeBtn"
                             onclick="clearCustomDateRange()"
-                            class="hidden px-2.5 py-1.5 bg-slate-900 hover:bg-slate-850 text-slate-400 text-xs font-medium border border-slate-800 rounded-lg transition flex items-center gap-1"
-                            title="Return to default 7-day window"
+                            class="hidden px-2.5 py-1.5 bg-slate-900 hover:bg-slate-850 text-slate-400 text-xs font-semibold border border-slate-800 rounded-lg transition flex items-center gap-1"
+                            title="Return to default window"
                         >
                             <i data-lucide="x" class="w-3.5 h-3.5"></i>
                             Reset Range
@@ -170,24 +184,50 @@
                 </div>
 
                 <!-- Right half: Checkpoint Actions -->
-                <div class="lg:col-span-3 flex justify-end gap-2 w-full lg:w-auto">
-                    <button 
-                        onclick="setCheckpoint()" 
-                        class="flex-grow lg:flex-none px-3.5 py-1.5 bg-blue-600/15 hover:bg-blue-600/25 text-blue-400 border border-blue-500/30 text-xs font-semibold rounded-lg transition flex items-center justify-center gap-1.5"
-                        title="Ignore old history: only display transactions closed after this moment"
-                    >
-                        <i data-lucide="flag" class="w-3.5 h-3.5"></i>
-                        Set Checkpoint
-                    </button>
-                    <button 
-                        onclick="clearCheckpoint()" 
-                        id="clearCheckpointBtn"
-                        class="hidden flex-grow lg:flex-none px-2.5 py-1.5 bg-slate-900 hover:bg-red-950/40 hover:text-red-400 text-slate-400 border border-slate-850 rounded-lg text-xs font-medium transition flex items-center justify-center gap-1"
-                        title="Clear checkpoint filter and return to default view"
-                    >
-                        <i data-lucide="x-circle" class="w-3.5 h-3.5"></i>
-                        Reset Checkpoint
-                    </button>
+                <div class="lg:col-span-4 flex flex-col items-end gap-2 w-full lg:w-auto">
+                    <div class="flex flex-wrap items-center justify-end gap-2 w-full lg:w-auto">
+                        <button 
+                            onclick="setCheckpoint()" 
+                            class="flex-grow lg:flex-none px-3 py-1.5 bg-blue-600/15 hover:bg-blue-600/25 text-blue-400 border border-blue-500/30 text-xs font-bold rounded-lg transition flex items-center justify-center gap-1.5"
+                            title="Ignore old history: only display transactions closed after this moment"
+                        >
+                            <i data-lucide="flag" class="w-3.5 h-3.5"></i>
+                            Set Checkpoint
+                        </button>
+                        <button 
+                            onclick="toggleCustomCheckpointDrawer()" 
+                            class="flex-grow lg:flex-none px-3 py-1.5 bg-indigo-600/15 hover:bg-indigo-600/25 text-indigo-400 border border-indigo-500/30 text-xs font-bold rounded-lg transition flex items-center justify-center gap-1.5"
+                            title="Pick a custom date and time as a checkpoint"
+                        >
+                            <i data-lucide="calendar-days" class="w-3.5 h-3.5"></i>
+                            Set Custom Checkpoint
+                        </button>
+                        <button 
+                            onclick="clearCheckpoint()" 
+                            id="clearCheckpointBtn"
+                            class="hidden flex-grow lg:flex-none px-2.5 py-1.5 bg-slate-900 hover:bg-red-950/40 hover:text-red-400 text-slate-400 border border-slate-850 rounded-lg text-xs font-semibold transition flex items-center justify-center gap-1"
+                            title="Clear checkpoint filter and return to default view"
+                        >
+                            <i data-lucide="x-circle" class="w-3.5 h-3.5"></i>
+                            Reset Checkpoint
+                        </button>
+                    </div>
+                    
+                    <!-- Collapsible Custom Checkpoint Drawer -->
+                    <div id="customCheckpointDrawer" class="hidden w-full mt-1 bg-slate-900/40 border border-slate-800/80 p-2 rounded-xl flex items-center gap-2">
+                        <input 
+                            type="datetime-local" 
+                            id="customCheckpointInput"
+                            onclick="this.showPicker()"
+                            class="flex-grow bg-slate-950 border border-slate-800 hover:border-slate-750 rounded-lg px-2 py-1 text-xs text-white focus:outline-none focus:border-amber-500 transition cursor-pointer font-medium"
+                        />
+                        <button 
+                            onclick="saveCustomCheckpoint()"
+                            class="px-3 py-1 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold rounded-lg transition shrink-0"
+                        >
+                            Apply
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -196,16 +236,16 @@
             <div class="w-16 h-16 bg-slate-900/50 rounded-full flex items-center justify-center border border-slate-800 mb-4 text-amber-500">
                 <i data-lucide="shield" class="w-8 h-8"></i>
             </div>
-            <h3 class="text-xl font-bold text-white mb-2">Welcome to My Website</h3>
-            <p class="text-slate-400 text-sm max-w-md mx-auto">
-                Enter your (or any) Warframe Market username above to load the transaction history (sales only), calculate how much corrupted mod sales profit you should reinvest, and manage your budget balances.
+            <h3 class="text-xl font-bold text-white mb-2">Welcome to My Ledger</h3>
+            <p class="text-slate-400 text-sm max-w-md mx-auto font-medium">
+                Enter your Warframe Market username above to load your transaction ledger, calculate how much corrupted mod sales profit you should reinvest, and manage your budget balances.
             </p>
         </div>
 
         <div id="userProfileHeader" class="mb-8 hidden">
             <div class="flex items-center gap-4 border-l-4 border-amber-500 pl-4 py-1">
                 <div>
-                    <div class="text-xs uppercase tracking-widest text-slate-500">Currently Analyzing</div>
+                    <div class="text-xs uppercase tracking-widest text-slate-500 font-bold">Currently Analyzing</div>
                     <h3 id="currentProfileName" class="text-2xl font-bold text-white flex items-center gap-2">
                         Username
                     </h3>
@@ -219,7 +259,7 @@
                 <div class="absolute inset-0 border-4 border-slate-800 rounded-full"></div>
                 <div class="absolute inset-0 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
             </div>
-            <p class="mt-4 text-slate-400 text-sm animate-pulse">Consulting the Warframe Market Ledger...</p>
+            <p class="mt-4 text-slate-400 text-sm font-semibold animate-pulse">Consulting the Warframe Market Ledger...</p>
         </div>
 
         <!-- Error State -->
@@ -228,10 +268,10 @@
                 <i data-lucide="alert-triangle" class="text-red-500 w-6 h-6"></i>
             </div>
             <h4 class="text-red-400 font-semibold text-lg mb-1">Failed to Fetch Profile</h4>
-            <p class="text-slate-400 text-sm max-w-md mx-auto mb-4" id="errorMessage">
+            <p class="text-slate-400 text-sm max-w-md mx-auto mb-4 font-semibold" id="errorMessage">
                 We couldn't reach the stats for this user. Please verify the spelling or try again later.
             </p>
-            <button onclick="handleSearch()" class="text-xs px-3 py-1.5 bg-red-900/30 text-red-300 hover:bg-red-900/50 border border-red-800 rounded-lg transition">
+            <button onclick="handleSearch()" class="text-xs px-3 py-1.5 bg-red-900/30 text-red-300 hover:bg-red-900/50 border border-red-800 rounded-lg transition font-bold">
                 Retry Connection
             </button>
         </div>
@@ -245,11 +285,11 @@
                         <div class="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-500">
                             <i data-lucide="trending-up" class="w-5 h-5"></i>
                         </div>
-                        <span class="text-slate-400 text-sm font-medium">Total Revenue</span>
+                        <span class="text-slate-400 text-sm font-semibold">Total Revenue</span>
                     </div>
                     <div class="flex items-baseline gap-2">
-                        <span id="totalRevenue" class="text-4xl font-extrabold text-white wf-title tracking-tight">0</span>
-                        <span class="text-amber-500 font-bold text-sm tracking-wider">PLATINUM</span>
+                        <span id="totalRevenue" class="text-4xl font-extrabold text-white wf-title tracking-tight font-sans">0</span>
+                        <span class="text-amber-500 font-extrabold text-sm tracking-wider">PLATINUM</span>
                     </div>
                 </div>
 
@@ -258,10 +298,10 @@
                         <div class="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-400">
                             <i data-lucide="shield-alert" class="w-5 h-5"></i>
                         </div>
-                        <span class="text-slate-400 text-sm font-medium">Corrupted Mods</span>
+                        <span class="text-slate-400 text-sm font-semibold">Corrupted Mods</span>
                     </div>
                     <div class="flex items-baseline gap-2">
-                        <span id="corruptedRevenue" class="text-4xl font-extrabold text-white wf-title tracking-tight">0</span>
+                        <span id="corruptedRevenue" class="text-4xl font-extrabold text-white wf-title tracking-tight font-sans">0</span>
                         <span class="text-amber-500/80 font-bold text-sm">PLAT</span>
                     </div>
                 </div>
@@ -271,16 +311,16 @@
                         <div class="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center text-slate-400">
                             <i data-lucide="archive" class="w-5 h-5"></i>
                         </div>
-                        <span class="text-slate-400 text-sm font-medium">Other Goods</span>
+                        <span class="text-slate-400 text-sm font-semibold">Other Goods</span>
                     </div>
                     <div class="flex items-baseline gap-2">
-                        <span id="othersRevenue" class="text-4xl font-extrabold text-white wf-title tracking-tight">0</span>
+                        <span id="othersRevenue" class="text-4xl font-extrabold text-white wf-title tracking-tight font-sans">0</span>
                         <span class="text-slate-400 font-bold text-sm">PLAT</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Investment Planner Panel (Clean Single-Row layout) -->
+            <!-- Investment Planner Panel -->
             <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 shadow-xl">
                 <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-4 border-b border-slate-850 mb-6">
                     <div class="max-w-md">
@@ -288,18 +328,78 @@
                             <i data-lucide="pie-chart" class="text-amber-400 w-5 h-5"></i>
                             <span id="plannerPercentLabel">20</span>% Custom Investment Planner
                         </h3>
-                        <p class="text-xs text-slate-400 mt-1">
-                            Reinvest a custom percentage of your weekly Corrupted Mod sales back into other merchandise.
+                        <p class="text-xs text-slate-400 mt-1 font-semibold">
+                            Reinvest a custom percentage of your weekly sales back into other merchandise. Use settings gear to tune your calculation base.
                         </p>
                     </div>
                     
-                    <!-- One level, completely aligned single control row -->
-                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
-                        
+                    <!-- Clean primary action row with dedicated settings gear icon -->
+                    <div class="flex items-center gap-2 shrink-0">
+                        <!-- Action Buttons Group -->
+                        <div class="flex items-center gap-2 bg-slate-900/50 p-1.5 rounded-xl border border-slate-800/80 h-12 shrink-0">
+                            <button 
+                                onclick="initializeInvestment()" 
+                                class="h-full px-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold rounded-lg transition flex items-center justify-center gap-1.5"
+                                title="Run custom reinvestment calculation"
+                            >
+                                <i data-lucide="calculator" class="w-3.5 h-3.5"></i>
+                                Calculate & Load
+                            </button>
+                            <button 
+                                onclick="clearInvestment()" 
+                                class="h-full px-3 bg-slate-950 hover:bg-red-950/50 hover:text-red-400 text-slate-400 border border-slate-800/60 rounded-lg text-xs font-semibold transition flex items-center justify-center gap-1.5"
+                                title="Reset investment budget to 0"
+                            >
+                                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                                Reset Balance
+                            </button>
+                            <!-- Advanced Setup Toggle Gear -->
+                            <button 
+                                id="toggleSettingsBtn"
+                                onclick="togglePlannerSettings()"
+                                class="h-full px-3 bg-slate-950 hover:bg-slate-900 text-slate-400 hover:text-white border border-slate-800/60 rounded-lg transition flex items-center justify-center"
+                                title="Configure Calculation settings"
+                            >
+                                <i data-lucide="settings" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Collapsible Settings Panel -->
+                <div id="plannerSettingsPanel" class="hidden bg-slate-900/30 border border-slate-800/80 rounded-xl p-4 mb-6 transition-all duration-300">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <!-- Source select -->
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-bold text-slate-400">Calculation Source</label>
+                            <select 
+                                id="calcSourceSelect" 
+                                onchange="handleCalcSourceChange(this.value)"
+                                class="w-full bg-slate-950 text-amber-400 font-bold text-xs rounded-xl border border-slate-800 px-3 py-2.5 focus:outline-none focus:border-amber-500 cursor-pointer h-11"
+                            >
+                                <option value="corrupted">Corrupted Mods Only</option>
+                                <option value="total">Total Revenue</option>
+                                <option value="others">Other Goods Only</option>
+                            </select>
+                        </div>
+
+                        <!-- Mode select -->
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-bold text-slate-400">Calculation Mode</label>
+                            <select 
+                                id="calcModeSelect" 
+                                onchange="handleCalcModeChange(this.value)"
+                                class="w-full bg-slate-950 text-amber-400 font-bold text-xs rounded-xl border border-slate-800 px-3 py-2.5 focus:outline-none focus:border-amber-500 cursor-pointer h-11"
+                            >
+                                <option value="override">Override Budget</option>
+                                <option value="add">Add to Budget</option>
+                            </select>
+                        </div>
+
                         <!-- Percentage Selector Input -->
-                        <div class="flex items-center justify-between sm:justify-start gap-2 bg-slate-900/50 px-3 py-2 rounded-xl border border-slate-800 h-12 shrink-0">
-                            <label for="percentInput" class="text-xs font-semibold text-slate-400">Reinvest:</label>
-                            <div class="flex items-center gap-1">
+                        <div class="flex flex-col gap-1.5">
+                            <label for="percentInput" class="text-xs font-bold text-slate-400">Reinvest Percentage</label>
+                            <div class="flex items-center justify-between gap-2 bg-slate-950 border border-slate-800 px-3 rounded-xl h-11">
                                 <input 
                                     type="number" 
                                     id="percentInput" 
@@ -307,30 +407,10 @@
                                     max="100" 
                                     value="20"
                                     onchange="handlePercentageChange(this.value)"
-                                    class="w-12 bg-slate-950 border border-slate-800 rounded px-1 py-0.5 text-xs text-center text-amber-400 font-bold focus:outline-none focus:border-amber-500"
+                                    class="w-full bg-transparent text-amber-400 font-bold text-sm focus:outline-none outline-none border-none text-left"
                                 />
                                 <span class="text-xs font-bold text-amber-500">%</span>
                             </div>
-                        </div>
-
-                        <!-- Action Buttons Group -->
-                        <div class="flex items-center gap-2 bg-slate-900/50 p-1.5 rounded-xl border border-slate-800/80 h-12 shrink-0">
-                            <button 
-                                onclick="initializeInvestment()" 
-                                class="h-full px-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold rounded-lg transition flex items-center justify-center gap-1.5"
-                                title="Set budget to your custom % of current Corrupted Mods sales"
-                            >
-                                <i data-lucide="calculator" class="w-3.5 h-3.5"></i>
-                                Calculate & Load
-                            </button>
-                            <button 
-                                onclick="clearInvestment()" 
-                                class="h-full px-3 bg-slate-950 hover:bg-red-950/50 hover:text-red-400 text-slate-400 border border-slate-800/60 rounded-lg text-xs font-medium transition flex items-center justify-center gap-1.5"
-                                title="Reset investment budget to 0"
-                            >
-                                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
-                                Reset Balance
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -338,23 +418,23 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
                     <!-- Current Fund Display -->
                     <div class="bg-slate-900/40 border border-slate-800/80 rounded-xl p-4 flex flex-col justify-center">
-                        <span class="text-xs text-slate-500 font-medium">Current Investment Budget</span>
+                        <span class="text-xs text-slate-500 font-semibold">Current Investment Budget</span>
                         <div class="flex items-baseline gap-1.5 mt-1">
                             <span id="investmentDisplay" class="text-3xl font-bold text-amber-400">0</span>
-                            <span class="text-xs text-slate-400 font-semibold uppercase">Plat</span>
+                            <span class="text-xs text-slate-400 font-bold uppercase">Plat</span>
                         </div>
                     </div>
 
                     <!-- Add / Subtract Controls -->
                     <div class="md:col-span-2 bg-slate-900/20 border border-slate-800/60 rounded-xl p-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
                         <div class="flex-grow">
-                            <label for="adjustmentAmount" class="block text-[11px] font-medium text-slate-500 mb-1">Transaction Adjustments</label>
+                            <label for="adjustmentAmount" class="block text-[11px] font-bold text-slate-500 mb-1">Transaction Adjustments</label>
                             <input 
                                 type="number" 
                                 id="adjustmentAmount" 
                                 min="1" 
                                 placeholder="Enter Plat amount" 
-                                class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-white placeholder-slate-600 focus:outline-none focus:border-amber-500 transition"
+                                class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-white placeholder-slate-600 focus:outline-none focus:border-amber-500 transition font-medium"
                             />
                         </div>
                         <div class="flex gap-2 shrink-0 pt-0 sm:pt-5">
@@ -377,21 +457,54 @@
                 </div>
             </div>
 
-            <!-- Double Column Tables -->
+            <!-- Double Column Tables (Upgraded with robust layout fonts and inline filters) -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 flex flex-col h-[520px]">
-                    <div class="flex items-center justify-between pb-4 border-b border-slate-850 mb-4">
+                <!-- Corrupted Mods Column -->
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 flex flex-col h-[560px]">
+                    <div class="flex items-center justify-between pb-4 border-b border-slate-850 mb-4 flex-wrap gap-2">
                         <h3 class="text-lg font-bold text-white tracking-wide">Corrupted Mods</h3>
-                        <span id="cmListBadge" class="text-xs px-2.5 py-1 bg-amber-500/10 text-amber-400 rounded-full">0 Sold</span>
+                        <div class="flex items-center gap-2 flex-grow sm:flex-none">
+                            <!-- Real-time Mod Filter -->
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-500">
+                                    <i data-lucide="search" class="w-3.5 h-3.5"></i>
+                                </span>
+                                <input 
+                                    type="text" 
+                                    id="cmSearchInput" 
+                                    oninput="filterLedgers()"
+                                    placeholder="Search mods..."
+                                    class="w-28 sm:w-36 pl-8 pr-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 transition font-medium"
+                                />
+                            </div>
+                            <span id="cmListBadge" class="text-xs px-2.5 py-1 bg-amber-500/10 text-amber-400 rounded-full font-semibold">0 Sold</span>
+                        </div>
                     </div>
-                    <div class="overflow-y-auto flex-grow space-y-3" id="corruptedModsContainer"></div>
+                    <div class="overflow-y-auto flex-grow space-y-3 pr-1" id="corruptedModsContainer"></div>
                 </div>
-                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 flex flex-col h-[520px]">
-                    <div class="flex items-center justify-between pb-4 border-b border-slate-850 mb-4">
+
+                <!-- Standard Merchandise Column -->
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 flex flex-col h-[560px]">
+                    <div class="flex items-center justify-between pb-4 border-b border-slate-850 mb-4 flex-wrap gap-2">
                         <h3 class="text-lg font-bold text-white tracking-wide">Standard Merchandise</h3>
-                        <span id="othersListBadge" class="text-xs px-2.5 py-1 bg-slate-800 text-slate-400 rounded-full">0 Sold</span>
+                        <div class="flex items-center gap-2 flex-grow sm:flex-none">
+                            <!-- Real-time Other Filter -->
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-500">
+                                    <i data-lucide="search" class="w-3.5 h-3.5"></i>
+                                </span>
+                                <input 
+                                    type="text" 
+                                    id="othersSearchInput" 
+                                    oninput="filterLedgers()"
+                                    placeholder="Search goods..."
+                                    class="w-28 sm:w-36 pl-8 pr-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 transition font-medium"
+                                />
+                            </div>
+                            <span id="othersListBadge" class="text-xs px-2.5 py-1 bg-slate-800 text-slate-400 rounded-full font-semibold">0 Sold</span>
+                        </div>
                     </div>
-                    <div class="overflow-y-auto flex-grow space-y-3" id="othersContainer"></div>
+                    <div class="overflow-y-auto flex-grow space-y-3 pr-1" id="othersContainer"></div>
                 </div>
             </div>
         </div>
@@ -399,14 +512,13 @@
 
     <!-- Footer -->
     <footer class="mt-auto border-t border-slate-900 bg-slate-950 py-6 text-center text-xs text-slate-600">
-        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4 font-medium">
             <p>Vault Runs Profit Manager. Data sourced via Warframe.Market api but have no affiliation with Digital Extremes or the warframe.market website</p>
             <p class="text-slate-500 italic">May Void-luck guide your trading pursuits.</p>
         </div>
     </footer>
 
     <script>
-        // Your pristine list of Corrupted Mods
         const corruptedMods = [
             "Anemic Agility", "Blind Rage", "Burdened Magazine", "Catalyzing Shields", "Corrupt Charge",
             "Creeping Bullseye", "Critical Deceleration", "Critical Delay", "Depleted Reload", "Fleeting Expertise",
@@ -418,7 +530,14 @@
         // State Management Variables
         let investmentBudget = 0;
         let reinvestPercentage = 20; // Customizable percentage
+        let defaultDays = 7; // Customizable default period days count
+        let calcSource = "corrupted"; // Settings option: corrupted, total, others
+        let calcMode = "override"; // Settings option: override, add
+        
         let lastCalculatedCMRevenue = 0;
+        let lastCalculatedOthersRevenue = 0;
+        let lastCalculatedTotalRevenue = 0;
+        
         let salesCheckpoint = null; // Saves a timestamp representing the checkpoint filter line
         let customStartDate = null; // Saves start calendar filter
         let customEndDate = null; // Saves end calendar filter
@@ -449,9 +568,11 @@
                 showError(true);
             }
         }
-
+        
         function sumUserData(UserData){
-            // reorganize the object (your pristine code)
+            console.log(UserData);
+            
+            // reorganize the object
             UserData = UserData.map(order => ({
                 icon: order.item.icon,
                 thumb: order.item.thumb,
@@ -459,7 +580,9 @@
                 platinum: order.platinum,
                 order_type: order.order_type,
                 quantity: order.quantity,
-                closed_date: order.closed_date,
+                closed_date: order.closed_date,                
+                url_name: order.item.url_name,
+                mod_rank: order.mod_rank ?? "",
             }));
 
             let startTimestamp;
@@ -485,15 +608,24 @@
                 if (clearRangeBtn) {
                     clearRangeBtn.classList.remove('hidden');
                 }
+                // Show checkpoint reset button if a checkpoint is saved in the background
                 if (clearBtn) {
-                    clearBtn.classList.add('hidden'); // Clear checkpoint display to keep clean layout
+                    if (salesCheckpoint) {
+                        clearBtn.classList.remove('hidden');
+                    } else {
+                        clearBtn.classList.add('hidden');
+                    }
                 }
             } else if (salesCheckpoint) {
                 startTimestamp = salesCheckpoint;
                 const checkpointDate = new Date(salesCheckpoint);
-                const dStr = checkpointDate.toLocaleDateString(undefined, { day: '2-digit', month: '2-digit', year: '2-digit' });
-                const tStr = checkpointDate.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', hour12: false });
+                
+                // Format strictly LTR numeric format: DD/MM/YY HH:MM
+                const pad = (n) => String(n).padStart(2, '0');
+                const dStr = `${pad(checkpointDate.getDate())}/${pad(checkpointDate.getMonth() + 1)}/${String(checkpointDate.getFullYear()).slice(-2)}`;
+                const tStr = `${pad(checkpointDate.getHours())}:${pad(checkpointDate.getMinutes())}`;
                 const displayTime = `${dStr} ${tStr}`;
+                
                 if (statusEl) {
                     statusEl.innerHTML = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20"><i data-lucide="flag" class="w-3.5 h-3.5"></i> Checkpoint since ${displayTime}</span>`;
                 }
@@ -504,16 +636,16 @@
                     clearRangeBtn.classList.add('hidden');
                 }
             } else {
-                // 1. Establish your "Tomorrow at Midnight" baseline using UTC (Your pristine code)
+                // 1. Establish your "Tomorrow at Midnight" baseline using UTC
                 const tomorrow = new Date();
                 tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
-                tomorrow.setUTCHours(0, 0, 0, 0); // 👈 Forces UTC Midnight!
+                tomorrow.setUTCHours(0, 0, 0, 0); // Forces UTC Midnight!
 
-                // 2. Look back exactly 7 days to get a fixed starting line (Your pristine code)
-                const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
-                startTimestamp = tomorrow.getTime() - sevenDaysInMs;
+                // 2. Look back exactly defaultDays (adjustable default) to get a fixed starting line
+                const defaultDaysInMs = defaultDays * 24 * 60 * 60 * 1000;
+                startTimestamp = tomorrow.getTime() - defaultDaysInMs;
                 if (statusEl) {
-                    statusEl.innerHTML = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold bg-slate-900 text-slate-400 border border-slate-800"><i data-lucide="clock" class="w-3.5 h-3.5"></i> Default 7-day period</span>`;
+                    statusEl.innerHTML = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold bg-slate-900 text-slate-400 border border-slate-800"><i data-lucide="clock" class="w-3.5 h-3.5"></i> Default ${defaultDays}-day period</span>`;
                 }
                 if (clearBtn) {
                     clearBtn.classList.add('hidden');
@@ -523,7 +655,7 @@
                 }
             }
 
-            // 3. Filter out any orders older than that start line (Your pristine code)
+            // 3. Filter out any orders older than that start line
             let recentOrders = UserData.filter(order => {
                 const orderTime = new Date(order.closed_date).getTime(); 
                 if (endTimestamp !== null) {
@@ -543,18 +675,15 @@
             const ordersCMRevenue = sellOrders.corrupted_mods.reduce((sum, order) => sum + (order.platinum * order.quantity) ,0);
             const ordersOthersRevenue = sellOrders.others.reduce((sum, order) => sum + (order.platinum * order.quantity) ,0);
             const ordersRevenue = ordersOthersRevenue + ordersCMRevenue;
-            console.log(ordersCMRevenue);
-            console.log(ordersOthersRevenue);
-            console.log(ordersRevenue);
 
-            // Track Corrupted Mods revenue for our planner calculation
+            // Track Corrupted Mods, Others, and Total revenue for our custom planner calculation
             lastCalculatedCMRevenue = ordersCMRevenue;
+            lastCalculatedOthersRevenue = ordersOthersRevenue;
+            lastCalculatedTotalRevenue = ordersRevenue;
 
             renderUI(ordersRevenue, ordersCMRevenue, ordersOthersRevenue, sellOrders);
         }
 
-        // --- LOCAL STORAGE PERSISTENCE ENGINE ---
-        
         function loadInvestmentFromVault() {
             try {
                 const savedAmount = localStorage.getItem('wf_investment_budget');
@@ -562,6 +691,10 @@
                 const savedCustomStart = localStorage.getItem('wf_custom_start_date');
                 const savedCustomEnd = localStorage.getItem('wf_custom_end_date');
                 const savedPercent = localStorage.getItem('wf_reinvest_percent');
+                const savedDefaultDays = localStorage.getItem('wf_default_days');
+                const savedCalcSource = localStorage.getItem('wf_calc_source');
+                const savedCalcMode = localStorage.getItem('wf_calc_mode');
+                const savedSettingsOpen = localStorage.getItem('wf_settings_open');
                 
                 if (savedAmount !== null) {
                     investmentBudget = parseFloat(savedAmount) || 0;
@@ -571,6 +704,21 @@
                 }
                 document.getElementById('percentInput').value = reinvestPercentage;
                 document.getElementById('plannerPercentLabel').textContent = reinvestPercentage;
+
+                if (savedDefaultDays !== null) {
+                    defaultDays = parseInt(savedDefaultDays, 10) || 7;
+                }
+                document.getElementById('defaultDaysInput').value = defaultDays;
+
+                if (savedCalcSource !== null) {
+                    calcSource = savedCalcSource;
+                }
+                document.getElementById('calcSourceSelect').value = calcSource;
+
+                if (savedCalcMode !== null) {
+                    calcMode = savedCalcMode;
+                }
+                document.getElementById('calcModeSelect').value = calcMode;
 
                 if (savedCheckpoint !== null && savedCheckpoint !== "") {
                     salesCheckpoint = parseInt(savedCheckpoint, 10) || null;
@@ -583,6 +731,17 @@
                     customEndDate = savedCustomEnd;
                     document.getElementById('endDatePicker').value = customEndDate;
                 }
+
+                // Restore whether settings panel drawer was open
+                if (savedSettingsOpen === 'true') {
+                    const panel = document.getElementById('plannerSettingsPanel');
+                    const btn = document.getElementById('toggleSettingsBtn');
+                    if (panel && btn) {
+                        panel.classList.remove('hidden');
+                        btn.classList.add('text-amber-500', 'border-amber-500/30', 'bg-amber-500/10');
+                    }
+                }
+
                 updateInvestmentDisplay();
             } catch (err) {
                 console.error("Local storage read error:", err);
@@ -597,6 +756,13 @@
                 localStorage.setItem('wf_custom_start_date', customStartDate || "");
                 localStorage.setItem('wf_custom_end_date', customEndDate || "");
                 localStorage.setItem('wf_reinvest_percent', reinvestPercentage);
+                localStorage.setItem('wf_default_days', defaultDays);
+                localStorage.setItem('wf_calc_source', calcSource);
+                localStorage.setItem('wf_calc_mode', calcMode);
+                
+                const panel = document.getElementById('plannerSettingsPanel');
+                const isSettingsOpen = panel ? !panel.classList.contains('hidden') : false;
+                localStorage.setItem('wf_settings_open', isSettingsOpen);
             } catch (err) {
                 console.error("Local storage write error:", err);
             }
@@ -609,7 +775,22 @@
             }
         }
 
-        // Handler for dynamic percentage changes
+        window.togglePlannerSettings = function() {
+            const panel = document.getElementById('plannerSettingsPanel');
+            const btn = document.getElementById('toggleSettingsBtn');
+            if (panel && btn) {
+                const isHidden = panel.classList.contains('hidden');
+                if (isHidden) {
+                    panel.classList.remove('hidden');
+                    btn.classList.add('text-amber-500', 'border-amber-500/30', 'bg-amber-500/10');
+                } else {
+                    panel.classList.add('hidden');
+                    btn.classList.remove('text-amber-500', 'border-amber-500/30', 'bg-amber-500/10');
+                }
+                saveInvestmentToVault();
+            }
+        };
+
         window.handlePercentageChange = function(value) {
             const parsedVal = parseInt(value, 10);
             if (!isNaN(parsedVal) && parsedVal >= 1 && parsedVal <= 100) {
@@ -619,10 +800,48 @@
             }
         };
 
-        // Investment planner button controllers
+        window.handleDefaultDaysChange = function(value) {
+            const parsedVal = parseInt(value, 10);
+            if (!isNaN(parsedVal) && parsedVal >= 1 && parsedVal <= 90) {
+                defaultDays = parsedVal;
+                saveInvestmentToVault();
+                if (rawClosedOrders && rawClosedOrders.length > 0) {
+                    sumUserData(rawClosedOrders);
+                }
+            }
+        };
+
+        window.handleCalcSourceChange = function(value) {
+            calcSource = value;
+            saveInvestmentToVault();
+        };
+
+        window.handleCalcModeChange = function(value) {
+            calcMode = value;
+            saveInvestmentToVault();
+        };
+
         window.initializeInvestment = function() {
-            // Calculate dynamic percentage of Corrupted Mods revenue
-            investmentBudget = lastCalculatedCMRevenue * (reinvestPercentage / 100);
+            // Determine our selected calculation base
+            let baseRevenue = 0;
+            if (calcSource === 'corrupted') {
+                baseRevenue = lastCalculatedCMRevenue;
+            } else if (calcSource === 'total') {
+                baseRevenue = lastCalculatedTotalRevenue;
+            } else if (calcSource === 'others') {
+                baseRevenue = lastCalculatedOthersRevenue;
+            }
+
+            // Calculate percentage portion
+            const calculatedPortion = baseRevenue * (reinvestPercentage / 100);
+
+            // Apply Mode behavior (override existing budget or accumulate/add to it)
+            if (calcMode === 'override') {
+                investmentBudget = calculatedPortion;
+            } else {
+                investmentBudget += calculatedPortion;
+            }
+
             saveInvestmentToVault();
         };
 
@@ -649,14 +868,33 @@
             saveInvestmentToVault();
         };
 
-        // Checkpoint button controllers
+        window.toggleCustomCheckpointDrawer = function() {
+            const drawer = document.getElementById('customCheckpointDrawer');
+            if (drawer) {
+                drawer.classList.toggle('hidden');
+            }
+        };
+
+        window.saveCustomCheckpoint = function() {
+            const input = document.getElementById('customCheckpointInput');
+            if (input && input.value) {
+                const selectedTime = new Date(input.value).getTime();
+                if (!isNaN(selectedTime)) {
+                    salesCheckpoint = selectedTime;
+                    saveInvestmentToVault();
+                    
+                    // Close drawer
+                    document.getElementById('customCheckpointDrawer').classList.add('hidden');
+                    
+                    if (rawClosedOrders && rawClosedOrders.length > 0) {
+                        sumUserData(rawClosedOrders);
+                    }
+                }
+            }
+        };
+
         window.setCheckpoint = function() {
             salesCheckpoint = Date.now();
-            customStartDate = null; // Clear custom range when checkpointing to prevent logical conflict
-            customEndDate = null;
-            document.getElementById('startDatePicker').value = "";
-            document.getElementById('endDatePicker').value = "";
-            
             saveInvestmentToVault();
             if (rawClosedOrders && rawClosedOrders.length > 0) {
                 sumUserData(rawClosedOrders);
@@ -671,7 +909,6 @@
             }
         };
 
-        // Custom Date Picker Actions with flexible End Date logic
         window.applyCustomDateRange = function() {
             const startVal = document.getElementById('startDatePicker').value;
             let endVal = document.getElementById('endDatePicker').value;
@@ -680,7 +917,6 @@
                 return; // Require at least the start date
             }
 
-            // If no end date is selected, automatically default it to today's date
             if (!endVal) {
                 const today = new Date();
                 endVal = today.toISOString().split('T')[0];
@@ -693,7 +929,6 @@
 
             customStartDate = startVal;
             customEndDate = endVal;
-            salesCheckpoint = null; // Clear checkpoint when applying a custom range to avoid logical conflicts
 
             saveInvestmentToVault();
             if (rawClosedOrders && rawClosedOrders.length > 0) {
@@ -713,7 +948,6 @@
             }
         };
 
-        // Configures min and max bounds dynamically to keep users within standard api 90-day lookup ranges
         function setupDatePickerLimits() {
             const today = new Date();
             const ninetyDaysAgo = new Date();
@@ -722,8 +956,14 @@
             const todayStr = today.toISOString().split('T')[0];
             const ninetyDaysAgoStr = ninetyDaysAgo.toISOString().split('T')[0];
 
+            // Format for datetime-local (requires YYYY-MM-DDTHH:MM)
+            const pad = (n) => String(n).padStart(2, '0');
+            const todayDateTimeStr = `${today.getFullYear()}-${pad(today.getMonth()+1)}-${pad(today.getDate())}T${pad(today.getHours())}:${pad(today.getMinutes())}`;
+            const ninetyDaysAgoDateTimeStr = `${ninetyDaysAgo.getFullYear()}-${pad(ninetyDaysAgo.getMonth()+1)}-${pad(ninetyDaysAgo.getDate())}T${pad(ninetyDaysAgo.getHours())}:${pad(ninetyDaysAgo.getMinutes())}`;
+
             const startPicker = document.getElementById('startDatePicker');
             const endPicker = document.getElementById('endDatePicker');
+            const customCheckpointInput = document.getElementById('customCheckpointInput');
 
             if (startPicker && endPicker) {
                 startPicker.min = ninetyDaysAgoStr;
@@ -731,9 +971,11 @@
                 endPicker.min = ninetyDaysAgoStr;
                 endPicker.max = todayStr;
             }
+            if (customCheckpointInput) {
+                customCheckpointInput.min = ninetyDaysAgoDateTimeStr;
+                customCheckpointInput.max = todayDateTimeStr;
+            }
         }
-
-        // --- END PERSISTENCE ENGINE ---
 
         window.handleSearch = function() {
             const targetUser = document.getElementById('usernameInput').value.trim();
@@ -752,9 +994,6 @@
             document.getElementById('totalRevenue').textContent = total.toLocaleString();
             document.getElementById('corruptedRevenue').textContent = cmRevenue.toLocaleString();
             document.getElementById('othersRevenue').textContent = othersRevenue.toLocaleString();
-            
-            document.getElementById('cmListBadge').textContent = `${sellOrders.corrupted_mods.length} Sold`;
-            document.getElementById('othersListBadge').textContent = `${sellOrders.others.length} Sold`;
 
             const cmContainer = document.getElementById('corruptedModsContainer');
             const othersContainer = document.getElementById('othersContainer');
@@ -764,29 +1003,123 @@
             sellOrders.corrupted_mods.forEach(o => cmContainer.appendChild(createOrderCard(o)));
             sellOrders.others.forEach(o => othersContainer.appendChild(createOrderCard(o)));
 
+            // Reset current visual searches and apply standard list filter balances
+            document.getElementById('cmSearchInput').value = '';
+            document.getElementById('othersSearchInput').value = '';
+            filterLedgers();
+
             lucide.createIcons();
             showLoading(false);
             showResults(true);
         }
 
         function createOrderCard(order) {
-            const card = document.createElement('div');
-            card.className = "bg-slate-900/60 border border-slate-800/80 rounded-xl p-3 flex items-center justify-between";
+            const card = document.createElement('a');
+            // Connect to warframe.market item page securely in a new tab
+            card.href = `https://warframe.market/items/${order.url_name}`;
+            card.target = "_blank";
+            card.rel = "noopener noreferrer";
+            card.setAttribute('data-item-name', order.item_name);
+            
+            // Adding hover, cursor, scale, and border highlight animations with prominent paddings
+            card.className = "ledger-card bg-slate-900/60 border border-slate-800/80 hover:bg-slate-900 hover:border-amber-500/30 hover:scale-[1.01] rounded-xl p-4 flex items-center justify-between gap-3 transition-all duration-150 cursor-pointer block";
+            
+            const totalSum = order.platinum * order.quantity;
+            const hasMultiple = order.quantity > 1;
+
+            // Formatted date and time
+            const orderDate = new Date(order.closed_date);
+            const dStr = orderDate.toLocaleDateString(undefined, { day: '2-digit', month: '2-digit', year: '2-digit' });
+            const tStr = orderDate.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', hour12: false });
+            const formattedDateTime = `${dStr} ${tStr}`;
+
+            // Check if item contains a mod rank and render a clean badge
+            const hasRank = order.mod_rank !== undefined && order.mod_rank !== null && order.mod_rank !== "";
+            const rankBadge = hasRank ? `<span class="px-2 py-0.5 text-xs font-bold bg-slate-950 text-amber-400 border border-slate-800 rounded" title="Mod Rank">R${order.mod_rank}</span>` : '';
+
             card.innerHTML = `
-                <div class="text-sm font-medium text-white flex items-center gap-3"> 
-                    <img src="https://warframe.market/static/assets/${order.icon}" width="30px" class="object-contain shrink-0" alt=""> 
-                    <span>${order.item_name}</span>
+                <div class="text-sm font-medium text-white flex items-center gap-3 min-w-0"> 
+                    <div class="relative shrink-0">
+                        <img src="https://warframe.market/static/assets/${order.icon}" width="36px" class="object-contain" alt="">
+                        ${hasMultiple ? `<span class="absolute -top-1.5 -right-1.5 bg-amber-500 text-slate-950 text-[10px] font-extrabold px-1.5 py-0.5 rounded-full shadow-md">x${order.quantity}</span>` : ''}
+                    </div>
+                    <div class="min-w-0 flex flex-col gap-1">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="truncate text-sm sm:text-base font-semibold text-slate-100">${order.item_name}</span>
+                            ${rankBadge}
+                        </div>
+                        <span class="text-xs text-slate-400 font-medium tracking-tight flex items-center gap-1">
+                            <i data-lucide="clock" class="w-3 h-3 text-slate-500"></i> ${formattedDateTime}
+                        </span>
+                    </div>
                 </div>
-                <div class="text-sm font-bold text-amber-400">
-                    ${order.platinum.toLocaleString()}p${order.quantity <= 1 ? "" : ` * ${order.quantity.toLocaleString()}`} 
+                <div class="text-right shrink-0 flex flex-col items-end">
+                    <div class="text-sm sm:text-base font-bold text-amber-400 flex items-center gap-0.5">
+                        <span>${totalSum.toLocaleString()}</span>
+                        <span class="text-xs text-amber-500 font-bold">p</span>
+                    </div>
+                    ${hasMultiple ? `
+                        <div class="text-xs text-slate-400 font-medium tracking-tight mt-0.5">
+                            ${order.platinum.toLocaleString()}p each
+                        </div>
+                    ` : ''}
                 </div>`;
             return card;
         }
 
+        window.filterLedgers = function() {
+            const cmQuery = document.getElementById('cmSearchInput').value.toLowerCase().trim();
+            const othersQuery = document.getElementById('othersSearchInput').value.toLowerCase().trim();
+
+            // Filter Corrupted Mods List
+            const cmContainer = document.getElementById('corruptedModsContainer');
+            const cmCards = cmContainer.getElementsByClassName('ledger-card');
+            let visibleCMCount = 0;
+            const totalCMCount = cmCards.length;
+            for (let card of cmCards) {
+                const itemName = card.getAttribute('data-item-name').toLowerCase();
+                if (itemName.includes(cmQuery)) {
+                    card.classList.remove('hidden');
+                    visibleCMCount++;
+                } else {
+                    card.classList.add('hidden');
+                }
+            }
+            
+            const cmBadge = document.getElementById('cmListBadge');
+            if (cmQuery) {
+                cmBadge.textContent = `${visibleCMCount} of ${totalCMCount} Sold`;
+            } else {
+                cmBadge.textContent = `${totalCMCount} Sold`;
+            }
+
+            // Filter Standard Merchandise List
+            const othersContainer = document.getElementById('othersContainer');
+            const othersCards = othersContainer.getElementsByClassName('ledger-card');
+            let visibleOthersCount = 0;
+            const totalOthersCount = othersCards.length;
+            for (let card of othersCards) {
+                const itemName = card.getAttribute('data-item-name').toLowerCase();
+                if (itemName.includes(othersQuery)) {
+                    card.classList.remove('hidden');
+                    visibleOthersCount++;
+                } else {
+                    card.classList.add('hidden');
+                }
+            }
+            
+            const othersBadge = document.getElementById('othersListBadge');
+            if (othersQuery) {
+                othersBadge.textContent = `${visibleOthersCount} of ${totalOthersCount} Sold`;
+            } else {
+                othersBadge.textContent = `${totalOthersCount} Sold`;
+            }
+        };
+
         window.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
             setupDatePickerLimits();
-            loadInvestmentFromVault(); // Load saved planner state, checkpoint, and custom dates
+            loadInvestmentFromVault(); // Load saved planner state, checkpoint, default days, and custom dates
 
             // Read the saved user from local storage
             const savedUser = localStorage.getItem('wf_saved_username');
@@ -794,7 +1127,6 @@
                 document.getElementById('usernameInput').value = savedUser;
                 getDataFromApi(savedUser);
             } else {
-                // If there is no saved user, render a clean welcome/empty state
                 showWelcomeState(true);
             }
         });
