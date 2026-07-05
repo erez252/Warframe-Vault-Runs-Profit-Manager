@@ -72,7 +72,7 @@
 
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
-        <!-- User Search Card -->
+        <!-- 1. User Search Card (Always Visible) -->
         <div class="bg-gradient-to-r from-slate-950 to-slate-900 border border-slate-800 rounded-2xl p-6 mb-6 shadow-xl relative overflow-hidden">
             <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div class="max-w-xl">
@@ -109,138 +109,7 @@
             </div>
         </div>
 
-        <!-- Dedicated Filter & Checkpoint Box -->
-        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 mb-8 shadow-xl">
-            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-900 mb-5">
-                <div class="flex flex-col sm:flex-row sm:items-center gap-3">
-                    <h3 class="text-xs uppercase tracking-wider text-slate-400 font-semibold flex items-center gap-1.5">
-                        <i data-lucide="calendar" class="w-4 h-4 text-amber-500"></i>
-                        Custom Window Controls
-                    </h3>
-                    <span class="text-[10px] text-slate-500 font-bold bg-slate-900 px-2 py-0.5 rounded border border-slate-800">
-                        90 Days Max Historical Limit
-                    </span>
-                    <!-- Adjustable Default Days Period -->
-                    <div class="flex items-center gap-1.5 bg-slate-900/60 px-2 py-1 rounded border border-slate-800 text-[10px] text-slate-400 font-bold">
-                        <span>Default Period:</span>
-                        <input 
-                            type="number" 
-                            id="defaultDaysInput" 
-                            min="1" 
-                            max="90" 
-                            value="7"
-                            onchange="handleDefaultDaysChange(this.value)"
-                            class="w-10 bg-slate-950 text-amber-400 font-bold border border-slate-800 rounded px-1.5 py-0.5 text-center focus:outline-none focus:border-amber-500"
-                        />
-                        <span>Days</span>
-                    </div>
-                </div>
-                <!-- Perfectly level dynamic status capsule -->
-                <div id="checkpointStatus" class="self-start lg:self-auto"></div>
-            </div>
-
-            <!-- Highly adaptive flex row layout that guarantees NO wrap-stacking of checkpoint buttons on wide viewports -->
-            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
-                <!-- Left half: Date Picker Inputs (Whole Box Clickable) -->
-                <div class="flex flex-wrap items-center gap-4">
-                    <div class="flex items-center gap-2">
-                        <span class="text-[11px] text-slate-500 uppercase font-bold">Start:</span>
-                        <input 
-                            type="date" 
-                            id="startDatePicker"
-                            onclick="this.showPicker()"
-                            class="bg-slate-900 border border-slate-750 hover:border-slate-650 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500 transition cursor-pointer font-semibold"
-                        />
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span class="text-[11px] text-slate-500 uppercase font-bold">End:</span>
-                        <input 
-                            type="date" 
-                            id="endDatePicker"
-                            placeholder="Today"
-                            onclick="this.showPicker()"
-                            class="bg-slate-900 border border-slate-750 hover:border-slate-650 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500 transition cursor-pointer font-semibold"
-                        />
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <button 
-                            onclick="applyCustomDateRange()"
-                            class="px-3.5 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-bold rounded-lg transition"
-                        >
-                            Apply Range
-                        </button>
-                        <button 
-                            id="clearRangeBtn"
-                            onclick="clearCustomDateRange()"
-                            class="hidden px-2.5 py-1.5 bg-slate-900 hover:bg-slate-850 text-slate-400 text-xs font-semibold border border-slate-800 rounded-lg transition flex items-center gap-1"
-                            title="Return to default window"
-                        >
-                            <i data-lucide="x" class="w-3.5 h-3.5"></i>
-                            Reset Range
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Vertical separation line for widescreen monitors -->
-                <div class="hidden lg:block w-px h-8 bg-slate-800/80"></div>
-
-                <!-- Right half: Checkpoint Actions (Uses flex-nowrap to guarantee all buttons sit beautifully in one single row) -->
-                <div class="flex flex-wrap sm:flex-nowrap items-center justify-end gap-2 shrink-0">
-                    <button 
-                        onclick="setCheckpoint()" 
-                        class="px-3 py-1.5 bg-blue-600/15 hover:bg-blue-600/25 text-blue-400 border border-blue-500/30 text-xs font-bold rounded-lg transition flex items-center justify-center gap-1.5 whitespace-nowrap"
-                        title="Ignore old history: only display transactions closed after this moment"
-                    >
-                        <i data-lucide="flag" class="w-3.5 h-3.5"></i>
-                        Set Checkpoint
-                    </button>
-                    <button 
-                        onclick="toggleCustomCheckpointDrawer()" 
-                        class="px-3 py-1.5 bg-indigo-600/15 hover:bg-indigo-600/25 text-indigo-400 border border-indigo-500/30 text-xs font-bold rounded-lg transition flex items-center justify-center gap-1.5 whitespace-nowrap"
-                        title="Pick a custom date and time as a checkpoint"
-                    >
-                        <i data-lucide="calendar-days" class="w-3.5 h-3.5"></i>
-                        Set Custom Checkpoint
-                    </button>
-                    <button 
-                        onclick="clearCheckpoint()" 
-                        id="clearCheckpointBtn"
-                        class="hidden px-2.5 py-1.5 bg-slate-900 hover:bg-red-950/40 hover:text-red-400 text-slate-400 border border-slate-850 rounded-lg text-xs font-semibold transition flex items-center justify-center gap-1 whitespace-nowrap"
-                        title="Clear checkpoint filter and return to default view"
-                    >
-                        <i data-lucide="x-circle" class="w-3.5 h-3.5"></i>
-                        Reset Checkpoint
-                    </button>
-                </div>
-            </div>
-
-            <!-- Collapsible Custom Checkpoint Drawer (Slides open elegantly right below the buttons) -->
-            <div id="customCheckpointDrawer" class="hidden w-full mt-4 bg-slate-900/40 border border-slate-800/80 p-2 rounded-xl flex items-center gap-2">
-                <input 
-                    type="datetime-local" 
-                    id="customCheckpointInput"
-                    onclick="this.showPicker()"
-                    class="flex-grow bg-slate-950 border border-slate-800 hover:border-slate-750 rounded-lg px-2 py-1 text-xs text-white focus:outline-none focus:border-amber-500 transition cursor-pointer font-medium"
-                />
-                <button 
-                    onclick="saveCustomCheckpoint()"
-                    class="px-3 py-1 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold rounded-lg transition shrink-0"
-                >
-                    Apply
-                </button>
-            </div>
-        </div>
-
-        <div id="welcomeState" class="flex flex-col items-center justify-center py-20 text-center">
-            <div class="w-16 h-16 bg-slate-900/50 rounded-full flex items-center justify-center border border-slate-800 mb-4 text-amber-500">
-                <i data-lucide="shield" class="w-8 h-8"></i>
-            </div>
-            <h3 class="text-xl font-bold text-white mb-2">Welcome to My Website</h3>
-            <p class="text-slate-400 text-sm max-w-md mx-auto font-medium">
-                Enter your Warframe Market username above to load your transaction ledger, calculate how much corrupted mod sales profit you should reinvest, and manage your budget balances.
-            </p>
-        </div>
-
+        <!-- 2. Currently Analyzing Header -->
         <div id="userProfileHeader" class="mb-8 hidden">
             <div class="flex items-center gap-4 border-l-4 border-amber-500 pl-4 py-1">
                 <div>
@@ -250,6 +119,17 @@
                     </h3>
                 </div>
             </div>
+        </div>
+
+        <!-- Welcome State -->
+        <div id="welcomeState" class="flex flex-col items-center justify-center py-20 text-center">
+            <div class="w-16 h-16 bg-slate-900/50 rounded-full flex items-center justify-center border border-slate-800 mb-4 text-amber-500">
+                <i data-lucide="shield" class="w-8 h-8"></i>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">Welcome to My Website</h3>
+            <p class="text-slate-400 text-sm max-w-md mx-auto font-medium">
+                Enter your Warframe Market username above to load your transaction ledger, calculate how much corrupted mod sales profit you should reinvest, and manage your budget balances.
+            </p>
         </div>
 
         <!-- Loading State -->
@@ -275,9 +155,328 @@
             </button>
         </div>
 
+        <!-- Results Dashboard Container (Everything below is shown when user data is loaded) -->
         <div id="resultsDashboard" class="hidden space-y-8">
             
-            <!-- Statistics Cards -->
+            <!-- 3. Active Working Hours Tracker -->
+            <div id="sessionDashboard" class="bg-slate-950 border border-slate-800 rounded-2xl p-6 shadow-xl">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-4 border-b border-slate-850 mb-6">
+                    <div class="max-w-md">
+                        <h3 class="text-lg font-bold text-white tracking-wide flex items-center gap-2">
+                            <i data-lucide="timer" class="text-emerald-400 w-5 h-5"></i>
+                            Active Working Hours Tracker
+                        </h3>
+                        <p class="text-xs text-slate-400 mt-1 font-semibold">
+                            Measure and review real-time productivity stats. Sales are filtered specifically during active intervals.
+                        </p>
+                    </div>
+
+                    <!-- Stopwatch Pill Display and Actions -->
+                    <div class="flex items-center flex-wrap gap-3">
+                        <div class="flex items-center gap-2 bg-slate-900 border border-slate-800 px-4 py-2 rounded-xl">
+                            <span class="w-2.5 h-2.5 rounded-full bg-slate-600 animate-pulse" id="stopwatchPulse"></span>
+                            <span id="stopwatchTimer" class="font-mono text-lg font-bold text-slate-300">00:00:00</span>
+                        </div>
+
+                        <div class="flex items-center gap-1.5 bg-slate-900 p-1.5 rounded-xl border border-slate-800">
+                            <button id="sessionStartBtn" onclick="startSession()" class="px-3.5 py-1.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold rounded-lg transition flex items-center gap-1">
+                                <i data-lucide="play" class="w-3.5 h-3.5"></i> Start
+                            </button>
+                            <button id="sessionPauseBtn" onclick="pauseSession()" class="hidden px-3.5 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold rounded-lg transition flex items-center gap-1">
+                                <i data-lucide="pause" class="w-3.5 h-3.5"></i> Pause
+                            </button>
+                            <button id="sessionNewDayBtn" onclick="confirmNewDay()" class="px-3.5 py-1.5 bg-slate-950 hover:bg-amber-500/10 hover:text-amber-400 border border-slate-800 text-slate-400 text-xs font-semibold rounded-lg transition flex items-center gap-1" title="Log current window and reset timer">
+                                <i data-lucide="sunset" class="w-3.5 h-3.5 text-amber-500"></i> End Day
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom Inline Confirmation Warning Box instead of alert/confirm window functions -->
+                <div id="resetConfirmationBox" class="hidden bg-slate-900 border border-amber-500/30 rounded-xl p-5 mb-6">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-5">
+                        <div class="flex items-start gap-3">
+                            <div class="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-500 shrink-0">
+                                <i data-lucide="help-circle" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-amber-400 font-bold text-sm">End Business Day?</h4>
+                                <p class="text-xs text-slate-400 mt-1 leading-relaxed font-semibold">
+                                    Are you sure you want to end your active session? This will save your current tracked intervals to today's summary log. If you log more sessions later today, they will be combined together.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2 shrink-0 justify-end">
+                            <button onclick="executeNewDay(true)" class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold rounded-lg transition">
+                                Yes, Archive & End Day
+                            </button>
+                            <button onclick="executeNewDay(false)" class="px-3.5 py-2 bg-red-950/40 hover:bg-red-900/40 text-red-300 border border-red-900/30 text-xs font-bold rounded-lg transition" title="Wipes current session's active tracking data without saving it to summary log">
+                                Clear Active Session (No Save)
+                            </button>
+                            <button onclick="cancelNewDay()" class="px-3.5 py-2 bg-slate-950 text-slate-400 border border-slate-800 text-xs font-semibold rounded-lg transition">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Real-time metrics computed strictly during tracked intervals -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+                    <div class="bg-slate-900/40 border border-slate-800/80 p-4 rounded-xl">
+                        <span class="text-xs text-slate-500 font-semibold uppercase">Active Hours</span>
+                        <div class="text-2xl font-bold text-white mt-1" id="sessionActiveTime">0.00h</div>
+                    </div>
+                    <div class="bg-slate-900/40 border border-slate-800/80 p-4 rounded-xl">
+                        <span class="text-xs text-slate-500 font-semibold uppercase">Corrupted Mods Plat</span>
+                        <div class="text-2xl font-bold text-amber-500 mt-1" id="sessionCorruptedTotal">0p</div>
+                    </div>
+                    <div class="bg-slate-900/40 border border-slate-800/80 p-4 rounded-xl">
+                        <span class="text-xs text-slate-500 font-semibold uppercase">Other Goods Plat</span>
+                        <div class="text-2xl font-bold text-slate-300 mt-1" id="sessionOthersTotal">0p</div>
+                    </div>
+                    <div class="bg-slate-900/40 border border-slate-800/80 p-4 rounded-xl">
+                        <span class="text-xs text-slate-500 font-semibold uppercase">Corrupted Plat Rate</span>
+                        <div class="text-2xl font-bold text-amber-400 mt-1" id="sessionCorruptedPlatPerHour">0p / hr</div>
+                    </div>
+                    <div class="bg-slate-900/40 border border-slate-800/80 p-4 rounded-xl">
+                        <span class="text-xs text-slate-500 font-semibold uppercase">Overall Plat Rate</span>
+                        <div class="text-2xl font-bold text-emerald-400 mt-1" id="sessionOverallPlatPerHour">0p / hr</div>
+                    </div>
+                </div>
+
+                <!-- Dynamic Itemised Session Sales Record -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+                    <div class="bg-slate-900/20 border border-slate-800/60 p-4 rounded-xl">
+                        <h4 class="text-xs uppercase text-slate-500 tracking-wider font-bold mb-3 flex items-center justify-between">
+                            <span>Corrupted Mods (Active Session)</span>
+                            <span class="text-amber-500" id="sessionCMCount">0 items</span>
+                        </h4>
+                        <div class="space-y-2 max-h-48 overflow-y-auto" id="sessionCMList">
+                            <p class="text-xs text-slate-600 italic">No corrupted mods sold in active intervals.</p>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900/20 border border-slate-800/60 p-4 rounded-xl">
+                        <h4 class="text-xs uppercase text-slate-500 tracking-wider font-bold mb-3 flex items-center justify-between">
+                            <span>Standard Merchandise (Active Session)</span>
+                            <span class="text-slate-400" id="sessionOthersCount">0 items</span>
+                        </h4>
+                        <div class="space-y-2 max-h-48 overflow-y-auto" id="sessionOthersList">
+                            <p class="text-xs text-slate-600 italic">No merchandise sold in active intervals.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Collapsible Historical Business Log section -->
+                <div class="border-t border-slate-900 pt-5">
+                    <button onclick="toggleBusinessHistory()" class="flex items-center justify-between w-full text-slate-400 hover:text-white transition focus:outline-none">
+                        <span class="text-xs uppercase tracking-widest font-bold flex items-center gap-1.5">
+                            <i data-lucide="archive" class="w-4 h-4 text-slate-500"></i>
+                            Weekly Summary & Historical Business Log
+                        </span>
+                        <i data-lucide="chevron-down" class="w-4 h-4 transition duration-300" id="historyChevron"></i>
+                    </button>
+
+                    <div id="businessHistoryPanel" class="hidden mt-4 space-y-6">
+                        
+                        <!-- Summary Lookback Period Control -->
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-900/30 border border-slate-800/60 p-4 rounded-xl mb-4">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="calendar" class="w-4 h-4 text-amber-500"></i>
+                                <span class="text-xs font-bold text-slate-400">View Summary Period:</span>
+                                <input 
+                                    type="number" 
+                                    id="summaryLookbackInput" 
+                                    min="1" 
+                                    max="90" 
+                                    value="7"
+                                    onchange="handleSummaryLookbackChange(this.value)"
+                                    class="w-12 bg-slate-950 text-amber-400 font-bold border border-slate-800 rounded px-1.5 py-0.5 text-center focus:outline-none focus:border-amber-500 text-xs"
+                                />
+                                <span class="text-xs text-slate-400 font-semibold">Days</span>
+                            </div>
+                            <span class="text-[10px] text-slate-500 font-bold bg-slate-900/50 px-2.5 py-1 rounded border border-slate-800/60">
+                                90-Day Retention Limit Active
+                            </span>
+                        </div>
+
+                        <!-- Real-time Calculated Weekly Averages Dashboard -->
+                        <div class="bg-slate-950 border border-slate-900 rounded-xl p-4">
+                            <h4 class="text-xs uppercase tracking-wider text-slate-400 font-bold mb-3 flex items-center gap-1.5">
+                                <i data-lucide="bar-chart-2" class="w-4 h-4 text-amber-500"></i>
+                                Logged <span id="summaryPeriodLabel">7</span>-Day Average Summary
+                            </h4>
+                            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                                <div class="bg-slate-900/50 p-3 rounded-lg border border-slate-800/60">
+                                    <div class="text-[10px] uppercase text-slate-500 font-semibold">Avg Hours / Day</div>
+                                    <div id="weeklyAvgHours" class="text-lg font-bold text-white mt-1">0.00h</div>
+                                </div>
+                                <div class="bg-slate-900/50 p-3 rounded-lg border border-slate-800/60">
+                                    <div class="text-[10px] uppercase text-slate-500 font-semibold">Avg Corrupted / Day</div>
+                                    <div id="weeklyAvgCM" class="text-lg font-bold text-amber-400 mt-1">0p</div>
+                                </div>
+                                <div class="bg-slate-900/50 p-3 rounded-lg border border-slate-800/60">
+                                    <div class="text-[10px] uppercase text-slate-500 font-semibold">Avg Others / Day</div>
+                                    <div id="weeklyAvgOthers" class="text-lg font-bold text-slate-300 mt-1">0p</div>
+                                </div>
+                                <div class="bg-slate-900/50 p-3 rounded-lg border border-slate-800/60">
+                                    <div class="text-[10px] uppercase text-slate-500 font-semibold">Avg Corrupted Rate</div>
+                                    <div id="weeklyAvgCMRate" class="text-lg font-bold text-amber-500 mt-1">0p / hr</div>
+                                </div>
+                                <div class="bg-slate-900/50 p-3 rounded-lg border border-slate-800/60">
+                                    <div class="text-[10px] uppercase text-slate-500 font-semibold">Avg Overall Rate</div>
+                                    <div id="weeklyAvgOverallRate" class="text-lg font-bold text-emerald-400 mt-1">0p / hr</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Spacious Padded Detailed Business Log Table (Addresses image_29291f.png spacing issue) -->
+                        <div class="overflow-x-auto rounded-xl border border-slate-900">
+                            <table class="w-full text-left text-xs text-slate-400 border-collapse bg-slate-950/40">
+                                <thead>
+                                    <tr class="border-b border-slate-800 text-slate-500 font-bold bg-slate-950">
+                                        <th class="py-3 px-5">Business Day</th>
+                                        <th class="py-3 px-5">Active Hours</th>
+                                        <th class="py-3 px-5">Corrupted Mods Plat</th>
+                                        <th class="py-3 px-5">Other Goods Plat</th>
+                                        <th class="py-3 px-5">Corrupted Plat Rate</th>
+                                        <th class="py-3 px-5">Overall Rate</th>
+                                        <th class="py-3 px-5 text-right">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="historyTableBody">
+                                    <tr>
+                                        <td colspan="7" class="py-4 px-5 text-center text-slate-600 italic">No historical working days logged yet.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Custom Window Controls -->
+            <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-xl">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-900 mb-5">
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+                        <h3 class="text-xs uppercase tracking-wider text-slate-400 font-semibold flex items-center gap-1.5">
+                            <i data-lucide="calendar" class="w-4 h-4 text-amber-500"></i>
+                            Custom Window Controls
+                        </h3>
+                        <span class="text-[10px] text-slate-500 font-bold bg-slate-900 px-2 py-0.5 rounded border border-slate-800">
+                            90 Days Max Historical Limit
+                        </span>
+                        <!-- Adjustable Default Days Period -->
+                        <div class="flex items-center gap-1.5 bg-slate-900/60 px-2 py-1 rounded border border-slate-800 text-[10px] text-slate-400 font-bold">
+                            <span>Default Period:</span>
+                            <input 
+                                type="number" 
+                                id="defaultDaysInput" 
+                                min="1" 
+                                max="90" 
+                                value="7"
+                                onchange="handleDefaultDaysChange(this.value)"
+                                class="w-10 bg-slate-950 text-amber-400 font-bold border border-slate-800 rounded px-1.5 py-0.5 text-center focus:outline-none focus:border-amber-500"
+                            />
+                            <span>Days</span>
+                        </div>
+                    </div>
+                    <!-- Perfectly level dynamic status capsule -->
+                    <div id="checkpointStatus" class="self-start lg:self-auto"></div>
+                </div>
+
+                <!-- Highly adaptive Flexbox layout that guarantees absolutely NO wrapping-stacking of checkpoint buttons on wide viewports (Addresses image_9106a5.png) -->
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
+                    <!-- Left half: Date Picker Inputs (Whole Box Clickable) -->
+                    <div class="flex flex-wrap items-center gap-4">
+                        <div class="flex items-center gap-2">
+                            <span class="text-[11px] text-slate-500 uppercase font-bold">Start:</span>
+                            <input 
+                                type="date" 
+                                id="startDatePicker"
+                                onclick="this.showPicker()"
+                                class="bg-slate-900 border border-slate-750 hover:border-slate-650 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500 transition cursor-pointer font-semibold"
+                            />
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-[11px] text-slate-500 uppercase font-bold">End:</span>
+                            <input 
+                                type="date" 
+                                id="endDatePicker"
+                                placeholder="Today"
+                                onclick="this.showPicker()"
+                                class="bg-slate-900 border border-slate-750 hover:border-slate-650 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500 transition cursor-pointer font-semibold"
+                            />
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button 
+                                onclick="applyCustomDateRange()"
+                                class="px-3.5 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-bold rounded-lg transition"
+                            >
+                                Apply Range
+                            </button>
+                            <button 
+                                id="clearRangeBtn"
+                                onclick="clearCustomDateRange()"
+                                class="hidden px-2.5 py-1.5 bg-slate-900 hover:bg-slate-850 text-slate-400 text-xs font-semibold border border-slate-800 rounded-lg transition flex items-center gap-1"
+                                title="Return to default window"
+                            >
+                                <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                                Reset Range
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Vertical separation line for widescreen monitors -->
+                    <div class="hidden lg:block w-px h-8 bg-slate-800/80"></div>
+
+                    <!-- Right half: Checkpoint Actions (Uses flex-nowrap to guarantee all buttons sit beautifully in one single row) -->
+                    <div class="flex flex-wrap sm:flex-nowrap items-center justify-end gap-2 shrink-0">
+                        <button 
+                            onclick="setCheckpoint()" 
+                            class="px-3 py-1.5 bg-blue-600/15 hover:bg-blue-600/25 text-blue-400 border border-blue-500/30 text-xs font-bold rounded-lg transition flex items-center justify-center gap-1.5 whitespace-nowrap"
+                            title="Ignore old history: only display transactions closed after this moment"
+                        >
+                            <i data-lucide="flag" class="w-3.5 h-3.5"></i>
+                            Set Checkpoint
+                        </button>
+                        <button 
+                            onclick="toggleCustomCheckpointDrawer()" 
+                            class="px-3 py-1.5 bg-indigo-600/15 hover:bg-indigo-600/25 text-indigo-400 border border-indigo-500/30 text-xs font-bold rounded-lg transition flex items-center justify-center gap-1.5 whitespace-nowrap"
+                            title="Pick a custom date and time as a checkpoint"
+                        >
+                            <i data-lucide="calendar-days" class="w-3.5 h-3.5"></i>
+                            Set Custom Checkpoint
+                        </button>
+                        <button 
+                            onclick="clearCheckpoint()" 
+                            id="clearCheckpointBtn"
+                            class="hidden px-2.5 py-1.5 bg-slate-900 hover:bg-red-950/40 hover:text-red-400 text-slate-400 border border-slate-850 rounded-lg text-xs font-semibold transition flex items-center justify-center gap-1 whitespace-nowrap"
+                            title="Clear checkpoint filter and return to default view"
+                        >
+                            <i data-lucide="x-circle" class="w-3.5 h-3.5"></i>
+                            Reset Checkpoint
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Collapsible Custom Checkpoint Drawer (Slides open elegantly right below the buttons) -->
+                <div id="customCheckpointDrawer" class="hidden w-full mt-4 bg-slate-900/40 border border-slate-800/80 p-2 rounded-xl flex items-center gap-2">
+                    <input 
+                        type="datetime-local" 
+                        id="customCheckpointInput"
+                        onclick="this.showPicker()"
+                        class="flex-grow bg-slate-950 border border-slate-800 hover:border-slate-750 rounded-lg px-2 py-1 text-xs text-white focus:outline-none focus:border-amber-500 transition cursor-pointer font-medium"
+                    />
+                    <button 
+                        onclick="saveCustomCheckpoint()"
+                        class="px-3 py-1 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold rounded-lg transition shrink-0"
+                    >
+                        Apply
+                    </button>
+                </div>
+            </div>
+
+            <!-- 5. Revenues Statistics Cards -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 shadow-xl relative overflow-hidden group hover:border-amber-500/40 transition-all duration-300">
                     <div class="flex items-center gap-3 mb-4">
@@ -319,7 +518,7 @@
                 </div>
             </div>
 
-            <!-- Investment Planner Panel -->
+            <!-- 6. Custom Investment Planner Panel -->
             <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 shadow-xl">
                 <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-4 border-b border-slate-850 mb-6">
                     <div class="max-w-md">
@@ -456,7 +655,7 @@
                 </div>
             </div>
 
-            <!-- Double Column Tables (Upgraded with robust layout fonts and inline filters) -->
+            <!-- 7. Order History Ledger Tables -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <!-- Corrupted Mods Column -->
                 <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 flex flex-col h-[560px]">
@@ -507,181 +706,6 @@
                 </div>
             </div>
 
-            <!-- Working Session Control Center -->
-            <div id="sessionDashboard" class="bg-slate-950 border border-slate-800 rounded-2xl p-6 shadow-xl mt-8">
-                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-4 border-b border-slate-850 mb-6">
-                    <div class="max-w-md">
-                        <h3 class="text-lg font-bold text-white tracking-wide flex items-center gap-2">
-                            <i data-lucide="timer" class="text-emerald-400 w-5 h-5"></i>
-                            Active Working Hours Tracker
-                        </h3>
-                        <p class="text-xs text-slate-400 mt-1 font-semibold">
-                            Measure and review real-time productivity stats. Sales are filtered specifically during active intervals.
-                        </p>
-                    </div>
-
-                    <!-- Stopwatch Pill Display and Actions -->
-                    <div class="flex items-center flex-wrap gap-3">
-                        <div class="flex items-center gap-2 bg-slate-900 border border-slate-800 px-4 py-2 rounded-xl">
-                            <span class="w-2.5 h-2.5 rounded-full bg-slate-600 animate-pulse" id="stopwatchPulse"></span>
-                            <span id="stopwatchTimer" class="font-mono text-lg font-bold text-slate-300">00:00:00</span>
-                        </div>
-
-                        <div class="flex items-center gap-1.5 bg-slate-900 p-1.5 rounded-xl border border-slate-800">
-                            <button id="sessionStartBtn" onclick="startSession()" class="px-3.5 py-1.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold rounded-lg transition flex items-center gap-1">
-                                <i data-lucide="play" class="w-3.5 h-3.5"></i> Start
-                            </button>
-                            <button id="sessionPauseBtn" onclick="pauseSession()" class="hidden px-3.5 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold rounded-lg transition flex items-center gap-1">
-                                <i data-lucide="pause" class="w-3.5 h-3.5"></i> Pause
-                            </button>
-                            <button id="sessionNewDayBtn" onclick="confirmNewDay()" class="px-3.5 py-1.5 bg-slate-950 hover:bg-amber-500/10 hover:text-amber-400 border border-slate-800 text-slate-400 text-xs font-semibold rounded-lg transition flex items-center gap-1">
-                                <i data-lucide="sun" class="w-3.5 h-3.5 text-amber-500"></i> Start New Day
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Custom Inline Confirmation Warning Box instead of alert/confirm window functions -->
-                <div id="resetConfirmationBox" class="hidden bg-slate-900 border border-amber-500/30 rounded-xl p-5 mb-6">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-5">
-                        <div class="flex items-start gap-3">
-                            <div class="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-500 shrink-0">
-                                <i data-lucide="help-circle" class="w-5 h-5"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-amber-400 font-bold text-sm">Start a New Business Day?</h4>
-                                <p class="text-xs text-slate-400 mt-1 leading-relaxed font-semibold">
-                                    Are you sure you want to start a new day? This will reset the active timer and move your current day's accumulated stats to your Weekly Summary log.
-                                </p>
-                            </div>
-                        </div>
-                        <div class="flex flex-wrap items-center gap-2 shrink-0 justify-end">
-                            <button onclick="executeNewDay(true)" class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold rounded-lg transition">
-                                Yes, Archive & Start New Day
-                            </button>
-                            <button onclick="executeNewDay(false)" class="px-3.5 py-2 bg-red-950/40 hover:bg-red-900/40 text-red-300 border border-red-900/30 text-xs font-bold rounded-lg transition" title="Wipes current day's active tracking data without saving it to summary log">
-                                Clear Current Day (No Save)
-                            </button>
-                            <button onclick="cancelNewDay()" class="px-3.5 py-2 bg-slate-950 text-slate-400 border border-slate-800 text-xs font-semibold rounded-lg transition">
-                                Cancel
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Real-time metrics computed strictly during tracked intervals -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-                    <div class="bg-slate-900/40 border border-slate-800/80 p-4 rounded-xl">
-                        <span class="text-xs text-slate-500 font-semibold uppercase">Active Hours</span>
-                        <div class="text-2xl font-bold text-white mt-1" id="sessionActiveTime">0.00h</div>
-                    </div>
-                    <div class="bg-slate-900/40 border border-slate-800/80 p-4 rounded-xl">
-                        <span class="text-xs text-slate-500 font-semibold uppercase">Corrupted Mods Plat</span>
-                        <div class="text-2xl font-bold text-amber-500 mt-1" id="sessionCorruptedTotal">0p</div>
-                    </div>
-                    <div class="bg-slate-900/40 border border-slate-800/80 p-4 rounded-xl">
-                        <span class="text-xs text-slate-500 font-semibold uppercase">Other Goods Plat</span>
-                        <div class="text-2xl font-bold text-slate-300 mt-1" id="sessionOthersTotal">0p</div>
-                    </div>
-                    <div class="bg-slate-900/40 border border-slate-800/80 p-4 rounded-xl">
-                        <span class="text-xs text-slate-500 font-semibold uppercase">Corrupted Plat Rate</span>
-                        <div class="text-2xl font-bold text-amber-400 mt-1" id="sessionCorruptedPlatPerHour">0p / hr</div>
-                    </div>
-                    <div class="bg-slate-900/40 border border-slate-800/80 p-4 rounded-xl">
-                        <span class="text-xs text-slate-500 font-semibold uppercase">Overall Plat Rate</span>
-                        <div class="text-2xl font-bold text-emerald-400 mt-1" id="sessionOverallPlatPerHour">0p / hr</div>
-                    </div>
-                </div>
-
-                <!-- Dynamic Itemised Session Sales Record -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
-                    <div class="bg-slate-900/20 border border-slate-800/60 p-4 rounded-xl">
-                        <h4 class="text-xs uppercase text-slate-500 tracking-wider font-bold mb-3 flex items-center justify-between">
-                            <span>Corrupted Mods (Active Session)</span>
-                            <span class="text-amber-500" id="sessionCMCount">0 items</span>
-                        </h4>
-                        <div class="space-y-2 max-h-48 overflow-y-auto" id="sessionCMList">
-                            <p class="text-xs text-slate-600 italic">No corrupted mods sold in active intervals.</p>
-                        </div>
-                    </div>
-                    <div class="bg-slate-900/20 border border-slate-800/60 p-4 rounded-xl">
-                        <h4 class="text-xs uppercase text-slate-500 tracking-wider font-bold mb-3 flex items-center justify-between">
-                            <span>Standard Merchandise (Active Session)</span>
-                            <span class="text-slate-400" id="sessionOthersCount">0 items</span>
-                        </h4>
-                        <div class="space-y-2 max-h-48 overflow-y-auto" id="sessionOthersList">
-                            <p class="text-xs text-slate-600 italic">No merchandise sold in active intervals.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Collapsible Historical Business Log section -->
-                <div class="border-t border-slate-900 pt-5">
-                    <button onclick="toggleBusinessHistory()" class="flex items-center justify-between w-full text-slate-400 hover:text-white transition focus:outline-none">
-                        <span class="text-xs uppercase tracking-widest font-bold flex items-center gap-1.5">
-                            <i data-lucide="archive" class="w-4 h-4 text-slate-500"></i>
-                            Weekly Summary & Historical Business Log
-                        </span>
-                        <i data-lucide="chevron-down" class="w-4 h-4 transition duration-300" id="historyChevron"></i>
-                    </button>
-
-                    <div id="businessHistoryPanel" class="hidden mt-4 space-y-6">
-                        
-                        <!-- Real-time Calculated Weekly Averages Dashboard (Pristine grid layouts) -->
-                        <div class="bg-slate-950 border border-slate-900 rounded-xl p-4">
-                            <h4 class="text-xs uppercase tracking-wider text-slate-400 font-bold mb-3 flex items-center gap-1.5">
-                                <i data-lucide="bar-chart-2" class="w-4 h-4 text-amber-500"></i>
-                                Logged Weekly Average Summary
-                            </h4>
-                            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-                                <div class="bg-slate-900/50 p-3 rounded-lg border border-slate-800/60">
-                                    <div class="text-[10px] uppercase text-slate-500 font-semibold">Avg Hours / Day</div>
-                                    <div id="weeklyAvgHours" class="text-lg font-bold text-white mt-1">0.00h</div>
-                                </div>
-                                <div class="bg-slate-900/50 p-3 rounded-lg border border-slate-800/60">
-                                    <div class="text-[10px] uppercase text-slate-500 font-semibold">Avg Corrupted / Day</div>
-                                    <div id="weeklyAvgCM" class="text-lg font-bold text-amber-400 mt-1">0p</div>
-                                </div>
-                                <div class="bg-slate-900/50 p-3 rounded-lg border border-slate-800/60">
-                                    <div class="text-[10px] uppercase text-slate-500 font-semibold">Avg Others / Day</div>
-                                    <div id="weeklyAvgOthers" class="text-lg font-bold text-slate-300 mt-1">0p</div>
-                                </div>
-                                <div class="bg-slate-900/50 p-3 rounded-lg border border-slate-800/60">
-                                    <div class="text-[10px] uppercase text-slate-500 font-semibold">Avg Corrupted Rate</div>
-                                    <div id="weeklyAvgCMRate" class="text-lg font-bold text-amber-500 mt-1">0p / hr</div>
-                                </div>
-                                <div class="bg-slate-900/50 p-3 rounded-lg border border-slate-800/60">
-                                    <div class="text-[10px] uppercase text-slate-500 font-semibold">Avg Overall Rate</div>
-                                    <div id="weeklyAvgOverallRate" class="text-lg font-bold text-emerald-400 mt-1">0p / hr</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Spacious Padded Detailed Business Log Table (Addresses image_29291f.png spacing issue) -->
-                        <div class="overflow-x-auto rounded-xl border border-slate-900">
-                            <table class="w-full text-left text-xs text-slate-400 border-collapse bg-slate-950/40">
-                                <thead>
-                                    <tr class="border-b border-slate-800 text-slate-500 font-bold bg-slate-950">
-                                        <th class="py-3 px-5">Business Day</th>
-                                        <th class="py-3 px-5">Active Hours</th>
-                                        <th class="py-3 px-5">Corrupted Mods Plat</th>
-                                        <th class="py-3 px-5">Other Goods Plat</th>
-                                        <th class="py-3 px-5">Corrupted Plat Rate</th>
-                                        <th class="py-3 px-5">Overall Rate</th>
-                                        <th class="py-3 px-5 text-right">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="historyTableBody">
-                                    <tr>
-                                        <td colspan="7" class="py-4 px-5 text-center text-slate-600 italic">No historical working days logged yet.</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </div>
     </main>
 
@@ -713,6 +737,7 @@
         let customStartDate = null; // Saves start calendar filter
         let customEndDate = null; // Saves end calendar filter
         let defaultLookbackDays = 7; // Configurable timeline fallback lookback limit
+        let summaryLookbackDays = 7; // Customizable summary view period
         let rawClosedOrders = []; // Copy of orders so we can re-filter live without refetching
         let calculationSource = 'corrupted'; // corrupted | total | others
         let calculationMode = 'override'; // override | add
@@ -817,8 +842,8 @@
             } else {
                 // Establish fallback lookback timeline baseline
                 const tomorrow = new Date();
-                tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
-                tomorrow.setUTCHours(0, 0, 0, 0); 
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                tomorrow.setHours(0, 0, 0, 0); 
 
                 const daysInMs = defaultLookbackDays * 24 * 60 * 60 * 1000;
                 startTimestamp = tomorrow.getTime() - daysInMs;
@@ -869,6 +894,7 @@
                 const savedCustomEnd = localStorage.getItem('wf_custom_end_date');
                 const savedPercent = localStorage.getItem('wf_reinvest_percent');
                 const savedDefaultDays = localStorage.getItem('wf_default_lookback_days');
+                const savedSummaryLookback = localStorage.getItem('wf_summary_lookback_days');
                 const savedSource = localStorage.getItem('wf_calculation_source');
                 const savedMode = localStorage.getItem('wf_calculation_mode');
 
@@ -885,6 +911,9 @@
                 }
                 if (savedDefaultDays !== null) {
                     defaultLookbackDays = parseInt(savedDefaultDays, 10) || 7;
+                }
+                if (savedSummaryLookback !== null) {
+                    summaryLookbackDays = parseInt(savedSummaryLookback, 10) || 7;
                 }
                 if (savedSource !== null) {
                     calculationSource = savedSource;
@@ -907,6 +936,8 @@
                 document.getElementById('percentInput').value = reinvestPercentage;
                 document.getElementById('plannerPercentLabel').textContent = reinvestPercentage;
                 document.getElementById('defaultDaysInput').value = defaultLookbackDays;
+                document.getElementById('summaryLookbackInput').value = summaryLookbackDays;
+                document.getElementById('summaryPeriodLabel').textContent = summaryLookbackDays;
                 document.getElementById('calcSourceSelect').value = calculationSource;
                 document.getElementById('calcModeSelect').value = calculationMode;
 
@@ -932,12 +963,22 @@
         function saveInvestmentToVault() {
             updateInvestmentDisplay();
             try {
+                const pruneLimit = new Date();
+                pruneLimit.setDate(pruneLimit.getDate() - 90);
+                const pruneLimitStr = pruneLimit.toISOString().split('T')[0];
+                for (const dayKey in businessDayHistory) {
+                    if (dayKey < pruneLimitStr) {
+                        delete businessDayHistory[dayKey];
+                    }
+                }
+
                 localStorage.setItem('wf_investment_budget', investmentBudget);
                 localStorage.setItem('wf_sales_checkpoint', salesCheckpoint || "");
                 localStorage.setItem('wf_custom_start_date', customStartDate || "");
                 localStorage.setItem('wf_custom_end_date', customEndDate || "");
                 localStorage.setItem('wf_reinvest_percent', reinvestPercentage);
                 localStorage.setItem('wf_default_lookback_days', defaultLookbackDays);
+                localStorage.setItem('wf_summary_lookback_days', summaryLookbackDays);
                 localStorage.setItem('wf_calculation_source', calculationSource);
                 localStorage.setItem('wf_calculation_mode', calculationMode);
 
@@ -963,6 +1004,16 @@
                 reinvestPercentage = parsedVal;
                 document.getElementById('plannerPercentLabel').textContent = reinvestPercentage;
                 saveInvestmentToVault();
+            }
+        };
+
+        window.handleSummaryLookbackChange = function(value) {
+            const parsedVal = parseInt(value, 10);
+            if (!isNaN(parsedVal) && parsedVal >= 1 && parsedVal <= 90) {
+                summaryLookbackDays = parsedVal;
+                document.getElementById('summaryPeriodLabel').textContent = summaryLookbackDays;
+                saveInvestmentToVault();
+                renderBusinessDayHistoryTable();
             }
         };
 
@@ -1260,7 +1311,7 @@
                             ${qtyDisplay}
                         </div>
                         <div class="text-xs text-slate-500 flex items-center gap-1 mt-1 font-medium">
-                            <i data-lucide="clock" class="w-3 h-3 text-slate-600"></i>
+                            <i data-lucide="clock" class="w-3.5 h-3.5 text-slate-600"></i>
                             <span>${displayDate}</span>
                             <span>•</span>
                             <span>${displayTime}</span>
@@ -1317,7 +1368,6 @@
         }
 
         function getStatsForIntervals(intervals) {
-            console.log(intervals);
             let activeMs = 0;
             intervals.forEach(inv => {
                 const end = inv.end || Date.now();
@@ -1478,7 +1528,7 @@
                 archiveSessionToBusinessLog();
             }
 
-            // Wipe out stopwatch structures completely to initiate a clean day
+            // Wipe out stopwatch structures completely to initiate a clean session
             sessionIntervals = [];
             sessionStatus = 'stopped';
 
@@ -1507,7 +1557,7 @@
                 processedIntervals.push({ start: nowTime, end: nowTime });
             }
 
-            // Save raw intervals directly into history memory
+            // Save or append raw intervals directly into history memory
             if (!businessDayHistory[rawKey]) {
                 businessDayHistory[rawKey] = {
                     day: rawKey,
@@ -1519,7 +1569,7 @@
                 businessDayHistory[rawKey].intervals = [];
             }
 
-            // Append newly archived intervals
+            // Append newly archived intervals to avoid overriding same-day logging sessions!
             businessDayHistory[rawKey].intervals = businessDayHistory[rawKey].intervals.concat(processedIntervals);
 
             renderBusinessDayHistoryTable();
@@ -1595,13 +1645,21 @@
 
             const keys = Object.keys(businessDayHistory).sort((a,b) => b.localeCompare(a)); // Sort desc (recent days first)
 
+            // Calculate lookback window date boundaries
+            const now = new Date();
+            const thresholdDate = new Date();
+            thresholdDate.setDate(now.getDate() - summaryLookbackDays);
+            const thresholdStr = thresholdDate.toISOString().split('T')[0];
+
+            const filteredKeys = keys.filter(key => key >= thresholdStr);
+
             // Calculate aggregate metrics dynamically using raw stored intervals
             let sumHours = 0;
             let sumCM = 0;
             let sumOthers = 0;
-            const totalDays = keys.length;
+            const totalDays = filteredKeys.length;
 
-            const computedHistoryItems = keys.map(key => {
+            const computedHistoryItems = filteredKeys.map(key => {
                 const item = businessDayHistory[key];
                 let activeHours = 0;
                 let revenueCM = 0;
@@ -1652,7 +1710,7 @@
             if (totalDays === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="7" class="py-4 px-5 text-center text-slate-600 italic">No historical working days logged yet.</td>
+                        <td colspan="7" class="py-4 px-5 text-center text-slate-600 italic">No historical working days logged yet within this summary period.</td>
                     </tr>`;
                 return;
             }
