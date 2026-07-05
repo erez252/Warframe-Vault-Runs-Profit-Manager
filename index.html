@@ -350,6 +350,24 @@
                                 </tbody>
                             </table>
                         </div>
+
+                        <!-- Add Empty Day Row -->
+                        <div id="addDayRow" class="flex items-center gap-2">
+                            <button onclick="toggleAddDayPicker()" class="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900/60 hover:bg-emerald-500/10 text-slate-500 hover:text-emerald-400 border border-dashed border-slate-700 hover:border-emerald-500/40 rounded-xl text-xs font-bold transition">
+                                <i data-lucide="calendar-plus" class="w-3.5 h-3.5"></i> Add Empty Day
+                            </button>
+                            <div id="addDayPickerInline" class="hidden flex items-center gap-2">
+                                <input type="date" id="addDayDateInput"
+                                    onclick="this.showPicker()"
+                                    class="bg-slate-900 border border-slate-700 hover:border-emerald-500/50 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-emerald-500 transition cursor-pointer font-semibold" />
+                                <button onclick="confirmAddEmptyDay()" class="px-3 py-1.5 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 border border-emerald-500/30 text-xs font-bold rounded-lg transition">
+                                    Create
+                                </button>
+                                <button onclick="toggleAddDayPicker()" class="text-slate-600 hover:text-slate-400 transition">
+                                    <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -717,6 +735,55 @@
         </div>
     </footer>
 
+    <!-- Time Window Editor Modal -->
+    <div id="intervalEditorModal" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-4">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" onclick="closeIntervalEditor()"></div>
+        <!-- Dialog -->
+        <div class="relative bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col">
+            <!-- Header -->
+            <div class="flex items-center justify-between px-6 py-4 border-b border-slate-800 shrink-0">
+                <div>
+                    <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                        <i data-lucide="clock-edit" class="w-4 h-4 text-amber-500"></i>
+                        Edit Time Windows
+                    </h3>
+                    <p id="intervalEditorDayLabel" class="text-xs text-slate-400 mt-0.5 font-semibold"></p>
+                </div>
+                <button onclick="closeIntervalEditor()" class="text-slate-500 hover:text-white transition p-1 rounded-lg hover:bg-slate-800">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+            <!-- Interval List -->
+            <div class="flex-grow overflow-y-auto px-6 py-4 space-y-3" id="intervalEditorList"></div>
+            <!-- Add Row Button -->
+            <div class="px-6 pb-3 shrink-0">
+                <button onclick="addIntervalEditorRow()" class="w-full py-2 border border-dashed border-slate-700 hover:border-amber-500/50 hover:bg-amber-500/5 text-slate-500 hover:text-amber-400 text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5">
+                    <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add Time Window
+                </button>
+            </div>
+            <!-- Footer -->
+            <div class="flex items-center justify-end gap-2 px-6 py-4 border-t border-slate-800 shrink-0">
+                <button onclick="closeIntervalEditor()" class="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white bg-slate-950 border border-slate-800 rounded-lg transition">
+                    Cancel
+                </button>
+                <button onclick="saveIntervalEdits()" class="px-4 py-2 text-xs font-bold text-slate-950 bg-amber-500 hover:bg-amber-400 rounded-lg transition flex items-center gap-1.5">
+                    <i data-lucide="save" class="w-3.5 h-3.5"></i> Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Reload Button -->
+    <button
+        onclick="fabReload()"
+        aria-label="Refresh page"
+        title="Refresh page"
+        class="fixed bottom-6 right-6 z-[60] w-14 h-14 rounded-full bg-amber-500 hover:bg-amber-400 active:scale-95 text-slate-950 flex items-center justify-center shadow-lg shadow-amber-500/20 transition-all duration-200"
+    >
+        <i data-lucide="refresh-cw" class="w-6 h-6"></i>
+    </button>
+
     <script>
         // Pristine list of Corrupted Mods
         const corruptedMods = [
@@ -931,6 +998,10 @@
                 }
                 if (savedBusinessHistory !== null) {
                     businessDayHistory = JSON.parse(savedBusinessHistory);
+                    // Clear any cached formattedDay strings so they are regenerated in the browser's language
+                    for (const key in businessDayHistory) {
+                        delete businessDayHistory[key].formattedDay;
+                    }
                 }
 
                 document.getElementById('percentInput').value = reinvestPercentage;
@@ -1234,6 +1305,13 @@
             
             showLoading(false);
             showResults(true);
+
+            // Restore scroll position if this load was triggered by the FAB reload button
+            const savedScroll = localStorage.getItem('wf_fab_scroll');
+            if (savedScroll !== null) {
+                window.scrollTo({ top: parseInt(savedScroll, 10), behavior: 'instant' });
+                localStorage.removeItem('wf_fab_scroll');
+            }
         }
 
         // Dynamic Filtering algorithm that runs without API requests
@@ -1328,11 +1406,11 @@
             return card;
         }
 
-        // Helper function translating local dates to customized "DayofWeek DD/MM" strings
+        // Helper function translating local dates to "DayofWeek DD/MM" strings in the browser's language
         function getFormattedBusinessDay(timestampOrStr) {
             const date = new Date(timestampOrStr);
-            const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-            const dayName = weekdays[date.getDay()];
+            // Use the browser's locale for the weekday name (e.g. "ראשון" in Hebrew, "dimanche" in French)
+            const dayName = date.toLocaleDateString(undefined, { weekday: 'long' });
             
             const day = String(date.getDate()).padStart(2, '0');
             const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -1543,8 +1621,6 @@
         // Compiles current interval stats into the Business Day logs
         function archiveSessionToBusinessLog() {
             const nowTime = Date.now();
-            const rawKey = new Date(nowTime).toISOString().split('T')[0]; // YYYY-MM-DD
-            const friendlyDay = getFormattedBusinessDay(nowTime);
 
             // Close active open interval
             const processedIntervals = sessionIntervals.map(inv => ({
@@ -1556,6 +1632,13 @@
                 // If there were no intervals, create a nominal zero-length interval for the record
                 processedIntervals.push({ start: nowTime, end: nowTime });
             }
+
+            // Derive the business day from the EARLIEST interval start, not from when End Day was pressed.
+            // This way a session that started Sunday 11pm and ended Monday 12:30am is filed under Sunday.
+            const earliestStart = processedIntervals.reduce((min, inv) => Math.min(min, inv.start), Infinity);
+            const anchorTime = isFinite(earliestStart) ? earliestStart : nowTime;
+            const rawKey = new Date(anchorTime).toLocaleDateString('en-CA'); // YYYY-MM-DD in local timezone
+            const friendlyDay = getFormattedBusinessDay(anchorTime);
 
             // Save or append raw intervals directly into history memory
             if (!businessDayHistory[rawKey]) {
@@ -1730,9 +1813,14 @@
                     <td class="py-3 px-5 text-amber-400 font-bold">${Math.round(rateCM).toLocaleString()}p / hr</td>
                     <td class="py-3 px-5 text-emerald-400 font-bold">${Math.round(rateOverall).toLocaleString()}p / hr</td>
                     <td class="py-3 px-5 text-right">
-                        <button onclick="deleteBusinessDayLog('${item.key}')" class="text-xs text-red-500/80 hover:text-red-400 font-bold transition flex items-center gap-1 ml-auto mr-1">
-                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Clear
-                        </button>
+                        <div class="flex items-center justify-end gap-2">
+                            <button onclick="openIntervalEditor('${item.key}')" class="text-xs text-slate-500 hover:text-amber-400 font-bold transition flex items-center gap-1" title="Edit time windows for this day">
+                                <i data-lucide="settings" class="w-3.5 h-3.5"></i>
+                            </button>
+                            <button onclick="deleteBusinessDayLog('${item.key}')" class="text-xs text-red-500/80 hover:text-red-400 font-bold transition flex items-center gap-1" title="Delete this day's log">
+                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Clear
+                            </button>
+                        </div>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -1741,10 +1829,322 @@
             lucide.createIcons();
         }
 
+        // ── Interval Editor Modal ─────────────────────────────────────────────
+        let intervalEditorDayKey = null; // which day is currently being edited
+
+        // Helper: convert a JS timestamp to a "YYYY-MM-DDTHH:MM:SS" string for datetime-local inputs with seconds
+        function tsToLocalInput(ts) {
+            const d = new Date(ts);
+            const pad = n => String(n).padStart(2, '0');
+            return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+        }
+
+        // Helper: convert a datetime-local string back to a timestamp
+        function localInputToTs(val) {
+            return new Date(val).getTime();
+        }
+
+        window.openIntervalEditor = function(dayKey) {
+            const entry = businessDayHistory[dayKey];
+            if (!entry) return;
+
+            intervalEditorDayKey = dayKey;
+
+            // Set the day label in the modal header
+            document.getElementById('intervalEditorDayLabel').textContent =
+                entry.formattedDay || getFormattedBusinessDay(entry.day || dayKey);
+
+            // Populate the list
+            const list = document.getElementById('intervalEditorList');
+            list.innerHTML = '';
+            const intervals = entry.intervals || [];
+            if (intervals.length === 0) {
+                // Start with one empty row so the user can add immediately
+                appendIntervalEditorRow(list, null, null);
+            } else {
+                intervals.forEach(inv => appendIntervalEditorRow(list, inv.start, inv.end));
+            }
+
+            // Show modal
+            document.getElementById('intervalEditorModal').classList.remove('hidden');
+            lucide.createIcons();
+        };
+
+        window.closeIntervalEditor = function() {
+            document.getElementById('intervalEditorModal').classList.add('hidden');
+            intervalEditorDayKey = null;
+        };
+
+        function appendIntervalEditorRow(container, startTs, endTs) {
+            const row = document.createElement('div');
+            row.className = 'interval-editor-row flex items-center gap-2 bg-slate-950/60 border border-slate-800 rounded-xl px-3 py-2.5';
+
+            const startVal = startTs ? tsToLocalInput(startTs) : '';
+            const endVal   = endTs   ? tsToLocalInput(endTs)   : '';
+
+            row.innerHTML = `
+                <div class="flex flex-col gap-1 flex-grow min-w-0">
+                    <div class="flex items-center gap-2">
+                        <span class="text-[10px] text-slate-500 font-bold uppercase w-8 shrink-0">Start</span>
+                        <input type="datetime-local" step="1" onclick="if(event.offsetX > this.offsetWidth - 40) this.showPicker()" class="interval-start flex-grow bg-slate-900 border border-slate-800 rounded-lg px-2 py-1 text-xs text-white focus:outline-none focus:border-amber-500 transition font-medium" value="${startVal}" />
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[10px] text-slate-500 font-bold uppercase w-8 shrink-0">End</span>
+                        <input type="datetime-local" step="1" onclick="if(event.offsetX > this.offsetWidth - 40) this.showPicker()" class="interval-end flex-grow bg-slate-900 border border-slate-800 rounded-lg px-2 py-1 text-xs text-white focus:outline-none focus:border-amber-500 transition font-medium" value="${endVal}" />
+                    </div>
+                    <!-- Move-to-day inline picker (hidden until move button clicked) -->
+                    <div class="move-day-picker hidden flex items-center gap-1.5 pt-1">
+                        <span class="text-[10px] text-indigo-400 font-bold uppercase shrink-0">Move to:</span>
+                        <select class="move-day-select flex-grow bg-slate-900 border border-indigo-500/40 text-indigo-300 rounded-lg px-2 py-1 text-xs font-medium focus:outline-none focus:border-indigo-400 cursor-pointer"></select>
+                        <button onclick="confirmMoveInterval(this.closest('.interval-editor-row'))" class="px-2 py-1 bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-300 border border-indigo-500/30 rounded-lg text-xs font-bold transition shrink-0">Move</button>
+                        <button onclick="this.closest('.move-day-picker').classList.add('hidden')" class="text-slate-600 hover:text-slate-400 transition shrink-0">
+                            <i data-lucide="x" class="w-3 h-3"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-1 shrink-0">
+                    <button onclick="toggleMovePicker(this.closest('.interval-editor-row'))" class="text-slate-500 hover:text-indigo-400 transition p-1 rounded-lg hover:bg-indigo-950/30" title="Move to another day">
+                        <i data-lucide="arrow-right-left" class="w-3.5 h-3.5"></i>
+                    </button>
+                    <button onclick="this.closest('.interval-editor-row').remove()" class="text-slate-600 hover:text-red-400 transition p-1 rounded-lg hover:bg-red-950/30" title="Remove this window">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            `;
+            container.appendChild(row);
+            lucide.createIcons();
+        }
+
+        window.addIntervalEditorRow = function() {
+            const list = document.getElementById('intervalEditorList');
+            appendIntervalEditorRow(list, null, null);
+        };
+
+        window.saveIntervalEdits = function() {
+            if (!intervalEditorDayKey) return;
+
+            const rows = document.querySelectorAll('#intervalEditorList .interval-editor-row');
+            const newIntervals = [];
+
+            let hasError = false;
+            rows.forEach(row => {
+                const startVal = row.querySelector('.interval-start').value;
+                const endVal   = row.querySelector('.interval-end').value;
+
+                // Skip completely empty rows silently
+                if (!startVal && !endVal) return;
+
+                // Both must be filled
+                if (!startVal || !endVal) {
+                    hasError = true;
+                    return;
+                }
+
+                const startTs = localInputToTs(startVal);
+                const endTs   = localInputToTs(endVal);
+
+                // End must be after start
+                if (endTs <= startTs) {
+                    hasError = true;
+                    return;
+                }
+
+                newIntervals.push({ start: startTs, end: endTs });
+            });
+
+            if (hasError) {
+                // Highlight invalid rows visually
+                rows.forEach(row => {
+                    const startVal = row.querySelector('.interval-start').value;
+                    const endVal   = row.querySelector('.interval-end').value;
+                    const isEmpty = !startVal && !endVal;
+                    if (isEmpty) return;
+                    const startTs = startVal ? localInputToTs(startVal) : null;
+                    const endTs   = endVal   ? localInputToTs(endVal)   : null;
+                    const invalid = !startVal || !endVal || (startTs && endTs && endTs <= startTs);
+                    row.classList.toggle('border-red-500/60', invalid);
+                    row.classList.toggle('border-slate-800', !invalid);
+                });
+                return; // Don't save until fixed
+            }
+
+            // Sort intervals chronologically
+            newIntervals.sort((a, b) => a.start - b.start);
+
+            // Persist
+            if (!businessDayHistory[intervalEditorDayKey]) return;
+            businessDayHistory[intervalEditorDayKey].intervals = newIntervals;
+
+            saveInvestmentToVault();
+            renderBusinessDayHistoryTable();
+            closeIntervalEditor();
+        };
+        // Populates and shows the inline move-day picker for a row
+        window.toggleMovePicker = function(row) {
+            const picker = row.querySelector('.move-day-picker');
+            const isHidden = picker.classList.contains('hidden');
+            if (!isHidden) {
+                picker.classList.add('hidden');
+                return;
+            }
+
+            // Build option list: all days in businessDayHistory except the current one being edited
+            const select = row.querySelector('.move-day-select');
+            select.innerHTML = '';
+
+            // Existing days sorted descending
+            const otherDays = Object.keys(businessDayHistory)
+                .filter(k => k !== intervalEditorDayKey)
+                .sort((a, b) => b.localeCompare(a));
+
+            otherDays.forEach(key => {
+                const entry = businessDayHistory[key];
+                const label = entry.formattedDay || getFormattedBusinessDay(entry.day || key);
+                const opt = document.createElement('option');
+                opt.value = key;
+                opt.textContent = label;
+                select.appendChild(opt);
+            });
+
+            // Always offer a "New day (auto)" option that derives the day from the interval's start time
+            const newOpt = document.createElement('option');
+            newOpt.value = '__new__';
+            newOpt.textContent = 'New day (from interval start)';
+            select.appendChild(newOpt);
+
+            picker.classList.remove('hidden');
+            lucide.createIcons();
+        };
+
+        // Reads current start/end values from the row, moves the interval to the target day, re-renders
+        window.confirmMoveInterval = function(row) {
+            const startVal = row.querySelector('.interval-start').value;
+            const endVal   = row.querySelector('.interval-end').value;
+            const targetKey = row.querySelector('.move-day-select').value;
+
+            if (!startVal || !endVal) {
+                // Highlight the row as invalid before allowing move
+                row.classList.add('border-red-500/60');
+                row.classList.remove('border-slate-800');
+                return;
+            }
+
+            const startTs = localInputToTs(startVal);
+            const endTs   = localInputToTs(endVal);
+
+            if (endTs <= startTs) {
+                row.classList.add('border-red-500/60');
+                row.classList.remove('border-slate-800');
+                return;
+            }
+
+            const interval = { start: startTs, end: endTs };
+
+            // Resolve actual target key
+            let resolvedKey = targetKey;
+            let resolvedLabel;
+            if (targetKey === '__new__') {
+                resolvedKey = new Date(startTs).toLocaleDateString('en-CA');
+                resolvedLabel = getFormattedBusinessDay(startTs);
+            } else {
+                resolvedLabel = (businessDayHistory[targetKey] && businessDayHistory[targetKey].formattedDay)
+                    || getFormattedBusinessDay(targetKey);
+            }
+
+            // Add to target day (create if needed)
+            if (!businessDayHistory[resolvedKey]) {
+                businessDayHistory[resolvedKey] = {
+                    day: resolvedKey,
+                    formattedDay: resolvedLabel,
+                    intervals: []
+                };
+            } else if (!businessDayHistory[resolvedKey].intervals) {
+                businessDayHistory[resolvedKey].intervals = [];
+            }
+            businessDayHistory[resolvedKey].intervals.push(interval);
+            businessDayHistory[resolvedKey].intervals.sort((a, b) => a.start - b.start);
+
+            // Remove the row from the current editor view
+            row.remove();
+
+            // If source day now has no intervals in the editor, remove it from history too
+            const remainingRows = document.querySelectorAll('#intervalEditorList .interval-editor-row');
+            if (remainingRows.length === 0 && intervalEditorDayKey) {
+                delete businessDayHistory[intervalEditorDayKey];
+                saveInvestmentToVault();
+                renderBusinessDayHistoryTable();
+                closeIntervalEditor();
+                return;
+            }
+
+            saveInvestmentToVault();
+            renderBusinessDayHistoryTable();
+            // Keep modal open so user can continue working
+        };
+
+        // ── End Interval Editor Modal ─────────────────────────────────────────
+
+        // ── Add Empty Day ─────────────────────────────────────────────────────
+        window.toggleAddDayPicker = function() {
+            const picker = document.getElementById('addDayPickerInline');
+            const isHidden = picker.classList.contains('hidden');
+            if (isHidden) {
+                // Set date input limits: today back to 90 days ago
+                const input = document.getElementById('addDayDateInput');
+                const today = new Date();
+                const ninetyDaysAgo = new Date();
+                ninetyDaysAgo.setDate(today.getDate() - 90);
+                input.max = today.toLocaleDateString('en-CA');
+                input.min = ninetyDaysAgo.toLocaleDateString('en-CA');
+                input.value = today.toLocaleDateString('en-CA'); // default to today
+                picker.classList.remove('hidden');
+                lucide.createIcons();
+            } else {
+                picker.classList.add('hidden');
+            }
+        };
+
+        window.confirmAddEmptyDay = function() {
+            const input = document.getElementById('addDayDateInput');
+            const val = input.value;
+            if (!val) return;
+
+            // Reject dates outside the 90-day window
+            const today = new Date();
+            const ninetyDaysAgo = new Date();
+            ninetyDaysAgo.setDate(today.getDate() - 90);
+            const selectedDate = new Date(val + 'T00:00:00');
+            if (selectedDate > today || selectedDate < ninetyDaysAgo) return;
+
+            const rawKey = val; // already YYYY-MM-DD
+            const friendlyDay = getFormattedBusinessDay(val + 'T12:00:00'); // noon avoids DST edge cases
+
+            // Create the day entry if it doesn't exist yet
+            if (!businessDayHistory[rawKey]) {
+                businessDayHistory[rawKey] = {
+                    day: rawKey,
+                    formattedDay: friendlyDay,
+                    intervals: []
+                };
+                saveInvestmentToVault();
+                renderBusinessDayHistoryTable();
+            }
+
+            // Close the picker and immediately open the interval editor for the new day
+            document.getElementById('addDayPickerInline').classList.add('hidden');
+            openIntervalEditor(rawKey);
+        };
+        // ── End Add Empty Day ─────────────────────────────────────────────────
+
         window.deleteBusinessDayLog = function(dayKey) {
             delete businessDayHistory[dayKey];
             saveInvestmentToVault();
             renderBusinessDayHistoryTable();
+        };
+
+        window.fabReload = function() {
+            localStorage.setItem('wf_fab_scroll', window.scrollY);
+            location.reload();
         };
 
         window.addEventListener('DOMContentLoaded', () => {
