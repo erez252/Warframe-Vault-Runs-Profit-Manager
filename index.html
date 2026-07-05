@@ -63,10 +63,24 @@
                 </div>
             </div>
             
-            <a href="https://warframe.market/" target="_blank" rel="noopener noreferrer" class="hidden sm:flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg">
-                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-                Warframe.Market
-            </a>
+            <div class="flex items-center gap-3">
+                <!-- Farm Switcher — always visible in header -->
+                <div class="flex items-center gap-1 bg-slate-900 border border-slate-800 p-1 rounded-xl">
+                    <button id="farmBtn_corrupted" onclick="setActiveFarm('corrupted')"
+                        class="px-3 py-1.5 rounded-lg text-xs font-bold transition bg-amber-500 text-slate-950">
+                        Vault Runs
+                    </button>
+                    <button id="farmBtn_pavlov" onclick="setActiveFarm('pavlov')"
+                        class="px-3 py-1.5 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white">
+                        Pavlov
+                    </button>
+                </div>
+
+                <a href="https://warframe.market/" target="_blank" rel="noopener noreferrer" class="hidden sm:flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg">
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                    Warframe.Market
+                </a>
+            </div>
         </div>
     </header>
 
@@ -227,7 +241,7 @@
                         <div class="text-2xl font-bold text-white mt-1" id="sessionActiveTime">0.00h</div>
                     </div>
                     <div class="bg-slate-900/40 border border-slate-800/80 p-4 rounded-xl">
-                        <span class="text-xs text-slate-500 font-semibold uppercase">Corrupted Mods Plat</span>
+                        <span id="sessionCMLabel" class="text-xs text-slate-500 font-semibold uppercase">Corrupted Mods Plat</span>
                         <div class="text-2xl font-bold text-amber-500 mt-1" id="sessionCorruptedTotal">0p</div>
                     </div>
                     <div class="bg-slate-900/40 border border-slate-800/80 p-4 rounded-xl">
@@ -235,7 +249,7 @@
                         <div class="text-2xl font-bold text-slate-300 mt-1" id="sessionOthersTotal">0p</div>
                     </div>
                     <div class="bg-slate-900/40 border border-slate-800/80 p-4 rounded-xl">
-                        <span class="text-xs text-slate-500 font-semibold uppercase">Corrupted Plat Rate</span>
+                        <span id="sessionCMRateLabel" class="text-xs text-slate-500 font-semibold uppercase">Corrupted Plat Rate</span>
                         <div class="text-2xl font-bold text-amber-400 mt-1" id="sessionCorruptedPlatPerHour">0p / hr</div>
                     </div>
                     <div class="bg-slate-900/40 border border-slate-800/80 p-4 rounded-xl">
@@ -248,7 +262,7 @@
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
                     <div class="bg-slate-900/20 border border-slate-800/60 p-4 rounded-xl">
                         <h4 class="text-xs uppercase text-slate-500 tracking-wider font-bold mb-3 flex items-center justify-between">
-                            <span>Corrupted Mods (Active Session)</span>
+                            <span id="sessionCMListLabel">Corrupted Mods (Active Session)</span>
                             <span class="text-amber-500" id="sessionCMCount">0 items</span>
                         </h4>
                         <div class="space-y-2 max-h-48 overflow-y-auto" id="sessionCMList">
@@ -257,11 +271,11 @@
                     </div>
                     <div class="bg-slate-900/20 border border-slate-800/60 p-4 rounded-xl">
                         <h4 class="text-xs uppercase text-slate-500 tracking-wider font-bold mb-3 flex items-center justify-between">
-                            <span>Standard Merchandise (Active Session)</span>
+                            <span>Standard Items (Active Session)</span>
                             <span class="text-slate-400" id="sessionOthersCount">0 items</span>
                         </h4>
                         <div class="space-y-2 max-h-48 overflow-y-auto" id="sessionOthersList">
-                            <p class="text-xs text-slate-600 italic">No merchandise sold in active intervals.</p>
+                            <p class="text-xs text-slate-600 italic">No Items sold in active intervals.</p>
                         </div>
                     </div>
                 </div>
@@ -311,7 +325,7 @@
                                     <div id="weeklyAvgHours" class="text-lg font-bold text-white mt-1">0.00h</div>
                                 </div>
                                 <div class="bg-slate-900/50 p-3 rounded-lg border border-slate-800/60">
-                                    <div class="text-[10px] uppercase text-slate-500 font-semibold">Avg Corrupted / Day</div>
+                                    <div id="weeklyAvgCMLabel" class="text-[10px] uppercase text-slate-500 font-semibold">Avg Corrupted / Day</div>
                                     <div id="weeklyAvgCM" class="text-lg font-bold text-amber-400 mt-1">0p</div>
                                 </div>
                                 <div class="bg-slate-900/50 p-3 rounded-lg border border-slate-800/60">
@@ -319,7 +333,7 @@
                                     <div id="weeklyAvgOthers" class="text-lg font-bold text-slate-300 mt-1">0p</div>
                                 </div>
                                 <div class="bg-slate-900/50 p-3 rounded-lg border border-slate-800/60">
-                                    <div class="text-[10px] uppercase text-slate-500 font-semibold">Avg Corrupted Rate</div>
+                                    <div id="weeklyAvgCMRateLabel" class="text-[10px] uppercase text-slate-500 font-semibold">Avg Corrupted Rate</div>
                                     <div id="weeklyAvgCMRate" class="text-lg font-bold text-amber-500 mt-1">0p / hr</div>
                                 </div>
                                 <div class="bg-slate-900/50 p-3 rounded-lg border border-slate-800/60">
@@ -336,9 +350,9 @@
                                     <tr class="border-b border-slate-800 text-slate-500 font-bold bg-slate-950">
                                         <th class="py-3 px-5">Business Day</th>
                                         <th class="py-3 px-5">Active Hours</th>
-                                        <th class="py-3 px-5">Corrupted Mods Plat</th>
+                                        <th id="histColCMPlat" class="py-3 px-5">Corrupted Mods Plat</th>
                                         <th class="py-3 px-5">Other Goods Plat</th>
-                                        <th class="py-3 px-5">Corrupted Plat Rate</th>
+                                        <th id="histColCMRate" class="py-3 px-5">Corrupted Plat Rate</th>
                                         <th class="py-3 px-5">Overall Rate</th>
                                         <th class="py-3 px-5 text-right">Action</th>
                                     </tr>
@@ -514,7 +528,7 @@
                         <div class="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-400">
                             <i data-lucide="shield-alert" class="w-5 h-5"></i>
                         </div>
-                        <span class="text-slate-400 text-sm font-semibold">Corrupted Mods</span>
+                        <span id="farmCardLabel" class="text-slate-400 text-sm font-semibold">Corrupted Mods</span>
                     </div>
                     <div class="flex items-baseline gap-2">
                         <span id="corruptedRevenue" class="text-4xl font-extrabold text-white wf-title tracking-tight font-sans">0</span>
@@ -545,7 +559,7 @@
                             <span id="plannerPercentLabel">20</span>% Custom Investment Planner
                         </h3>
                         <p class="text-xs text-slate-400 mt-1 font-semibold">
-                            Reinvest a custom percentage of your weekly sales back into other merchandise. Use settings gear to tune your calculation base.
+                            Reinvest a custom percentage of your weekly sales back into other Items. Use settings gear to tune your calculation base.
                         </p>
                     </div>
                     
@@ -593,7 +607,7 @@
                                 onchange="handleCalcSourceChange(this.value)"
                                 class="w-full bg-slate-950 text-amber-400 font-bold text-xs rounded-xl border border-slate-800 px-3 py-2.5 focus:outline-none focus:border-amber-500 cursor-pointer h-11"
                             >
-                                <option value="corrupted">Corrupted Mods Only</option>
+                                <option id="calcSourceCorruptedOption" value="corrupted">Corrupted Mods Only</option>
                                 <option value="total">Total Revenue</option>
                                 <option value="others">Other Goods Only</option>
                             </select>
@@ -675,10 +689,10 @@
 
             <!-- 7. Order History Ledger Tables -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- Corrupted Mods Column -->
+                <!-- Primary Farm Column -->
                 <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 flex flex-col h-[560px]">
                     <div class="flex items-center justify-between pb-4 border-b border-slate-850 mb-4 flex-wrap gap-2">
-                        <h3 class="text-lg font-bold text-white tracking-wide">Corrupted Mods</h3>
+                        <h3 id="farmLedgerTitle" class="text-lg font-bold text-white tracking-wide">Corrupted Mods</h3>
                         <div class="flex items-center gap-2 flex-grow sm:flex-none">
                             <!-- Real-time Mod Filter -->
                             <div class="relative">
@@ -702,7 +716,7 @@
                 <!-- Standard Merchandise Column -->
                 <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 flex flex-col h-[560px]">
                     <div class="flex items-center justify-between pb-4 border-b border-slate-850 mb-4 flex-wrap gap-2">
-                        <h3 class="text-lg font-bold text-white tracking-wide">Standard Merchandise</h3>
+                        <h3 class="text-lg font-bold text-white tracking-wide">Standard Items</h3>
                         <div class="flex items-center gap-2 flex-grow sm:flex-none">
                             <!-- Real-time Other Filter -->
                             <div class="relative">
@@ -794,6 +808,33 @@
             "Transient Fortitude", "Vicious Spread", "Vile Acceleration", "Vile Precision"
         ];
 
+        // Pavlov mission drop list
+        const pavlovMods = [
+            "Blood Rush", "Astral Twilight", "Gnashing Payara", "Crushing Ruin", "High Noon",
+            "Rime Rounds", "Scattering Inferno", "Cleaving Whirlwind"
+        ];
+
+        // Farm config — each farm defines its name, mod list, and display labels
+        const FARMS = {
+            corrupted: {
+                key: 'corrupted',
+                label: 'Vault Runs',
+                mods: corruptedMods,
+                primaryLabel: 'Corrupted Mods',
+                primaryLabelShort: 'Corrupted',
+            },
+            pavlov: {
+                key: 'pavlov',
+                label: 'Pavlov',
+                mods: pavlovMods,
+                primaryLabel: 'Pavlov Mods',
+                primaryLabelShort: 'Pavlov',
+            }
+        };
+
+        // Returns the currently active farm config object
+        function getActiveFarm() { return FARMS[activeFarm] || FARMS.corrupted; }
+
         // State Management Variables
         let investmentBudget = 0;
         let reinvestPercentage = 20; // Customizable percentage
@@ -808,6 +849,7 @@
         let rawClosedOrders = []; // Copy of orders so we can re-filter live without refetching
         let calculationSource = 'corrupted'; // corrupted | total | others
         let calculationMode = 'override'; // override | add
+        let activeFarm = 'corrupted'; // corrupted | pavlov
 
         // Dynamic Stopwatch session configuration variables
         let sessionIntervals = []; // Array of [{start: timestamp, end: timestamp | null}]
@@ -935,9 +977,10 @@
             });
             let sellOrders = recentOrders.filter(order => order.order_type == "sell");
 
+            const farmMods = getActiveFarm().mods;
             sellOrders = ({
-                corrupted_mods: sellOrders.filter(order => corruptedMods.includes(order.item_name)),
-                others: sellOrders.filter(order => !corruptedMods.includes(order.item_name))
+                corrupted_mods: sellOrders.filter(order => farmMods.includes(order.item_name)),
+                others: sellOrders.filter(order => !farmMods.includes(order.item_name))
             });
             
             const ordersCMRevenue = sellOrders.corrupted_mods.reduce((sum, order) => sum + (order.platinum * order.quantity) ,0);
@@ -964,6 +1007,7 @@
                 const savedSummaryLookback = localStorage.getItem('wf_summary_lookback_days');
                 const savedSource = localStorage.getItem('wf_calculation_source');
                 const savedMode = localStorage.getItem('wf_calculation_mode');
+                const savedFarm = localStorage.getItem('wf_active_farm');
 
                 // Load stopwatch session components
                 const savedSessionIntervals = localStorage.getItem('wf_session_intervals');
@@ -987,6 +1031,9 @@
                 }
                 if (savedMode !== null) {
                     calculationMode = savedMode;
+                }
+                if (savedFarm !== null && FARMS[savedFarm]) {
+                    activeFarm = savedFarm;
                 }
 
                 // Restore session stopwatch structures
@@ -1052,6 +1099,7 @@
                 localStorage.setItem('wf_summary_lookback_days', summaryLookbackDays);
                 localStorage.setItem('wf_calculation_source', calculationSource);
                 localStorage.setItem('wf_calculation_mode', calculationMode);
+                localStorage.setItem('wf_active_farm', activeFarm);
 
                 // Persist session properties
                 localStorage.setItem('wf_session_intervals', JSON.stringify(sessionIntervals));
@@ -1279,6 +1327,68 @@
             }
         }
 
+        // ── Farm Switcher ─────────────────────────────────────────────────────
+        window.setActiveFarm = function(farmKey) {
+            if (!FARMS[farmKey] || farmKey === activeFarm) return;
+            activeFarm = farmKey;
+            saveInvestmentToVault();
+            updateFarmLabels();
+            // Re-process cached raw orders with the new farm filter (no API re-fetch needed)
+            if (rawClosedOrders && rawClosedOrders.length > 0) {
+                sumUserData(rawClosedOrders);
+            }
+        };
+
+        function updateFarmLabels() {
+            const farm = getActiveFarm();
+            const label = farm.primaryLabel;
+            const labelShort = farm.primaryLabelShort;
+
+            // Switcher button active states
+            Object.keys(FARMS).forEach(key => {
+                const btn = document.getElementById('farmBtn_' + key);
+                if (!btn) return;
+                if (key === activeFarm) {
+                    btn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-bold transition bg-amber-500 text-slate-950';
+                } else {
+                    btn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white';
+                }
+            });
+
+            // Revenue card
+            const farmCardLabel = document.getElementById('farmCardLabel');
+            if (farmCardLabel) farmCardLabel.textContent = label;
+
+            // Ledger column title
+            const farmLedgerTitle = document.getElementById('farmLedgerTitle');
+            if (farmLedgerTitle) farmLedgerTitle.textContent = label;
+
+            // Session metrics
+            const sessionCMLabel = document.getElementById('sessionCMLabel');
+            if (sessionCMLabel) sessionCMLabel.textContent = `${label} Plat`;
+            const sessionCMRateLabel = document.getElementById('sessionCMRateLabel');
+            if (sessionCMRateLabel) sessionCMRateLabel.textContent = `${labelShort} Plat Rate`;
+            const sessionCMListLabel = document.getElementById('sessionCMListLabel');
+            if (sessionCMListLabel) sessionCMListLabel.textContent = `${label} (Active Session)`;
+
+            // History table headers
+            const histColCMPlat = document.getElementById('histColCMPlat');
+            if (histColCMPlat) histColCMPlat.textContent = `${label} Plat`;
+            const histColCMRate = document.getElementById('histColCMRate');
+            if (histColCMRate) histColCMRate.textContent = `${labelShort} Plat Rate`;
+
+            // Weekly averages
+            const weeklyAvgCMLabel = document.getElementById('weeklyAvgCMLabel');
+            if (weeklyAvgCMLabel) weeklyAvgCMLabel.textContent = `Avg ${labelShort} / Day`;
+            const weeklyAvgCMRateLabel = document.getElementById('weeklyAvgCMRateLabel');
+            if (weeklyAvgCMRateLabel) weeklyAvgCMRateLabel.textContent = `Avg ${labelShort} Rate`;
+
+            // Investment planner source option
+            const calcOpt = document.getElementById('calcSourceCorruptedOption');
+            if (calcOpt) calcOpt.textContent = `${label} Only`;
+        }
+        // ── End Farm Switcher ─────────────────────────────────────────────────
+
         window.handleSearch = function() {
             const targetUser = document.getElementById('usernameInput').value.trim();
             if (targetUser) {
@@ -1300,6 +1410,9 @@
             document.getElementById('totalRevenue').textContent = total.toLocaleString();
             document.getElementById('corruptedRevenue').textContent = cmRevenue.toLocaleString();
             document.getElementById('othersRevenue').textContent = othersRevenue.toLocaleString();
+
+            // Update all dynamic farm-name labels
+            updateFarmLabels();
             
             filterLedgers(); // Render filtered lists directly on initial compile
             
@@ -1467,7 +1580,7 @@
                     if (inInterval) {
                         const itemName = order.item?.en?.item_name || order.item_name;
                         const totalPlat = order.platinum * (order.quantity || 1);
-                        if (corruptedMods.includes(itemName)) {
+                        if (getActiveFarm().mods.includes(itemName)) {
                             revenueCM += totalPlat;
                         } else {
                             revenueOthers += totalPlat;
@@ -1502,8 +1615,9 @@
             let sSellOrders = cleanedOrders.filter(o => o.order_type === 'sell');
             let sessionSales = getOrdersInSessionIntervals(sSellOrders, sessionIntervals);
 
-            const sessionCM = sessionSales.filter(o => corruptedMods.includes(o.item_name));
-            const sessionOthers = sessionSales.filter(o => !corruptedMods.includes(o.item_name));
+            const farmMods = getActiveFarm().mods;
+            const sessionCM = sessionSales.filter(o => farmMods.includes(o.item_name));
+            const sessionOthers = sessionSales.filter(o => !farmMods.includes(o.item_name));
 
             const revCM = sessionCM.reduce((sum, o) => sum + (o.platinum * o.quantity), 0);
             const revOthers = sessionOthers.reduce((sum, o) => sum + (o.platinum * o.quantity), 0);
@@ -1536,7 +1650,7 @@
             }
 
             if (sessionOthers.length === 0) {
-                othersListContainer.innerHTML = `<p class="text-xs text-slate-600 italic">No merchandise sold in active intervals.</p>`;
+                othersListContainer.innerHTML = `<p class="text-xs text-slate-600 italic">No Items sold in active intervals.</p>`;
             } else {
                 sessionOthers.forEach(o => othersListContainer.appendChild(createCompactSessionCard(o)));
             }
@@ -2151,6 +2265,7 @@
             lucide.createIcons();
             setupDatePickerLimits();
             loadInvestmentFromVault(); // Load saved planner state, checkpoint, and custom dates
+            updateFarmLabels(); // Sync header farm pill to saved farm on first paint
 
             // Read the saved user from local storage
             const savedUser = localStorage.getItem('wf_saved_username');
