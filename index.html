@@ -72,7 +72,7 @@
 
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
-        <!-- User Search Card (Simplified & Beautiful, Zero Overlap lines) -->
+        <!-- User Search Card -->
         <div class="bg-gradient-to-r from-slate-950 to-slate-900 border border-slate-800 rounded-2xl p-6 mb-6 shadow-xl relative overflow-hidden">
             <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div class="max-w-xl">
@@ -109,7 +109,7 @@
             </div>
         </div>
 
-        <!-- Dedicated Filter & Checkpoint Box (Corrects alignment bugs highlighted in image_9106a5.png) -->
+        <!-- Dedicated Filter & Checkpoint Box -->
         <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 mb-8 shadow-xl">
             <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-900 mb-5">
                 <div class="flex flex-col sm:flex-row sm:items-center gap-3">
@@ -534,24 +534,37 @@
                             <button id="sessionPauseBtn" onclick="pauseSession()" class="hidden px-3.5 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold rounded-lg transition flex items-center gap-1">
                                 <i data-lucide="pause" class="w-3.5 h-3.5"></i> Pause
                             </button>
-                            <button id="sessionResetBtn" onclick="confirmResetSession()" class="px-3.5 py-1.5 bg-slate-950 hover:bg-red-950/40 hover:text-red-400 border border-slate-800/60 text-slate-400 text-xs font-semibold rounded-lg transition flex items-center gap-1">
-                                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Reset
+                            <button id="sessionNewDayBtn" onclick="confirmNewDay()" class="px-3.5 py-1.5 bg-slate-950 hover:bg-amber-500/10 hover:text-amber-400 border border-slate-800 text-slate-400 text-xs font-semibold rounded-lg transition flex items-center gap-1">
+                                <i data-lucide="sun" class="w-3.5 h-3.5 text-amber-500"></i> Start New Day
                             </button>
                         </div>
                     </div>
                 </div>
 
                 <!-- Custom Inline Confirmation Warning Box instead of alert/confirm window functions -->
-                <div id="resetConfirmationBox" class="hidden bg-red-950/20 border border-red-900/40 rounded-xl p-4 mb-6">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                        <div>
-                            <h4 class="text-red-400 font-bold text-sm">Archiving Session data?</h4>
-                            <p class="text-xs text-slate-400 font-medium">Resetting closes the session and logs the accumulated sales history for the business day.</p>
+                <div id="resetConfirmationBox" class="hidden bg-slate-900 border border-amber-500/30 rounded-xl p-5 mb-6">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-5">
+                        <div class="flex items-start gap-3">
+                            <div class="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-500 shrink-0">
+                                <i data-lucide="help-circle" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-amber-400 font-bold text-sm">Start a New Business Day?</h4>
+                                <p class="text-xs text-slate-400 mt-1 leading-relaxed font-semibold">
+                                    Are you sure you want to start a new day? This will reset the active timer and move your current day's accumulated stats to your Weekly Summary log.
+                                </p>
+                            </div>
                         </div>
-                        <div class="flex items-center gap-2 shrink-0">
-                            <button onclick="executeResetSession(true)" class="px-3 py-1.5 bg-red-800 hover:bg-red-700 text-white text-xs font-bold rounded-lg transition">Archive & Reset</button>
-                            <button onclick="executeResetSession(false)" class="px-3 py-1.5 bg-slate-900 text-slate-300 border border-slate-800 text-xs font-bold rounded-lg transition">Clear All</button>
-                            <button onclick="cancelResetSession()" class="px-3 py-1.5 bg-slate-950 text-slate-400 text-xs font-bold rounded-lg transition">Cancel</button>
+                        <div class="flex flex-wrap items-center gap-2 shrink-0 justify-end">
+                            <button onclick="executeNewDay(true)" class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold rounded-lg transition">
+                                Yes, Archive & Start New Day
+                            </button>
+                            <button onclick="executeNewDay(false)" class="px-3.5 py-2 bg-red-950/40 hover:bg-red-900/40 text-red-300 border border-red-900/30 text-xs font-bold rounded-lg transition" title="Wipes current day's active tracking data without saving it to summary log">
+                                Clear Current Day (No Save)
+                            </button>
+                            <button onclick="cancelNewDay()" class="px-3.5 py-2 bg-slate-950 text-slate-400 border border-slate-800 text-xs font-semibold rounded-lg transition">
+                                Cancel
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -559,7 +572,7 @@
                 <!-- Real-time metrics computed strictly during tracked intervals -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
                     <div class="bg-slate-900/40 border border-slate-800/80 p-4 rounded-xl">
-                        <span class="text-xs text-slate-500 font-semibold uppercase">Session Duration</span>
+                        <span class="text-xs text-slate-500 font-semibold uppercase">Active Hours</span>
                         <div class="text-2xl font-bold text-white mt-1" id="sessionActiveTime">0.00h</div>
                     </div>
                     <div class="bg-slate-900/40 border border-slate-800/80 p-4 rounded-xl">
@@ -575,8 +588,8 @@
                         <div class="text-2xl font-bold text-amber-400 mt-1" id="sessionCorruptedPlatPerHour">0p / hr</div>
                     </div>
                     <div class="bg-slate-900/40 border border-slate-800/80 p-4 rounded-xl">
-                        <span class="text-xs text-slate-500 font-semibold uppercase">Other Goods Rate</span>
-                        <div class="text-2xl font-bold text-emerald-400 mt-1" id="sessionOthersPlatPerHour">0p / hr</div>
+                        <span class="text-xs text-slate-500 font-semibold uppercase">Overall Plat Rate</span>
+                        <div class="text-2xl font-bold text-emerald-400 mt-1" id="sessionOverallPlatPerHour">0p / hr</div>
                     </div>
                 </div>
 
@@ -607,28 +620,60 @@
                     <button onclick="toggleBusinessHistory()" class="flex items-center justify-between w-full text-slate-400 hover:text-white transition focus:outline-none">
                         <span class="text-xs uppercase tracking-widest font-bold flex items-center gap-1.5">
                             <i data-lucide="archive" class="w-4 h-4 text-slate-500"></i>
-                            Business Day Log & Weekly Summary (4 AM Rollover)
+                            Weekly Summary & Historical Business Log
                         </span>
                         <i data-lucide="chevron-down" class="w-4 h-4 transition duration-300" id="historyChevron"></i>
                     </button>
 
-                    <div id="businessHistoryPanel" class="hidden mt-4 space-y-4">
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-xs text-slate-400 border-collapse">
+                    <div id="businessHistoryPanel" class="hidden mt-4 space-y-6">
+                        
+                        <!-- Real-time Calculated Weekly Averages Dashboard (Pristine grid layouts) -->
+                        <div class="bg-slate-950 border border-slate-900 rounded-xl p-4">
+                            <h4 class="text-xs uppercase tracking-wider text-slate-400 font-bold mb-3 flex items-center gap-1.5">
+                                <i data-lucide="bar-chart-2" class="w-4 h-4 text-amber-500"></i>
+                                Logged Weekly Average Summary
+                            </h4>
+                            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                                <div class="bg-slate-900/50 p-3 rounded-lg border border-slate-800/60">
+                                    <div class="text-[10px] uppercase text-slate-500 font-semibold">Avg Hours / Day</div>
+                                    <div id="weeklyAvgHours" class="text-lg font-bold text-white mt-1">0.00h</div>
+                                </div>
+                                <div class="bg-slate-900/50 p-3 rounded-lg border border-slate-800/60">
+                                    <div class="text-[10px] uppercase text-slate-500 font-semibold">Avg Corrupted / Day</div>
+                                    <div id="weeklyAvgCM" class="text-lg font-bold text-amber-400 mt-1">0p</div>
+                                </div>
+                                <div class="bg-slate-900/50 p-3 rounded-lg border border-slate-800/60">
+                                    <div class="text-[10px] uppercase text-slate-500 font-semibold">Avg Others / Day</div>
+                                    <div id="weeklyAvgOthers" class="text-lg font-bold text-slate-300 mt-1">0p</div>
+                                </div>
+                                <div class="bg-slate-900/50 p-3 rounded-lg border border-slate-800/60">
+                                    <div class="text-[10px] uppercase text-slate-500 font-semibold">Avg Corrupted Rate</div>
+                                    <div id="weeklyAvgCMRate" class="text-lg font-bold text-amber-500 mt-1">0p / hr</div>
+                                </div>
+                                <div class="bg-slate-900/50 p-3 rounded-lg border border-slate-800/60">
+                                    <div class="text-[10px] uppercase text-slate-500 font-semibold">Avg Overall Rate</div>
+                                    <div id="weeklyAvgOverallRate" class="text-lg font-bold text-emerald-400 mt-1">0p / hr</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Spacious Padded Detailed Business Log Table (Addresses image_29291f.png spacing issue) -->
+                        <div class="overflow-x-auto rounded-xl border border-slate-900">
+                            <table class="w-full text-left text-xs text-slate-400 border-collapse bg-slate-950/40">
                                 <thead>
-                                    <tr class="border-b border-slate-800 text-slate-500 font-bold">
-                                        <th class="py-2.5">Business Day</th>
-                                        <th class="py-2.5">Active Hours</th>
-                                        <th class="py-2.5">Total Revenue</th>
-                                        <th class="py-2.5">Average Plat / hr</th>
-                                        <th class="py-2.5">Corrupted Revenue</th>
-                                        <th class="py-2.5">Others Revenue</th>
-                                        <th class="py-2.5 text-right">Action</th>
+                                    <tr class="border-b border-slate-800 text-slate-500 font-bold bg-slate-950">
+                                        <th class="py-3 px-5">Business Day</th>
+                                        <th class="py-3 px-5">Active Hours</th>
+                                        <th class="py-3 px-5">Corrupted Mods Plat</th>
+                                        <th class="py-3 px-5">Other Goods Plat</th>
+                                        <th class="py-3 px-5">Corrupted Plat Rate</th>
+                                        <th class="py-3 px-5">Overall Rate</th>
+                                        <th class="py-3 px-5 text-right">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="historyTableBody">
                                     <tr>
-                                        <td colspan="7" class="py-4 text-center text-slate-600 italic">No historical working days logged yet.</td>
+                                        <td colspan="7" class="py-4 px-5 text-center text-slate-600 italic">No historical working days logged yet.</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -649,7 +694,7 @@
     </footer>
 
     <script>
-        // Your pristine list of Corrupted Mods
+        // Pristine list of Corrupted Mods
         const corruptedMods = [
             "Anemic Agility", "Blind Rage", "Burdened Magazine", "Catalyzing Shields", "Corrupt Charge",
             "Creeping Bullseye", "Critical Deceleration", "Critical Delay", "Depleted Reload", "Fleeting Expertise",
@@ -662,6 +707,8 @@
         let investmentBudget = 0;
         let reinvestPercentage = 20; // Customizable percentage
         let lastCalculatedCMRevenue = 0;
+        let lastCalculatedTotalRevenue = 0;
+        let lastCalculatedOthersRevenue = 0;
         let salesCheckpoint = null; // Saves a timestamp representing the checkpoint filter line
         let customStartDate = null; // Saves start calendar filter
         let customEndDate = null; // Saves end calendar filter
@@ -674,7 +721,7 @@
         let sessionIntervals = []; // Array of [{start: timestamp, end: timestamp | null}]
         let sessionStatus = 'stopped'; // running | paused | stopped
         let stopwatchTimerId = null;
-        let businessDayHistory = {}; // Mapping of YYYY-MM-DD -> business summary log objects
+        let businessDayHistory = {}; // Mapping of YYYY-MM-DD -> business summary log objects with raw intervals
 
         async function getDataFromApi(userName){
             showWelcomeState(false);
@@ -811,6 +858,7 @@
             lastCalculatedOthersRevenue = ordersOthersRevenue;
 
             renderUI(ordersRevenue, ordersCMRevenue, ordersOthersRevenue, sellOrders);
+            renderBusinessDayHistoryTable(); // Recalculate historical values live once stats load
         }
 
         function loadInvestmentFromVault() {
@@ -1229,15 +1277,16 @@
             return card;
         }
 
-        // Helper function translating local hours to 4 AM Business Day offsets
-        function toBusinessDayString(timestamp) {
-            const date = new Date(timestamp);
-            const hours = date.getHours();
-            if (hours < 4) {
-                // Adjust back by one calendar day if before 4:00 AM local time
-                date.setDate(date.getDate() - 1);
-            }
-            return date.toISOString().split('T')[0]; // Yields YYYY-MM-DD
+        // Helper function translating local dates to customized "DayofWeek DD/MM" strings
+        function getFormattedBusinessDay(timestampOrStr) {
+            const date = new Date(timestampOrStr);
+            const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            const dayName = weekdays[date.getDay()];
+            
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            
+            return `${dayName} ${day}/${month}`;
         }
 
         // Returns all orders falling inside session interval spans
@@ -1267,6 +1316,40 @@
             return total;
         }
 
+        function getStatsForIntervals(intervals) {
+            console.log(intervals);
+            let activeMs = 0;
+            intervals.forEach(inv => {
+                const end = inv.end || Date.now();
+                activeMs += (end - inv.start);
+            });
+            const activeHours = activeMs / 1000 / 60 / 60;
+
+            let revenueCM = 0;
+            let revenueOthers = 0;
+
+            if (rawClosedOrders && rawClosedOrders.length > 0) {
+                rawClosedOrders.forEach(order => {
+                    if (order.order_type !== 'sell') return;
+                    const orderTime = new Date(order.closed_date).getTime();
+                    const inInterval = intervals.some(inv => {
+                        const end = inv.end || Date.now();
+                        return orderTime >= inv.start && orderTime <= end;
+                    });
+                    if (inInterval) {
+                        const itemName = order.item?.en?.item_name || order.item_name;
+                        const totalPlat = order.platinum * (order.quantity || 1);
+                        if (corruptedMods.includes(itemName)) {
+                            revenueCM += totalPlat;
+                        } else {
+                            revenueOthers += totalPlat;
+                        }
+                    }
+                });
+            }
+            return { activeHours, revenueCM, revenueOthers };
+        }
+
         function recomputeSessionMetrics() {
             const activeMs = getActiveSessionMs();
             const hours = activeMs / 1000 / 60 / 60;
@@ -1275,7 +1358,6 @@
             document.getElementById('sessionActiveTime').textContent = `${hours.toFixed(2)}h`;
 
             // Process sales lists specifically compiled inside working stopwatch hours
-            // Ensure we map standard ledger profiles structure variables
             let cleanedOrders = rawClosedOrders.map(order => ({
                 icon: order.item.icon,
                 thumb: order.item.thumb,
@@ -1302,10 +1384,10 @@
             document.getElementById('sessionOthersTotal').textContent = `${revOthers.toLocaleString()}p`;
 
             const hourlyRateCM = hours > 0 ? (revCM / hours) : 0;
-            const hourlyRateOthers = hours > 0 ? (revOthers / hours) : 0;
+            const hourlyRateOverall = hours > 0 ? ((revCM + revOthers) / hours) : 0; // Combined overall rate
             
             document.getElementById('sessionCorruptedPlatPerHour').textContent = `${Math.round(hourlyRateCM).toLocaleString()}p / hr`;
-            document.getElementById('sessionOthersPlatPerHour').textContent = `${Math.round(hourlyRateOthers).toLocaleString()}p / hr`;
+            document.getElementById('sessionOverallPlatPerHour').textContent = `${Math.round(hourlyRateOverall).toLocaleString()}p / hr`;
 
             // Display quantitative sold indicators
             const cmQty = sessionCM.reduce((sum, o) => sum + o.quantity, 0);
@@ -1380,23 +1462,23 @@
         };
 
         // Custom Confirmation box controllers (prevents standard window blocks)
-        window.confirmResetSession = function() {
+        window.confirmNewDay = function() {
             document.getElementById('resetConfirmationBox').classList.remove('hidden');
         };
 
-        window.cancelResetSession = function() {
+        window.cancelNewDay = function() {
             document.getElementById('resetConfirmationBox').classList.add('hidden');
         };
 
-        // Closes session and logs stats, or performs a complete wipe out
-        window.executeResetSession = function(shouldArchive) {
+        // Closes current tracking metrics and transitions session to Weekly summary
+        window.executeNewDay = function(shouldArchive) {
             document.getElementById('resetConfirmationBox').classList.add('hidden');
 
             if (shouldArchive) {
                 archiveSessionToBusinessLog();
             }
 
-            // Wipe out stopwatch structures
+            // Wipe out stopwatch structures completely to initiate a clean day
             sessionIntervals = [];
             sessionStatus = 'stopped';
 
@@ -1408,52 +1490,37 @@
             recomputeSessionMetrics();
         };
 
-        // Compiles current interval stats into the Business Day logs (using 4 AM rollover day keys)
+        // Compiles current interval stats into the Business Day logs
         function archiveSessionToBusinessLog() {
-            if (sessionIntervals.length === 0) return;
+            const nowTime = Date.now();
+            const rawKey = new Date(nowTime).toISOString().split('T')[0]; // YYYY-MM-DD
+            const friendlyDay = getFormattedBusinessDay(nowTime);
 
-            const activeMs = getActiveSessionMs();
-            const hours = activeMs / 1000 / 60 / 60;
-            if (hours <= 0.01) return; // Prevent logging fractional seconds
-
-            // Deduce rollover day target YYYY-MM-DD
-            const bDayKey = toBusinessDayString(Date.now());
-
-            // Compile orders
-            let cleanedOrders = rawClosedOrders.map(order => ({
-                item_name: order.item.en.item_name,
-                platinum: order.platinum,
-                order_type: order.order_type,
-                quantity: order.quantity,
-                closed_date: order.closed_date
+            // Close active open interval
+            const processedIntervals = sessionIntervals.map(inv => ({
+                start: inv.start,
+                end: inv.end || Date.now()
             }));
 
-            let sSellOrders = cleanedOrders.filter(o => o.order_type === 'sell');
-            let sessionSales = getOrdersInSessionIntervals(sSellOrders, sessionIntervals);
-
-            const sessionCM = sessionSales.filter(o => corruptedMods.includes(o.item_name));
-            const sessionOthers = sessionSales.filter(o => !corruptedMods.includes(o.item_name));
-
-            const revCM = sessionCM.reduce((sum, o) => sum + (o.platinum * o.quantity), 0);
-            const revOthers = sessionOthers.reduce((sum, o) => sum + (o.platinum * o.quantity), 0);
-            const revTotal = revCM + revOthers;
-
-            // Initialize or aggregate on key match (supports multiple sessions per business day)
-            if (!businessDayHistory[bDayKey]) {
-                businessDayHistory[bDayKey] = {
-                    day: bDayKey,
-                    activeHours: 0,
-                    totalRevenue: 0,
-                    revenueCM: 0,
-                    revenueOthers: 0
-                };
+            if (processedIntervals.length === 0) {
+                // If there were no intervals, create a nominal zero-length interval for the record
+                processedIntervals.push({ start: nowTime, end: nowTime });
             }
 
-            const record = businessDayHistory[bDayKey];
-            record.activeHours += hours;
-            record.totalRevenue += revTotal;
-            record.revenueCM += revCM;
-            record.revenueOthers += revOthers;
+            // Save raw intervals directly into history memory
+            if (!businessDayHistory[rawKey]) {
+                businessDayHistory[rawKey] = {
+                    day: rawKey,
+                    formattedDay: friendlyDay,
+                    intervals: []
+                };
+            } else if (!businessDayHistory[rawKey].intervals) {
+                // Handle fallback if they had an old static entry style
+                businessDayHistory[rawKey].intervals = [];
+            }
+
+            // Append newly archived intervals
+            businessDayHistory[rawKey].intervals = businessDayHistory[rawKey].intervals.concat(processedIntervals);
 
             renderBusinessDayHistoryTable();
         }
@@ -1528,34 +1595,84 @@
 
             const keys = Object.keys(businessDayHistory).sort((a,b) => b.localeCompare(a)); // Sort desc (recent days first)
 
-            if (keys.length === 0) {
+            // Calculate aggregate metrics dynamically using raw stored intervals
+            let sumHours = 0;
+            let sumCM = 0;
+            let sumOthers = 0;
+            const totalDays = keys.length;
+
+            const computedHistoryItems = keys.map(key => {
+                const item = businessDayHistory[key];
+                let activeHours = 0;
+                let revenueCM = 0;
+                let revenueOthers = 0;
+
+                // Dynamically evaluate stats if intervals are present
+                if (item.intervals && item.intervals.length > 0) {
+                    const stats = getStatsForIntervals(item.intervals);
+                    activeHours = stats.activeHours;
+                    revenueCM = stats.revenueCM;
+                    revenueOthers = stats.revenueOthers;
+                } else {
+                    // Fallback to old flat pre-existing static records for backward compatibility
+                    activeHours = item.activeHours || 0;
+                    revenueCM = item.revenueCM || 0;
+                    revenueOthers = item.revenueOthers || 0;
+                }
+
+                sumHours += activeHours;
+                sumCM += revenueCM;
+                sumOthers += revenueOthers;
+
+                return {
+                    key: key,
+                    formattedDay: item.formattedDay || getFormattedBusinessDay(item.day || key),
+                    activeHours: activeHours,
+                    revenueCM: revenueCM,
+                    revenueOthers: revenueOthers
+                };
+            });
+
+            // Calculate daily averages
+            const avgHours = totalDays > 0 ? (sumHours / totalDays) : 0;
+            const avgCM = totalDays > 0 ? (sumCM / totalDays) : 0;
+            const avgOthers = totalDays > 0 ? (sumOthers / totalDays) : 0;
+            
+            // Calculate rates based on average time frames
+            const avgCMRate = sumHours > 0 ? (sumCM / sumHours) : 0;
+            const avgOverallRate = sumHours > 0 ? ((sumCM + sumOthers) / sumHours) : 0;
+
+            // Populate the weekly averages summary panel elements dynamically
+            document.getElementById('weeklyAvgHours').textContent = `${avgHours.toFixed(2)}h`;
+            document.getElementById('weeklyAvgCM').textContent = `${Math.round(avgCM).toLocaleString()}p`;
+            document.getElementById('weeklyAvgOthers').textContent = `${Math.round(avgOthers).toLocaleString()}p`;
+            document.getElementById('weeklyAvgCMRate').textContent = `${Math.round(avgCMRate).toLocaleString()}p / hr`;
+            document.getElementById('weeklyAvgOverallRate').textContent = `${Math.round(avgOverallRate).toLocaleString()}p / hr`;
+
+            if (totalDays === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="7" class="py-4 text-center text-slate-600 italic">No historical working days logged yet.</td>
+                        <td colspan="7" class="py-4 px-5 text-center text-slate-600 italic">No historical working days logged yet.</td>
                     </tr>`;
                 return;
             }
 
-            keys.forEach(key => {
-                const item = businessDayHistory[key];
+            computedHistoryItems.forEach(item => {
                 const tr = document.createElement('tr');
-                tr.className = "border-b border-slate-900/60 hover:bg-slate-900/30 font-medium";
+                tr.className = "border-b border-slate-900/60 hover:bg-slate-900/30 transition-all duration-200 font-medium group";
 
-                // Format business day date into standard clean numerical patterns
-                const dateParts = item.day.split('-');
-                const formattedDay = `${dateParts[2]}/${dateParts[1]}/${dateParts[0].substring(2)}`; // Yields DD/MM/YY
-
-                const avgRate = item.activeHours > 0 ? (item.totalRevenue / item.activeHours) : 0;
+                const rateCM = item.activeHours > 0 ? (item.revenueCM / item.activeHours) : 0;
+                const rateOverall = item.activeHours > 0 ? ((item.revenueCM + item.revenueOthers) / item.activeHours) : 0;
 
                 tr.innerHTML = `
-                    <td class="py-3 text-slate-300 font-bold">${formattedDay}</td>
-                    <td class="py-3">${item.activeHours.toFixed(2)}h</td>
-                    <td class="py-3 text-amber-400 font-bold">${item.totalRevenue.toLocaleString()}p</td>
-                    <td class="py-3 text-emerald-400 font-bold">${Math.round(avgRate).toLocaleString()}p / hr</td>
-                    <td class="py-3 text-amber-500/80">${item.revenueCM.toLocaleString()}p</td>
-                    <td class="py-3 text-slate-400">${item.revenueOthers.toLocaleString()}p</td>
-                    <td class="py-3 text-right">
-                        <button onclick="deleteBusinessDayLog('${item.day}')" class="text-xs text-red-500/80 hover:text-red-400 font-bold transition flex items-center gap-1 ml-auto">
+                    <td class="py-3 px-5 text-slate-300 font-bold group-hover:text-white transition-colors duration-150">${item.formattedDay}</td>
+                    <td class="py-3 px-5 text-slate-400">${item.activeHours.toFixed(2)}h</td>
+                    <td class="py-3 px-5 text-amber-500/90 font-semibold">${item.revenueCM.toLocaleString()}p</td>
+                    <td class="py-3 px-5 text-slate-400 font-semibold">${item.revenueOthers.toLocaleString()}p</td>
+                    <td class="py-3 px-5 text-amber-400 font-bold">${Math.round(rateCM).toLocaleString()}p / hr</td>
+                    <td class="py-3 px-5 text-emerald-400 font-bold">${Math.round(rateOverall).toLocaleString()}p / hr</td>
+                    <td class="py-3 px-5 text-right">
+                        <button onclick="deleteBusinessDayLog('${item.key}')" class="text-xs text-red-500/80 hover:text-red-400 font-bold transition flex items-center gap-1 ml-auto mr-1">
                             <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Clear
                         </button>
                     </td>
