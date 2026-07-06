@@ -9,7 +9,7 @@
     <!-- Lucide Icons for premium-looking icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght=500;700&family=Inter:wght=300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700&display=swap');
         
         body {
             font-family: 'Inter', sans-serif;
@@ -181,7 +181,7 @@
                             Active Working Hours Tracker
                         </h3>
                         <p class="text-xs text-slate-400 mt-1 font-semibold">
-                            Measure and review real-time productivity stats. Sales are filtered specifically during active intervals.
+                            Measure and review real-time productivity stats. Sales are filtered specifically during active intervals matching your selected farm.
                         </p>
                     </div>
 
@@ -199,36 +199,8 @@
                             <button id="sessionPauseBtn" onclick="pauseSession()" class="hidden px-3.5 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold rounded-lg transition flex items-center gap-1">
                                 <i data-lucide="pause" class="w-3.5 h-3.5"></i> Pause
                             </button>
-                            <button id="sessionNewDayBtn" onclick="confirmNewDay()" class="px-3.5 py-1.5 bg-slate-950 hover:bg-amber-500/10 hover:text-amber-400 border border-slate-800 text-slate-400 text-xs font-semibold rounded-lg transition flex items-center gap-1" title="Log current window and reset timer">
+                            <button id="sessionNewDayBtn" onclick="executeEndDay()" class="px-3.5 py-1.5 bg-slate-950 hover:bg-amber-500/10 hover:text-amber-400 border border-slate-800 text-slate-400 text-xs font-semibold rounded-lg transition flex items-center gap-1" title="Log current session and reset timer">
                                 <i data-lucide="sunset" class="w-3.5 h-3.5 text-amber-500"></i> End Day
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Custom Inline Confirmation Warning Box instead of alert/confirm window functions -->
-                <div id="resetConfirmationBox" class="hidden bg-slate-900 border border-amber-500/30 rounded-xl p-5 mb-6">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-5">
-                        <div class="flex items-start gap-3">
-                            <div class="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-500 shrink-0">
-                                <i data-lucide="help-circle" class="w-5 h-5"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-amber-400 font-bold text-sm">End Business Day?</h4>
-                                <p class="text-xs text-slate-400 mt-1 leading-relaxed font-semibold">
-                                    Are you sure you want to end your active session? This will save your current tracked intervals to today's summary log. If you log more sessions later today, they will be combined together.
-                                </p>
-                            </div>
-                        </div>
-                        <div class="flex flex-wrap items-center gap-2 shrink-0 justify-end">
-                            <button onclick="executeNewDay(true)" class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold rounded-lg transition">
-                                Yes, Archive & End Day
-                            </button>
-                            <button onclick="executeNewDay(false)" class="px-3.5 py-2 bg-red-950/40 hover:bg-red-900/40 text-red-300 border border-red-900/30 text-xs font-bold rounded-lg transition" title="Wipes current session's active tracking data without saving it to summary log">
-                                Clear Active Session (No Save)
-                            </button>
-                            <button onclick="cancelNewDay()" class="px-3.5 py-2 bg-slate-950 text-slate-400 border border-slate-800 text-xs font-semibold rounded-lg transition">
-                                Cancel
                             </button>
                         </div>
                     </div>
@@ -314,7 +286,7 @@
                         </div>
 
                         <!-- Real-time Calculated Weekly Averages Dashboard -->
-                        <div class="bg-slate-950 border border-slate-900 rounded-xl p-4">
+                        <div class="bg-slate-900/20 border border-slate-800/60 rounded-xl p-4">
                             <h4 class="text-xs uppercase tracking-wider text-slate-400 font-bold mb-3 flex items-center gap-1.5">
                                 <i data-lucide="bar-chart-2" class="w-4 h-4 text-amber-500"></i>
                                 Logged <span id="summaryPeriodLabel">7</span>-Day Average Summary
@@ -852,7 +824,7 @@
         let activeFarm = 'corrupted'; // corrupted | pavlov
 
         // Dynamic Stopwatch session configuration variables
-        let sessionIntervals = []; // Array of [{start: timestamp, end: timestamp | null}]
+        let sessionIntervals = []; // Array of [{start: timestamp, end: timestamp | null, farm: string}]
         let sessionStatus = 'stopped'; // running | paused | stopped
         let stopwatchTimerId = null;
         let businessDayHistory = {}; // Mapping of YYYY-MM-DD -> business summary log objects with raw intervals
@@ -1036,18 +1008,54 @@
                     activeFarm = savedFarm;
                 }
 
-                // Restore session stopwatch structures
+                // Restore session stopwatch structures with backward compatibility scans
                 if (savedSessionIntervals !== null) {
-                    sessionIntervals = JSON.parse(savedSessionIntervals);
+                    try {
+                        sessionIntervals = JSON.parse(savedSessionIntervals);
+                        if (Array.isArray(sessionIntervals)) {
+                            sessionIntervals.forEach(inv => {
+                                if (!inv.farm) {
+                                    inv.farm = 'corrupted'; // Safe automatic fallback patch
+                                }
+                            });
+                        } else {
+                            sessionIntervals = [];
+                        }
+                    } catch (e) {
+                        sessionIntervals = [];
+                    }
                 }
                 if (savedSessionStatus !== null) {
                     sessionStatus = savedSessionStatus;
                 }
+                
+                // Backwards compatibility migration check on Weekly Summary
                 if (savedBusinessHistory !== null) {
-                    businessDayHistory = JSON.parse(savedBusinessHistory);
-                    // Clear any cached formattedDay strings so they are regenerated in the browser's language
-                    for (const key in businessDayHistory) {
-                        delete businessDayHistory[key].formattedDay;
+                    try {
+                        businessDayHistory = JSON.parse(savedBusinessHistory);
+                        if (businessDayHistory && typeof businessDayHistory === 'object') {
+                            for (const key in businessDayHistory) {
+                                const entry = businessDayHistory[key];
+                                if (entry && Array.isArray(entry.intervals)) {
+                                    entry.intervals.forEach(inv => {
+                                        if (!inv.farm) {
+                                            inv.farm = 'corrupted'; // Safe automatic fallback patch
+                                        }
+                                    });
+                                }
+                                if (entry && !entry.defaultFarm) {
+                                    entry.defaultFarm = 'corrupted';
+                                }
+                                // Clear any cached formattedDay strings so they are regenerated in the browser's language
+                                if (entry) {
+                                    delete entry.formattedDay;
+                                }
+                            }
+                        } else {
+                            businessDayHistory = {};
+                        }
+                    } catch (e) {
+                        businessDayHistory = {};
                     }
                 }
 
@@ -1333,6 +1341,8 @@
             activeFarm = farmKey;
             saveInvestmentToVault();
             updateFarmLabels();
+            // Recompute active sessions to filter current view intervals
+            recomputeSessionMetrics();
             // Re-process cached raw orders with the new farm filter (no API re-fetch needed)
             if (rawClosedOrders && rawClosedOrders.length > 0) {
                 sumUserData(rawClosedOrders);
@@ -1522,7 +1532,7 @@
         // Helper function translating local dates to "DayofWeek DD/MM" strings in the browser's language
         function getFormattedBusinessDay(timestampOrStr) {
             const date = new Date(timestampOrStr);
-            // Use the browser's locale for the weekday name (e.g. "ראשון" in Hebrew, "dimanche" in French)
+            // Use the browser's locale for the weekday name
             const dayName = date.toLocaleDateString(undefined, { weekday: 'long' });
             
             const day = String(date.getDate()).padStart(2, '0');
@@ -1544,11 +1554,12 @@
             });
         }
 
-        // Computes active millisecond elapsed duration across all recorded sessions
+        // Computes active millisecond elapsed duration across all recorded sessions matching activeFarm
         function getActiveSessionMs() {
             let total = 0;
             const now = Date.now();
             sessionIntervals.forEach(inv => {
+                if (inv.farm !== activeFarm) return; // Tag-isolation filter
                 if (inv.end) {
                     total += (inv.end - inv.start);
                 } else {
@@ -1558,9 +1569,10 @@
             return total;
         }
 
-        function getStatsForIntervals(intervals) {
+        function getStatsForIntervals(intervals, targetFarm) {
+            const filteredIntervals = intervals.filter(inv => inv.farm === targetFarm);
             let activeMs = 0;
-            intervals.forEach(inv => {
+            filteredIntervals.forEach(inv => {
                 const end = inv.end || Date.now();
                 activeMs += (end - inv.start);
             });
@@ -1573,14 +1585,17 @@
                 rawClosedOrders.forEach(order => {
                     if (order.order_type !== 'sell') return;
                     const orderTime = new Date(order.closed_date).getTime();
-                    const inInterval = intervals.some(inv => {
+                    const inInterval = filteredIntervals.some(inv => {
                         const end = inv.end || Date.now();
                         return orderTime >= inv.start && orderTime <= end;
                     });
                     if (inInterval) {
                         const itemName = order.item?.en?.item_name || order.item_name;
                         const totalPlat = order.platinum * (order.quantity || 1);
-                        if (getActiveFarm().mods.includes(itemName)) {
+                        
+                        // Use targeted farm config to classify primary merchandise
+                        const farmMods = FARMS[targetFarm].mods;
+                        if (farmMods.includes(itemName)) {
                             revenueCM += totalPlat;
                         } else {
                             revenueOthers += totalPlat;
@@ -1592,7 +1607,17 @@
         }
 
         function recomputeSessionMetrics() {
-            const activeMs = getActiveSessionMs();
+            const currentFarmIntervals = sessionIntervals.filter(inv => inv.farm === activeFarm);
+            
+            let activeMs = 0;
+            const now = Date.now();
+            currentFarmIntervals.forEach(inv => {
+                if (inv.end) {
+                    activeMs += (inv.end - inv.start);
+                } else {
+                    activeMs += (now - inv.start);
+                }
+            });
             const hours = activeMs / 1000 / 60 / 60;
             
             // Format duration
@@ -1611,9 +1636,9 @@
                 mod_rank: order.mod_rank !== undefined ? order.mod_rank : null
             }));
 
-            // Filter for SELL transactions
+            // Filter for SELL transactions and isolate by current active farm intervals
             let sSellOrders = cleanedOrders.filter(o => o.order_type === 'sell');
-            let sessionSales = getOrdersInSessionIntervals(sSellOrders, sessionIntervals);
+            let sessionSales = getOrdersInSessionIntervals(sSellOrders, currentFarmIntervals);
 
             const farmMods = getActiveFarm().mods;
             const sessionCM = sessionSales.filter(o => farmMods.includes(o.item_name));
@@ -1644,7 +1669,7 @@
             othersListContainer.innerHTML = '';
 
             if (sessionCM.length === 0) {
-                cmListContainer.innerHTML = `<p class="text-xs text-slate-600 italic">No corrupted mods sold in active intervals.</p>`;
+                cmListContainer.innerHTML = `<p class="text-xs text-slate-600 italic">No primary farm items sold in active intervals.</p>`;
             } else {
                 sessionCM.forEach(o => cmListContainer.appendChild(createCompactSessionCard(o)));
             }
@@ -1675,7 +1700,8 @@
 
         window.startSession = function() {
             sessionStatus = 'running';
-            sessionIntervals.push({ start: Date.now(), end: null });
+            // Tag newly initiated running interval with current active farm!
+            sessionIntervals.push({ start: Date.now(), end: null, farm: activeFarm });
             
             document.getElementById('sessionStartBtn').classList.add('hidden');
             document.getElementById('sessionPauseBtn').classList.remove('hidden');
@@ -1703,22 +1729,9 @@
             recomputeSessionMetrics();
         };
 
-        // Custom Confirmation box controllers (prevents standard window blocks)
-        window.confirmNewDay = function() {
-            document.getElementById('resetConfirmationBox').classList.remove('hidden');
-        };
-
-        window.cancelNewDay = function() {
-            document.getElementById('resetConfirmationBox').classList.add('hidden');
-        };
-
         // Closes current tracking metrics and transitions session to Weekly summary
-        window.executeNewDay = function(shouldArchive) {
-            document.getElementById('resetConfirmationBox').classList.add('hidden');
-
-            if (shouldArchive) {
-                archiveSessionToBusinessLog();
-            }
+        window.executeEndDay = function() {
+            archiveSessionToBusinessLog();
 
             // Wipe out stopwatch structures completely to initiate a clean session
             sessionIntervals = [];
@@ -1739,16 +1752,16 @@
             // Close active open interval
             const processedIntervals = sessionIntervals.map(inv => ({
                 start: inv.start,
-                end: inv.end || Date.now()
+                end: inv.end || Date.now(),
+                farm: inv.farm || activeFarm // Stamp tag if missing
             }));
 
             if (processedIntervals.length === 0) {
                 // If there were no intervals, create a nominal zero-length interval for the record
-                processedIntervals.push({ start: nowTime, end: nowTime });
+                processedIntervals.push({ start: nowTime, end: nowTime, farm: activeFarm });
             }
 
-            // Derive the business day from the EARLIEST interval start, not from when End Day was pressed.
-            // This way a session that started Sunday 11pm and ended Monday 12:30am is filed under Sunday.
+            // Derive the business day from the EARLIEST interval start
             const earliestStart = processedIntervals.reduce((min, inv) => Math.min(min, inv.start), Infinity);
             const anchorTime = isFinite(earliestStart) ? earliestStart : nowTime;
             const rawKey = new Date(anchorTime).toLocaleDateString('en-CA'); // YYYY-MM-DD in local timezone
@@ -1759,14 +1772,14 @@
                 businessDayHistory[rawKey] = {
                     day: rawKey,
                     formattedDay: friendlyDay,
-                    intervals: []
+                    intervals: [],
+                    defaultFarm: activeFarm // fallback farm if completely empty
                 };
             } else if (!businessDayHistory[rawKey].intervals) {
-                // Handle fallback if they had an old static entry style
                 businessDayHistory[rawKey].intervals = [];
             }
 
-            // Append newly archived intervals to avoid overriding same-day logging sessions!
+            // Append newly archived intervals to avoid overriding same-day logging sessions
             businessDayHistory[rawKey].intervals = businessDayHistory[rawKey].intervals.concat(processedIntervals);
 
             renderBusinessDayHistoryTable();
@@ -1848,50 +1861,71 @@
             thresholdDate.setDate(now.getDate() - summaryLookbackDays);
             const thresholdStr = thresholdDate.toISOString().split('T')[0];
 
-            const filteredKeys = keys.filter(key => key >= thresholdStr);
+            const filteredKeysByDate = keys.filter(key => key >= thresholdStr);
 
             // Calculate aggregate metrics dynamically using raw stored intervals
             let sumHours = 0;
             let sumCM = 0;
             let sumOthers = 0;
-            const totalDays = filteredKeys.length;
+            let countedDays = 0;
 
-            const computedHistoryItems = filteredKeys.map(key => {
+            const computedHistoryItems = [];
+
+            filteredKeysByDate.forEach(key => {
                 const item = businessDayHistory[key];
+                
+                // Determine if this day should be visible for activeFarm
+                // If day has intervals: must have at least one interval matching activeFarm
+                // If day has NO intervals: must have defaultFarm === activeFarm
+                const hasIntervals = item.intervals && item.intervals.length > 0;
+                let isMatch = false;
+                
+                if (hasIntervals) {
+                    isMatch = item.intervals.some(inv => inv.farm === activeFarm);
+                } else {
+                    const fallbackFarm = item.defaultFarm || 'corrupted';
+                    isMatch = (fallbackFarm === activeFarm);
+                }
+
+                if (!isMatch) {
+                    // Hide entirely from visible list and calculations
+                    return;
+                }
+
                 let activeHours = 0;
                 let revenueCM = 0;
                 let revenueOthers = 0;
 
                 // Dynamically evaluate stats if intervals are present
-                if (item.intervals && item.intervals.length > 0) {
-                    const stats = getStatsForIntervals(item.intervals);
+                if (hasIntervals) {
+                    const stats = getStatsForIntervals(item.intervals, activeFarm);
                     activeHours = stats.activeHours;
                     revenueCM = stats.revenueCM;
                     revenueOthers = stats.revenueOthers;
                 } else {
-                    // Fallback to old flat pre-existing static records for backward compatibility
-                    activeHours = item.activeHours || 0;
-                    revenueCM = item.revenueCM || 0;
-                    revenueOthers = item.revenueOthers || 0;
+                    activeHours = 0;
+                    revenueCM = 0;
+                    revenueOthers = 0;
                 }
 
                 sumHours += activeHours;
                 sumCM += revenueCM;
                 sumOthers += revenueOthers;
+                countedDays++;
 
-                return {
+                computedHistoryItems.push({
                     key: key,
                     formattedDay: item.formattedDay || getFormattedBusinessDay(item.day || key),
                     activeHours: activeHours,
                     revenueCM: revenueCM,
                     revenueOthers: revenueOthers
-                };
+                });
             });
 
-            // Calculate daily averages
-            const avgHours = totalDays > 0 ? (sumHours / totalDays) : 0;
-            const avgCM = totalDays > 0 ? (sumCM / totalDays) : 0;
-            const avgOthers = totalDays > 0 ? (sumOthers / totalDays) : 0;
+            // Calculate daily averages using only visible day metrics
+            const avgHours = countedDays > 0 ? (sumHours / countedDays) : 0;
+            const avgCM = countedDays > 0 ? (sumCM / countedDays) : 0;
+            const avgOthers = countedDays > 0 ? (sumOthers / countedDays) : 0;
             
             // Calculate rates based on average time frames
             const avgCMRate = sumHours > 0 ? (sumCM / sumHours) : 0;
@@ -1904,10 +1938,10 @@
             document.getElementById('weeklyAvgCMRate').textContent = `${Math.round(avgCMRate).toLocaleString()}p / hr`;
             document.getElementById('weeklyAvgOverallRate').textContent = `${Math.round(avgOverallRate).toLocaleString()}p / hr`;
 
-            if (totalDays === 0) {
+            if (countedDays === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="7" class="py-4 px-5 text-center text-slate-600 italic">No historical working days logged yet within this summary period.</td>
+                        <td colspan="7" class="py-4 px-5 text-center text-slate-600 italic">No historical working days logged yet within this summary period for the selected farm.</td>
                     </tr>`;
                 return;
             }
@@ -1946,7 +1980,7 @@
         // ── Interval Editor Modal ─────────────────────────────────────────────
         let intervalEditorDayKey = null; // which day is currently being edited
 
-        // Helper: convert a JS timestamp to a "YYYY-MM-DDTHH:MM:SS" string for datetime-local inputs with seconds
+        // Helper: convert a JS timestamp to a "YYYY-MM-DDTHH:MM:SS" string for datetime-local inputs
         function tsToLocalInput(ts) {
             const d = new Date(ts);
             const pad = n => String(n).padStart(2, '0');
@@ -1957,6 +1991,18 @@
         function localInputToTs(val) {
             return new Date(val).getTime();
         }
+
+        window.toggleIntervalFarmTag = function(btn) {
+            const currentFarm = btn.getAttribute('data-farm');
+            const nextFarm = currentFarm === 'corrupted' ? 'pavlov' : 'corrupted';
+            btn.setAttribute('data-farm', nextFarm);
+            btn.className = `interval-farm-btn px-2 py-0.5 rounded-md text-[10px] font-bold border transition flex items-center gap-1 shrink-0 ${
+                nextFarm === 'corrupted' 
+                    ? 'bg-amber-500/10 text-amber-400 border-amber-500/20 hover:bg-amber-500/20' 
+                    : 'bg-teal-500/10 text-teal-400 border-teal-500/20 hover:bg-teal-500/20'
+            }`;
+            btn.innerHTML = nextFarm === 'corrupted' ? '🪙 Vault Runs' : '🌊 Pavlov';
+        };
 
         window.openIntervalEditor = function(dayKey) {
             const entry = businessDayHistory[dayKey];
@@ -1974,9 +2020,9 @@
             const intervals = entry.intervals || [];
             if (intervals.length === 0) {
                 // Start with one empty row so the user can add immediately
-                appendIntervalEditorRow(list, null, null);
+                appendIntervalEditorRow(list, null, null, entry.defaultFarm || activeFarm);
             } else {
-                intervals.forEach(inv => appendIntervalEditorRow(list, inv.start, inv.end));
+                intervals.forEach(inv => appendIntervalEditorRow(list, inv.start, inv.end, inv.farm));
             }
 
             // Show modal
@@ -1989,12 +2035,19 @@
             intervalEditorDayKey = null;
         };
 
-        function appendIntervalEditorRow(container, startTs, endTs) {
+        function appendIntervalEditorRow(container, startTs, endTs, farmVal) {
             const row = document.createElement('div');
             row.className = 'interval-editor-row flex items-center gap-2 bg-slate-950/60 border border-slate-800 rounded-xl px-3 py-2.5';
 
             const startVal = startTs ? tsToLocalInput(startTs) : '';
             const endVal   = endTs   ? tsToLocalInput(endTs)   : '';
+            const activeFarmVal = farmVal || activeFarm;
+
+            const farmBtnClass = activeFarmVal === 'corrupted'
+                ? 'bg-amber-500/10 text-amber-400 border-amber-500/20 hover:bg-amber-500/20'
+                : 'bg-teal-500/10 text-teal-400 border-teal-500/20 hover:bg-teal-500/20';
+            
+            const farmBtnLabel = activeFarmVal === 'corrupted' ? '🪙 Vault Runs' : '🌊 Pavlov';
 
             row.innerHTML = `
                 <div class="flex flex-col gap-1 flex-grow min-w-0">
@@ -2006,6 +2059,15 @@
                         <span class="text-[10px] text-slate-500 font-bold uppercase w-8 shrink-0">End</span>
                         <input type="datetime-local" step="1" onclick="if(event.offsetX > this.offsetWidth - 40) this.showPicker()" class="interval-end flex-grow bg-slate-900 border border-slate-800 rounded-lg px-2 py-1 text-xs text-white focus:outline-none focus:border-amber-500 transition font-medium" value="${endVal}" />
                     </div>
+                    
+                    <!-- Farm Tag Selector Row -->
+                    <div class="flex items-center gap-1.5 pt-1">
+                        <span class="text-[10px] text-slate-500 font-bold uppercase w-8 shrink-0">Farm</span>
+                        <button onclick="toggleIntervalFarmTag(this)" class="interval-farm-btn px-2 py-0.5 rounded-md text-[10px] font-bold border transition flex items-center gap-1 shrink-0 ${farmBtnClass}" data-farm="${activeFarmVal}">
+                            ${farmBtnLabel}
+                        </button>
+                    </div>
+
                     <!-- Move-to-day inline picker (hidden until move button clicked) -->
                     <div class="move-day-picker hidden flex items-center gap-1.5 pt-1">
                         <span class="text-[10px] text-indigo-400 font-bold uppercase shrink-0">Move to:</span>
@@ -2031,7 +2093,7 @@
 
         window.addIntervalEditorRow = function() {
             const list = document.getElementById('intervalEditorList');
-            appendIntervalEditorRow(list, null, null);
+            appendIntervalEditorRow(list, null, null, activeFarm);
         };
 
         window.saveIntervalEdits = function() {
@@ -2044,6 +2106,7 @@
             rows.forEach(row => {
                 const startVal = row.querySelector('.interval-start').value;
                 const endVal   = row.querySelector('.interval-end').value;
+                const farmVal  = row.querySelector('.interval-farm-btn').getAttribute('data-farm');
 
                 // Skip completely empty rows silently
                 if (!startVal && !endVal) return;
@@ -2063,7 +2126,7 @@
                     return;
                 }
 
-                newIntervals.push({ start: startTs, end: endTs });
+                newIntervals.push({ start: startTs, end: endTs, farm: farmVal });
             });
 
             if (hasError) {
@@ -2093,6 +2156,7 @@
             renderBusinessDayHistoryTable();
             closeIntervalEditor();
         };
+
         // Populates and shows the inline move-day picker for a row
         window.toggleMovePicker = function(row) {
             const picker = row.querySelector('.move-day-picker');
@@ -2134,6 +2198,7 @@
         window.confirmMoveInterval = function(row) {
             const startVal = row.querySelector('.interval-start').value;
             const endVal   = row.querySelector('.interval-end').value;
+            const farmVal  = row.querySelector('.interval-farm-btn').getAttribute('data-farm');
             const targetKey = row.querySelector('.move-day-select').value;
 
             if (!startVal || !endVal) {
@@ -2152,7 +2217,7 @@
                 return;
             }
 
-            const interval = { start: startTs, end: endTs };
+            const interval = { start: startTs, end: endTs, farm: farmVal };
 
             // Resolve actual target key
             let resolvedKey = targetKey;
@@ -2170,7 +2235,8 @@
                 businessDayHistory[resolvedKey] = {
                     day: resolvedKey,
                     formattedDay: resolvedLabel,
-                    intervals: []
+                    intervals: [],
+                    defaultFarm: farmVal // default if empty
                 };
             } else if (!businessDayHistory[resolvedKey].intervals) {
                 businessDayHistory[resolvedKey].intervals = [];
@@ -2193,9 +2259,7 @@
 
             saveInvestmentToVault();
             renderBusinessDayHistoryTable();
-            // Keep modal open so user can continue working
         };
-
         // ── End Interval Editor Modal ─────────────────────────────────────────
 
         // ── Add Empty Day ─────────────────────────────────────────────────────
@@ -2233,12 +2297,13 @@
             const rawKey = val; // already YYYY-MM-DD
             const friendlyDay = getFormattedBusinessDay(val + 'T12:00:00'); // noon avoids DST edge cases
 
-            // Create the day entry if it doesn't exist yet
+            // Create the day entry if it doesn't exist yet, associate with current activeFarm
             if (!businessDayHistory[rawKey]) {
                 businessDayHistory[rawKey] = {
                     day: rawKey,
                     formattedDay: friendlyDay,
-                    intervals: []
+                    intervals: [],
+                    defaultFarm: activeFarm
                 };
                 saveInvestmentToVault();
                 renderBusinessDayHistoryTable();
@@ -2273,7 +2338,7 @@
                 document.getElementById('usernameInput').value = savedUser;
                 getDataFromApi(savedUser);
             } else {
-                // If there is no saved user, render a clean welcome/empty state
+                // If there is no saved user, render a clean welcome state
                 showWelcomeState(true);
             }
         });
