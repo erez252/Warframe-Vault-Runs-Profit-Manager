@@ -64,15 +64,19 @@
             </div>
             
             <div class="flex items-center gap-3">
-                <!-- Farm Switcher — always visible in header -->
-                <div class="flex items-center gap-1 bg-slate-900 border border-slate-800 p-1 rounded-xl">
+                <!-- Farm Switcher — updated to dynamic 3-segment responsive horizontal group -->
+                <div class="flex items-center gap-1 bg-slate-900 border border-slate-800 p-1 rounded-xl max-w-[200px] sm:max-w-none overflow-x-auto scrollbar-none">
                     <button id="farmBtn_corrupted" onclick="setActiveFarm('corrupted')"
-                        class="px-3 py-1.5 rounded-lg text-xs font-bold transition bg-amber-500 text-slate-950">
+                        class="px-2.5 sm:px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition whitespace-nowrap bg-amber-500 text-slate-950">
                         Vault Runs
                     </button>
                     <button id="farmBtn_pavlov" onclick="setActiveFarm('pavlov')"
-                        class="px-3 py-1.5 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white">
+                        class="px-2.5 sm:px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition whitespace-nowrap text-slate-400 hover:text-white">
                         Pavlov
+                    </button>
+                    <button id="farmBtn_cascade" onclick="setActiveFarm('cascade')"
+                        class="px-2.5 sm:px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition whitespace-nowrap text-slate-400 hover:text-white">
+                        Void Cascade
                     </button>
                 </div>
 
@@ -787,7 +791,15 @@
             "Rime Rounds", "Scattering Inferno", "Cleaving Whirlwind"
         ];
 
-        // Farm config — each farm defines its name, mod list, and display labels
+        // Void Cascade drop list (Zariman Arcanes)
+        const cascadeArcanes = [
+            "Molt Augmented", "Cascadia Flare", "Molt Reconstruct", "Eternal Onslaught", 
+            "Eternal Logistics", "Emergence Dissipate", "Emergence Savior", "Emergence Renewed", 
+            "Eternal Eradicate", "Fractalized Reset", "Cascadia Overcharge", "Cascadia Accuracy", 
+            "Cascadia Empowered", "Molt Vigor", "Molt Efficiency"
+        ];
+
+        // Farm config — expanded with Void Cascade
         const FARMS = {
             corrupted: {
                 key: 'corrupted',
@@ -802,6 +814,13 @@
                 mods: pavlovMods,
                 primaryLabel: 'Pavlov Mods',
                 primaryLabelShort: 'Pavlov',
+            },
+            cascade: {
+                key: 'cascade',
+                label: 'Void Cascade',
+                mods: cascadeArcanes,
+                primaryLabel: 'Cascade Arcanes',
+                primaryLabelShort: 'Cascade',
             }
         };
 
@@ -1010,7 +1029,7 @@
                     activeFarm = savedFarm;
                 }
 
-                // Restore sessions with robust backward compatibility scans (auto-applying tags)
+                // Restore sessions with robust backward compatibility scans (auto-applying corrupted tags to legacy rows)
                 if (savedSessionIntervals !== null) {
                     try {
                         sessionIntervals = JSON.parse(savedSessionIntervals);
@@ -1342,9 +1361,9 @@
                 const btn = document.getElementById('farmBtn_' + key);
                 if (!btn) return;
                 if (key === activeFarm) {
-                    btn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition bg-amber-500 text-slate-950';
+                    btn.className = 'px-2.5 sm:px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition whitespace-nowrap bg-amber-500 text-slate-950';
                 } else {
-                    btn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white';
+                    btn.className = 'px-2.5 sm:px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition whitespace-nowrap text-slate-400 hover:text-white';
                 }
             });
 
@@ -1926,12 +1945,15 @@
             return new Date(val).getTime();
         }
 
+        // Updated with cascade tag cycling support
         window.toggleIntervalFarmTag = function(btn) {
             const currentFarm = btn.getAttribute('data-farm');
             let nextFarm;
             if (currentFarm === 'corrupted') {
                 nextFarm = 'pavlov';
             } else if (currentFarm === 'pavlov') {
+                nextFarm = 'cascade';
+            } else if (currentFarm === 'cascade') {
                 nextFarm = 'mix';
             } else {
                 nextFarm = 'corrupted';
@@ -1947,6 +1969,9 @@
             } else if (nextFarm === 'pavlov') {
                 btnClass = 'bg-teal-500/10 text-teal-400 border-teal-500/20 hover:bg-teal-500/20';
                 btnLabel = '🌊 Pavlov';
+            } else if (nextFarm === 'cascade') {
+                btnClass = 'bg-fuchsia-500/10 text-fuchsia-400 border-fuchsia-500/20 hover:bg-fuchsia-500/20';
+                btnLabel = '🌀 Void Cascade';
             } else {
                 btnClass = 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20 hover:bg-indigo-500/20';
                 btnLabel = '🔮 Mixed / Both';
@@ -1999,6 +2024,9 @@
             } else if (activeFarmVal === 'pavlov') {
                 farmBtnClass = 'bg-teal-500/10 text-teal-400 border-teal-500/20 hover:bg-teal-500/20';
                 farmBtnLabel = '🌊 Pavlov';
+            } else if (activeFarmVal === 'cascade') {
+                farmBtnClass = 'bg-fuchsia-500/10 text-fuchsia-400 border-fuchsia-500/20 hover:bg-fuchsia-500/20';
+                farmBtnLabel = '🌀 Void Cascade';
             } else {
                 farmBtnClass = 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20 hover:bg-indigo-500/20';
                 farmBtnLabel = '🔮 Mixed / Both';
